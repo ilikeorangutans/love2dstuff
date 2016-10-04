@@ -24,14 +24,19 @@ end
 
 Map = {
   tiles = {
-    {1, 2, 1, 1, 3, 1, 1},
-    {1, 2, 1, 1, 3, 1, 1},
-    {1, 2, 1, 1, 3, 1, 1},
-    {1, 2, 1, 1, 3, 1, 1},
-    {1, 3, 1, 2, 3, 1, 1},
-    {1, 2, 1, 1, 3, 1, 1},
-    {1, 2, 1, 1, 3, 1, 1},
-  }
+    {1, 2, 1, 1, 3, 1, 1, 1, 1, 1},
+    {1, 2, 1, 1, 3, 1, 1, 1, 1, 1},
+    {1, 2, 1, 1, 3, 1, 1, 1, 1, 1},
+    {1, 2, 1, 1, 3, 1, 1, 1, 1, 1},
+    {1, 3, 1, 2, 3, 2, 2, 2, 2, 2},
+    {1, 2, 1, 1, 3, 1, 1, 1, 1, 1},
+    {1, 2, 1, 1, 3, 1, 1, 1, 1, 1},
+    {1, 2, 1, 1, 3, 1, 1, 1, 1, 1},
+    {1, 2, 1, 1, 3, 1, 1, 1, 1, 1},
+    {1, 3, 1, 2, 3, 2, 2, 2, 2, 2},
+  },
+  width = 10,
+  height = 10
 }
 
 Viewport = {
@@ -44,12 +49,11 @@ Viewport = {
 function love.load()
   Tileset:load('countryside.png')
   mapView = MapView:new{map = Map, tileset = Tileset}
-  mapView:resize(150, 100)
+  mapView:resize(160, 100)
 end
 
 function love.draw()
     mapView:draw(Viewport)
-    love.graphics.rectangle("line",  Viewport.x, Viewport.y, Viewport.width, Viewport.height)
 end
 
 function love.update(dt)
@@ -75,8 +79,11 @@ function love.keypressed(key, scancode, isrepeat)
   if scancode == 'escape' then
     love.event.quit()
   end
-  if scancode == '+' then
-    mapView.resize(mapView.w + 2, mapView.h + 2)
+  if scancode == 'kp+' then
+    mapView:resize(mapView.w + 2, mapView.h + 2)
+  end
+  if scancode == 'kp-' then
+    mapView:resize(mapView.w - 2, mapView.h - 2)
   end
 
 end
