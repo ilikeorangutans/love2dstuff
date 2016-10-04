@@ -1,16 +1,20 @@
 local mapview = {}
 
 MapView = {
+  screenx = 0,
+  screeny = 0,
   x = 0,
   y = 0,
   w = 0,
   h = 0,
-  startx = 0,
-  endx = 0,
-  starty = 0,
-  endy = 0,
-  offsetx = 0,
-  offsety = 0
+  visible = {
+    startx = 0,
+    starty = 0,
+    endx = 0,
+    endy = 0,
+    offsetx = 0,
+    offsety = 0
+  }
 }
 
 function MapView:new(o)
@@ -20,27 +24,26 @@ function MapView:new(o)
   return o
 end
 
-function MapView:draw(viewport)
-  drawX, drawY = Viewport.x, viewport.y
+function MapView:draw()
+  drawX, drawY = self.screenx, self.screeny
   tileW, tileH = self.tileset:tileSize()
-  offsetx, offsety = 0, 0
+  v = self.visible
 
   mapX, mapY = 0, 0
-  for i = self.startY, self.endY do
+  for i = v.starty, v.endy do
     row = self.map['tiles'][i]
     mapY = i * tileH
-    for j = self.startX, self.endX do
+    for j = v.startx, v.endx do
       col = row[j]
       mapX = j * tileW
-      self.tileset:draw(drawX - self.offsetx, drawY - self.offsety, col)
+      self.tileset:draw(drawX - v.offsetx, drawY - v.offsety, col)
       drawX = drawX + tileW
     end
-    drawX = Viewport.x
+    drawX = self.screenx
     drawY = drawY + tileH
   end
 
-
-  love.graphics.rectangle('line', viewport.x, viewport.y, self.w, self.h)
+  love.graphics.rectangle('line', self.screenx, self.screeny, self.w, self.h)
 end
 
 function MapView:resize(w, h)
@@ -57,14 +60,18 @@ end
 function MapView:calculateBounds()
   tileW, tileH = self.tileset:tileSize()
 
-  self.startY = 1 + math.floor(self.y / tileH)
-  self.endY = 1 + math.floor((self.y + self.h) / tileH)
+  local starty = 1 + math.floor(self.y / tileH)
+  local endy = 1 + math.floor((self.y + self.h) / tileH)
 
-  self.startX = 1 + math.floor(self.x / tileW)
-  self.endX = 1 + math.floor((self.x + self.w) / tileW)
+  local startx = 1 + math.floor(self.x / tileW)
+  local endx = 1 + math.floor((self.x + self.w) / tileW)
 
-  self.offsetx = self.x % 32
-  self.offsety = self.y % 32
+  self.visible.offsetx = self.x % 32
+  self.visible.offsety = self.y % 32
+  self.visible.startx = startx
+  self.visible.endx = endx
+  self.visible.starty = starty
+  self.visible.endy = endy
 end
 
 function MapView:moveBy(deltax, deltay)
@@ -73,7 +80,6 @@ function MapView:moveBy(deltax, deltay)
 end
 
 function MapView:moveTo(x, y)
-
   if x < 0 then x = 0 end
   if x >= self.maxx then x = self.maxx end
   if y < 0 then y = 0 end

@@ -39,13 +39,6 @@ Map = {
   height = 10
 }
 
-Viewport = {
-  width = 150,
-  height = 100,
-  x = 50,
-  y = 50
-}
-
 function love.load()
   Tileset:load('countryside.png')
   mapView = MapView:new{map = Map, tileset = Tileset}
@@ -53,7 +46,7 @@ function love.load()
 end
 
 function love.draw()
-    mapView:draw(Viewport)
+    mapView:draw()
 end
 
 function love.update(dt)
