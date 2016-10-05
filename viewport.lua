@@ -32,20 +32,20 @@ function Viewport:draw()
 end
 
 function Viewport:drawCursorHighlights()
-  local cursors = self.entityManager:getByType("cursor")
+  local cursors = self.entityManager:getComponents("cursor")
   local id, _ = next(cursors)
-  local pos = self.entityManager:getByType("position")[id]
+  local pos = self.entityManager:getComponents("position")[id]
   local x, y = self:mapToScreen(pos)
   local tilew, tileh = self.tileset:tileSize()
   love.graphics.rectangle('line', x, y, tilew, tileh)
 end
 
 function Viewport:drawEntities()
-  local drawables = self.entityManager:getByType("drawable")
+  local drawables = self.entityManager:getComponents("drawable")
   local v = self.visible
 
   for id, drawable in ipairs(drawables) do
-    local pos = self.entityManager:getByType("position")[id]
+    local pos = self.entityManager:getComponents("position")[id]
     if pos and self:isVisible(pos) then
       local drawx, drawy = self:mapToScreen(pos)
       love.graphics.draw(self.tileset.units, self.tileset.unit[drawable.img], drawx, drawy, 0, 0.5, 0.5)

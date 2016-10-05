@@ -71,7 +71,7 @@ Map = {
 
 function love.load()
   Tileset:load('countryside.png')
-  local entityManager = EntityManager:new()
+  entityManager = EntityManager:new()
 
   viewport = Viewport:new{map = Map, tileset = Tileset, entityManager = entityManager}
   viewport.screenx = 0
@@ -121,7 +121,19 @@ function love.keypressed(key, scancode, isrepeat)
   if scancode == 'kp-' then
     viewport:resize(viewport.w - 2, viewport.h - 2)
   end
+end
 
+function love.mousereleased(x, y, button, istouch)
+  local posx, posy = viewport:screenToMap(x, y)
+
+  local entities = entityManager:getComponentsByType("selectable", "position")
+
+  for id, comps in ipairs(entities) do
+    local pos = comps.position
+    if pos.x == posx and pos.y == posy then
+      print("CLICKED!!!", posx, posy)
+    end
+  end
 end
 
 function love.mousemoved(x, y)
