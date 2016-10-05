@@ -79,15 +79,17 @@ function love.load()
   mapView:resize(800, 600)
 
   position = {x = 3, y = 5}
-  drawable = {img = 'caravel' }
+  drawable = {img = 'caravel'}
+  selectable = {selected = false}
 
-  entityManager:create({ drawable = drawable, position = position})
+  entityManager:create({ drawable = drawable, position = position, selectable = selectable})
+
+  mousePosition = {x=0, y=0}
+  entityManager:create({position = mousePosition, cursor = {}})
 end
 
 function love.draw()
   mapView:draw()
-
-  love.graphics.print("mouse over " .. tostring(posx) .. ", " .. tostring(posy), 0, 400)
 end
 
 function love.update(dt)
@@ -123,7 +125,9 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.mousemoved(x, y)
-  posx, posy = mapView:screenToMap(x, y)
+  local posx, posy = mapView:screenToMap(x, y)
+  mousePosition.x = posx
+  mousePosition.y = posy
 end
 
 function love.wheelmoved(x, y)

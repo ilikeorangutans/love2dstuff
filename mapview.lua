@@ -28,6 +28,16 @@ end
 function MapView:draw()
   self:drawMap()
   self:drawEntities()
+  self:drawCursorHighlights()
+end
+
+function MapView:drawCursorHighlights()
+  local cursors = self.entityManager:getByType("cursor")
+  local id, _ = next(cursors)
+  local pos = self.entityManager:getByType("position")[id]
+  local x, y = self:mapToScreen(pos)
+  local tilew, tileh = self.tileset:tileSize()
+  love.graphics.rectangle('line', x, y, tilew, tileh)
 end
 
 function MapView:drawEntities()
