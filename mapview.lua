@@ -14,7 +14,8 @@ MapView = {
     endy = 0,
     offsetx = 0,
     offsety = 0
-  }
+  },
+  entityManager = {}
 }
 
 function MapView:new(o)
@@ -25,16 +26,34 @@ function MapView:new(o)
 end
 
 function MapView:draw()
-  drawX, drawY = self.screenx, self.screeny
-  tileW, tileH = self.tileset:tileSize()
-  v = self.visible
+  self:drawMap()
+  self:drawEntities()
+end
 
-  mapX, mapY = 0, 0
+function MapView:drawEntities()
+  local drawables = self.entityManager:getByType("drawable")
+  local v = self.visible
+
+  for id, drawable in ipairs(drawables) do
+    local pos = self.entityManager:getByType("position")[id]
+    if pos and self:isVisible(pos) then
+      local drawx, drawy = self:mapToScreen(pos)
+      love.graphics.draw(self.tileset.units, self.tileset.unit[drawable.img], drawx, drawy, 0, 0.5, 0.5)
+    end
+  end
+end
+
+function MapView:drawMap()
+  local drawX, drawY = self.screenx, self.screeny
+  local tileW, tileH = self.tileset:tileSize()
+  local v = self.visible
+
+  local mapX, mapY = 0, 0
   for i = v.starty, v.endy do
-    row = self.map['tiles'][i]
+    local row = self.map['tiles'][i]
     mapY = i * tileH
     for j = v.startx, v.endx do
-      col = row[j]
+      local col = row[j]
       mapX = j * tileW
       self.tileset:draw(drawX - v.offsetx, drawY - v.offsety, col)
       drawX = drawX + tileW
@@ -58,7 +77,7 @@ function MapView:resize(w, h)
 end
 
 function MapView:calculateBounds()
-  tileW, tileH = self.tileset:tileSize()
+  local tileW, tileH = self.tileset:tileSize()
 
   local starty = 1 + math.floor(self.y / tileH)
   local endy = 1 + math.floor((self.y + self.h) / tileH)
@@ -91,6 +110,21 @@ function MapView:moveTo(x, y)
   self.y = y
 
   self:calculateBounds()
+end
+
+function MapView:mapToScreen(pos)
+  local tilew, tileh = self.tileset:tileSize()
+  return (pos.x * tilew) - self.x + self.screenx, (pos.y * tileh) - self.y + self.screeny
+end
+
+function MapView:screenToMap(x, y)
+  local tilew, tileh = self.tileset:tileSize()
+  return math.floor((x - self.screenx + self.x) / tilew), math.floor((y - self.screeny + self.y) / tileh)
+end
+
+function MapView:isVisible(pos)
+  return self.visible.startx <= pos.x + 1 and pos.x < self.visible.endx
+      and self.visible.starty <= pos.y + 1 and pos.y < self.visible.endy
 end
 
 return mapview

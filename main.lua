@@ -1,4 +1,7 @@
 require 'mapview'
+require 'entity'
+
+posx, poxy = 0, 0
 
 Tileset = { tileW, tileH }
 function Tileset:load(filename)
@@ -12,6 +15,13 @@ function Tileset:load(filename)
   self['tiles'][1] = love.graphics.newQuad(0, 0, tileW, tileH, tilesetW, tilesetH)
   self['tiles'][2] = love.graphics.newQuad(tileW, 0, tileW, tileH, tilesetW, tilesetH)
   self['tiles'][3] = love.graphics.newQuad(0, tileH, tileW, tileH, tilesetW, tilesetH)
+
+  local units = love.graphics.newImage("units.png")
+  local unitw, unith = units:getWidth(), units:getHeight()
+
+  self.units = units
+  self.unit = {}
+  self.unit['caravel'] = love.graphics.newQuad(3*60, 60, 60, 60, unitw, unith)
 end
 
 function Tileset:draw(x, y, id)
@@ -41,12 +51,23 @@ Map = {
 
 function love.load()
   Tileset:load('countryside.png')
-  mapView = MapView:new{map = Map, tileset = Tileset}
+  local entityManager = EntityManager:new()
+
+  mapView = MapView:new{map = Map, tileset = Tileset, entityManager = entityManager}
+  mapView.screenx = 50
+  mapView.screeny = 50
   mapView:resize(160, 100)
+
+  position = {x = 3, y = 5}
+  drawable = {img = 'caravel' }
+
+  entityManager:create({ drawable = drawable, position = position})
 end
 
 function love.draw()
-    mapView:draw()
+  mapView:draw()
+
+  love.graphics.print("mouse over " .. tostring(posx) .. ", " .. tostring(posy), 0, 400)
 end
 
 function love.update(dt)
@@ -80,3 +101,8 @@ function love.keypressed(key, scancode, isrepeat)
   end
 
 end
+
+function love.mousemoved(x, y)
+  posx, posy = mapView:screenToMap(x, y)
+end
+
