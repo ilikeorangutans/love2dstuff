@@ -99,10 +99,10 @@ function MapView:moveBy(deltax, deltay)
 end
 
 function MapView:moveTo(x, y)
-  if x < 0 then x = 0 end
   if x >= self.maxx then x = self.maxx end
-  if y < 0 then y = 0 end
+  if x < 0 then x = 0 end
   if y >= self.maxy then y = self.maxy end
+  if y < 0 then y = 0 end
 
   if x == self.x and y == self.y then return end
 
