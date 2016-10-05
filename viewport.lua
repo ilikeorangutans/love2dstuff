@@ -1,6 +1,6 @@
-local mapview = {}
+local viewport = {}
 
-MapView = {
+Viewport = {
   screenx = 0,
   screeny = 0,
   x = 0,
@@ -18,20 +18,20 @@ MapView = {
   entityManager = {}
 }
 
-function MapView:new(o)
+function Viewport:new(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
   return o
 end
 
-function MapView:draw()
+function Viewport:draw()
   self:drawMap()
   self:drawEntities()
   self:drawCursorHighlights()
 end
 
-function MapView:drawCursorHighlights()
+function Viewport:drawCursorHighlights()
   local cursors = self.entityManager:getByType("cursor")
   local id, _ = next(cursors)
   local pos = self.entityManager:getByType("position")[id]
@@ -40,7 +40,7 @@ function MapView:drawCursorHighlights()
   love.graphics.rectangle('line', x, y, tilew, tileh)
 end
 
-function MapView:drawEntities()
+function Viewport:drawEntities()
   local drawables = self.entityManager:getByType("drawable")
   local v = self.visible
 
@@ -53,7 +53,7 @@ function MapView:drawEntities()
   end
 end
 
-function MapView:drawMap()
+function Viewport:drawMap()
   local drawX, drawY = self.screenx, self.screeny
   local tileW, tileH = self.tileset:tileSize()
   local v = self.visible
@@ -75,7 +75,7 @@ function MapView:drawMap()
   love.graphics.rectangle('line', self.screenx, self.screeny, self.w, self.h)
 end
 
-function MapView:resize(w, h)
+function Viewport:resize(w, h)
   self.w = w
   self.h = h
 
@@ -86,7 +86,7 @@ function MapView:resize(w, h)
   self:calculateBounds()
 end
 
-function MapView:calculateBounds()
+function Viewport:calculateBounds()
   local tileW, tileH = self.tileset:tileSize()
 
   local starty = 1 + math.floor(self.y / tileH)
@@ -103,12 +103,12 @@ function MapView:calculateBounds()
   self.visible.endy = endy
 end
 
-function MapView:moveBy(deltax, deltay)
+function Viewport:moveBy(deltax, deltay)
   if deltax == 0 and deltay == 0 then return end
   self:moveTo(self.x + deltax, self.y + deltay)
 end
 
-function MapView:moveTo(x, y)
+function Viewport:moveTo(x, y)
   if x >= self.maxx then x = self.maxx end
   if x < 0 then x = 0 end
   if y >= self.maxy then y = self.maxy end
@@ -122,19 +122,19 @@ function MapView:moveTo(x, y)
   self:calculateBounds()
 end
 
-function MapView:mapToScreen(pos)
+function Viewport:mapToScreen(pos)
   local tilew, tileh = self.tileset:tileSize()
   return (pos.x * tilew) - self.x + self.screenx, (pos.y * tileh) - self.y + self.screeny
 end
 
-function MapView:screenToMap(x, y)
+function Viewport:screenToMap(x, y)
   local tilew, tileh = self.tileset:tileSize()
   return math.floor((x - self.screenx + self.x) / tilew), math.floor((y - self.screeny + self.y) / tileh)
 end
 
-function MapView:isVisible(pos)
+function Viewport:isVisible(pos)
   return self.visible.startx <= pos.x + 1 and pos.x < self.visible.endx
       and self.visible.starty <= pos.y + 1 and pos.y < self.visible.endy
 end
 
-return mapview
+return viewport

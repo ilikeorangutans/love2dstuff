@@ -1,4 +1,4 @@
-require 'mapview'
+require 'viewport'
 require 'entity'
 
 posx, poxy = 0, 0
@@ -73,10 +73,10 @@ function love.load()
   Tileset:load('countryside.png')
   local entityManager = EntityManager:new()
 
-  mapView = MapView:new{map = Map, tileset = Tileset, entityManager = entityManager}
-  mapView.screenx = 0
-  mapView.screeny = 0
-  mapView:resize(800, 600)
+  viewport = Viewport:new{map = Map, tileset = Tileset, entityManager = entityManager}
+  viewport.screenx = 0
+  viewport.screeny = 0
+  viewport:resize(800, 600)
 
   position = {x = 3, y = 5}
   drawable = {img = 'caravel'}
@@ -89,7 +89,7 @@ function love.load()
 end
 
 function love.draw()
-  mapView:draw()
+  viewport:draw()
 end
 
 function love.update(dt)
@@ -108,7 +108,7 @@ function love.update(dt)
     deltay = 4
   end
 
-  mapView:moveBy(deltax, deltay)
+  viewport:moveBy(deltax, deltay)
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -116,20 +116,20 @@ function love.keypressed(key, scancode, isrepeat)
     love.event.quit()
   end
   if scancode == 'kp+' then
-    mapView:resize(mapView.w + 2, mapView.h + 2)
+    viewport:resize(viewport.w + 2, viewport.h + 2)
   end
   if scancode == 'kp-' then
-    mapView:resize(mapView.w - 2, mapView.h - 2)
+    viewport:resize(viewport.w - 2, viewport.h - 2)
   end
 
 end
 
 function love.mousemoved(x, y)
-  local posx, posy = mapView:screenToMap(x, y)
+  local posx, posy = viewport:screenToMap(x, y)
   mousePosition.x = posx
   mousePosition.y = posy
 end
 
 function love.wheelmoved(x, y)
-  mapView:moveBy(x, y)
+  viewport:moveBy(x, y)
 end
