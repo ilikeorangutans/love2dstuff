@@ -32,9 +32,9 @@ function Viewport:draw()
 end
 
 function Viewport:drawCursorHighlights()
-  local cursors = self.entityManager:getComponents("cursor")
-  local id, _ = next(cursors)
-  local pos = self.entityManager:getComponents("position")[id]
+  local cursors = self.entityManager:getComponentsByType("cursor", "position")
+  local id, comps = next(cursors)
+  local pos = comps["position"]
   local x, y = self:mapToScreen(pos)
   local tilew, tileh = self.tileset:tileSize()
   love.graphics.rectangle('line', x, y, tilew, tileh)
