@@ -126,3 +126,6 @@ function love.mousemoved(x, y)
   posx, posy = mapView:screenToMap(x, y)
 end
 
+function love.wheelmoved(x, y)
+  mapView:moveBy(x, y)
+end
