@@ -135,16 +135,6 @@ function love.mousereleased(x, y, button, istouch)
   local entities = entityManager:getComponentsByType("selectable", "position")
 end
 
-function foo()
-  for id, comps in ipairs(entities) do
-    local pos = comps.position
-    if pos.x == posx and pos.y == posy then
-      print("CLICKED!!!", posx, posy)
-    end
-  end
-end
-
-
 function love.mousemoved(x, y)
   local posx, posy = viewport:screenToMap(x, y)
   mousePosition.x = posx
