@@ -142,7 +142,7 @@ function Viewport:isVisible(pos)
 end
 
 function Viewport:onScroll(event)
-  print("onScroll", self, event.deltax, event.deltay)
+  self:moveBy(event.deltax, event.deltay)
 end
 
 return viewport

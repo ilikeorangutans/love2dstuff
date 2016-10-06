@@ -9,18 +9,16 @@ function Bus:new(o)
   return o
 end
 
-function Bus:subscribe(topic, handler)
+function Bus:subscribe(topic, receiver, handler)
   if not self.subscriptions[topic] then self.subscriptions[topic] = {} end
-  table.insert(self.subscriptions[topic], handler)
+  table.insert(self.subscriptions[topic], {receiver=receiver,handler=handler})
 end
 
 function Bus:fire(topic, event)
   if not self.subscriptions[topic] then return end
 
   for i, subscription in ipairs(self.subscriptions[topic]) do
-    -- This doesn't quite work because the receiver (first param which becomes self)
-    -- points to nothing. We'd need to bind, i.e. keep the receiver around as well.
-    if subscription(nil,event) then
+    if subscription.handler(subscription.receiver, event) then
       return
     end
   end
