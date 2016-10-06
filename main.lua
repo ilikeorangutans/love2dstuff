@@ -1,6 +1,7 @@
 require 'events'
 require 'viewport'
 require 'entity'
+require 'selection'
 
 posx, poxy = 0, 0
 
@@ -76,6 +77,10 @@ function love.load()
   Tileset:load('countryside.png')
   entityManager = EntityManager:new()
 
+  selectionManager = SelectionManager
+  selectionManager.entityManager = entityManager
+  bus:subscribe("viewport.clicked", selectionManager, selectionManager.onClick)
+
   viewport = Viewport:new{map = Map, tileset = Tileset, entityManager = entityManager}
   viewport.screenx = 0
   viewport.screeny = 0
@@ -90,6 +95,7 @@ function love.load()
 
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})
+
 end
 
 function love.draw()
@@ -131,8 +137,7 @@ end
 
 function love.mousereleased(x, y, button, istouch)
   local posx, posy = viewport:screenToMap(x, y)
-
-  local entities = entityManager:getComponentsByType("selectable", "position")
+  bus:fire("viewport.clicked", {x=posx, y=posy})
 end
 
 function love.mousemoved(x, y)

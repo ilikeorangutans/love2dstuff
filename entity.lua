@@ -44,7 +44,6 @@ end
 --- Adds the given id with the given type bitmask to the index.
 function EntityManager:addToTypeIndex(bitmask, id)
   self.typeIndex[id] = bitmask
-  print("Added", id, "with bitmask", bit.tohex(bitmask))
 end
 
 --- Returns the type id for the given type.

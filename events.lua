@@ -15,6 +15,8 @@ end
 -- @param receiver the thing passed as the first parameter to the handler
 -- @param handler the actual handler function
 function Bus:subscribe(topic, receiver, handler)
+  assert(topic, "topic must be provided when subscribing to events")
+  assert(handler, "handler must be provided")
   if not self.subscriptions[topic] then self.subscriptions[topic] = {} end
   table.insert(self.subscriptions[topic], {receiver=receiver,handler=handler})
 end
