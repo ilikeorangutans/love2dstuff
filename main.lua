@@ -1,3 +1,4 @@
+require 'events'
 require 'viewport'
 require 'entity'
 
@@ -70,6 +71,8 @@ Map = {
 }
 
 function love.load()
+  bus = Bus:new()
+
   Tileset:load('countryside.png')
   entityManager = EntityManager:new()
 
@@ -77,6 +80,7 @@ function love.load()
   viewport.screenx = 0
   viewport.screeny = 0
   viewport:resize(800, 600)
+  bus:subscribe("viewport.scroll", viewport.onScroll)
 
   position = {x = 3, y = 5}
   drawable = {img = 'caravel'}
@@ -108,7 +112,10 @@ function love.update(dt)
     deltay = 4
   end
 
-  viewport:moveBy(deltax, deltay)
+  if deltax > 0 or deltax < 0 or deltay > 0 or deltay < 0 then
+    bus:fire("viewport.scroll", {deltax=deltax, deltay=deltay})
+  end
+  --viewport:moveBy(deltax, deltay)
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -127,7 +134,9 @@ function love.mousereleased(x, y, button, istouch)
   local posx, posy = viewport:screenToMap(x, y)
 
   local entities = entityManager:getComponentsByType("selectable", "position")
+end
 
+function foo()
   for id, comps in ipairs(entities) do
     local pos = comps.position
     if pos.x == posx and pos.y == posy then
@@ -135,6 +144,7 @@ function love.mousereleased(x, y, button, istouch)
     end
   end
 end
+
 
 function love.mousemoved(x, y)
   local posx, posy = viewport:screenToMap(x, y)

@@ -48,6 +48,10 @@ function Viewport:drawEntities()
     local pos = self.entityManager:getComponents("position")[id]
     if pos and self:isVisible(pos) then
       local drawx, drawy = self:mapToScreen(pos)
+      local selected = self.entityManager:getComponents("selectable")[id]
+      if selected.selected then
+        love.graphics.rectangle('line', drawx, drawy, 32, 32)
+      end
       love.graphics.draw(self.tileset.units, self.tileset.unit[drawable.img], drawx, drawy, 0, 0.5, 0.5)
     end
   end
@@ -135,6 +139,10 @@ end
 function Viewport:isVisible(pos)
   return self.visible.startx <= pos.x + 1 and pos.x < self.visible.endx
       and self.visible.starty <= pos.y + 1 and pos.y < self.visible.endy
+end
+
+function Viewport:onScroll(event)
+  print("onScroll", self, event.deltax, event.deltay)
 end
 
 return viewport
