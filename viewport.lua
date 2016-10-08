@@ -64,7 +64,7 @@ function Viewport:drawMap()
 
   local mapX, mapY = 0, 0
   for i = v.starty, v.endy do
-    local row = self.map['tiles'][i]
+    local row = self.map.tiles[i]
     mapY = i * tileH
     for j = v.startx, v.endx do
       local col = row[j]
