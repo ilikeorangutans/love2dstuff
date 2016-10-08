@@ -79,6 +79,7 @@ function love.load()
 
   selectionManager = SelectionManager
   selectionManager.entityManager = entityManager
+  selectionManager.bus = bus
   bus:subscribe("viewport.clicked", selectionManager, selectionManager.onClick)
 
   viewport = Viewport:new{map = Map, tileset = Tileset, entityManager = entityManager}
@@ -87,15 +88,20 @@ function love.load()
   viewport:resize(800, 600)
   bus:subscribe("viewport.scroll", viewport, viewport.onScroll)
 
-  position = {x = 3, y = 5}
-  drawable = {img = 'caravel'}
-  selectable = {selected = false}
+  local drawable = {img = 'caravel'}
 
-  entityManager:create({ drawable = drawable, position = position, selectable = selectable})
+  entityManager:create({ drawable = drawable, position = {x = 5, y = 5}, selectable = {}})
+  entityManager:create({ drawable = drawable, position = {x = 10, y = 11}, selectable = {}})
 
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})
 
+  bus:subscribe('selection.selected', nil, function(_, event)
+    print("Entity selected: ", event.id)
+  end)
+  bus:subscribe('selection.unselected', nil, function(_, event)
+    print("Entity unselected: ", event.id)
+  end)
 end
 
 function love.draw()
@@ -137,7 +143,7 @@ end
 
 function love.mousereleased(x, y, button, istouch)
   local posx, posy = viewport:screenToMap(x, y)
-  bus:fire("viewport.clicked", {x=posx, y=posy})
+  bus:fire("viewport.clicked", {button=button, x=posx, y=posy})
 end
 
 function love.mousemoved(x, y)

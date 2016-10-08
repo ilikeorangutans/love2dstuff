@@ -1,5 +1,4 @@
-Bus = {
-}
+Bus = {}
 
 --- Pub/sub event bus.
 function Bus:new(o)

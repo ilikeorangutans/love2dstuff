@@ -14,23 +14,25 @@ function TestEntityManager:testGetComponentsByTypeWorksWithStrings()
   luaunit.assertItemsEquals(result, {{foobar={foo='bar'}}})
 end
 
-function TestEntityManager:testGetComponentsByTypeWorksWithStringsAndPredicates()
+function TestEntityManager:testCreateAssignsDifferentIDs()
+  local a = self.em:create({foobar={foo="bar"}})
+  local b = self.em:create({foobar={foo="blargh"}})
+
+  luaunit.assertNotEquals(a, b)
 end
 
 function TestEntityManager:testGetComponentsByTypeReturnsOnlyIDsThatMatchAllPredicates()
   local a = self.em:create({foobar={foo="bar"}})
-  luaunit.assertEquals(a, 1)
   local b = self.em:create({foobar={foo="blargh"}})
 
   local predicate = function(comp)
-    return comp.foo == 'bar'
+    return comp.foo == 'blargh'
   end
 
   local result = self.em:getComponentsByType({foobar=predicate})
 
   luaunit.assertIsTable(result)
-  luaunit.assertEquals(result[1], {foobar={foo='bar'}})
-  luaunit.assertEquals(#result, 1)
+  luaunit.assertEquals(result[2], {foobar={foo='blargh'}})
 end
 
 os.exit(luaunit.LuaUnit.run())
