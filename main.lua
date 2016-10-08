@@ -18,7 +18,7 @@ function Tileset:load(filename)
   self['tiles'][2] = love.graphics.newQuad(tileW, 0, tileW, tileH, tilesetW, tilesetH)
   self['tiles'][3] = love.graphics.newQuad(0, tileH, tileW, tileH, tilesetW, tilesetH)
 
-  local units = love.graphics.newImage("units.png")
+  local units = love.graphics.newImage("assets/units.png")
   local unitw, unith = units:getWidth(), units:getHeight()
 
   self.units = units
@@ -74,7 +74,7 @@ Map = {
 function love.load()
   bus = Bus:new()
 
-  Tileset:load('countryside.png')
+  Tileset:load('assets/countryside.png')
   entityManager = EntityManager:new()
 
   selectionManager = SelectionManager
