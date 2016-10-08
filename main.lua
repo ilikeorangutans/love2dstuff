@@ -3,6 +3,7 @@ require 'viewport'
 require 'entity'
 require 'selection'
 require 'map'
+require 'player'
 
 posx, poxy = 0, 0
 
@@ -38,6 +39,11 @@ end
 function love.load()
   bus = Bus:new()
 
+  game = Game:new(bus)
+  bus:subscribe('game.endTurn', game, game.onEndTurn)
+  local p1 = game:addPlayer(Player:new('Jakob'))
+  local p2 = game:addPlayer(Player:new('Hannah'))
+
   Tileset:load('assets/countryside.png')
   entityManager = EntityManager:new()
 
@@ -57,8 +63,8 @@ function love.load()
 
   local drawable = {img = 'caravel'}
 
-  entityManager:create({ drawable = drawable, position = {x = 5, y = 5}, selectable = {}})
-  entityManager:create({ drawable = drawable, position = {x = 10, y = 11}, selectable = {}})
+  entityManager:create({ drawable = drawable, position = {x = 5, y = 5}, selectable = {}, owner = { id = p1.id }})
+  entityManager:create({ drawable = drawable, position = {x = 10, y = 11}, selectable = {}, owner = { id = p2.id }})
 
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})
@@ -77,6 +83,19 @@ end
 
 function love.draw()
   viewport:draw()
+
+  love.graphics.setColor(0, 0, 0)
+  love.graphics.rectangle('fill', 600, 550, 200, 50)
+  love.graphics.setColor(255, 255, 255)
+  love.graphics.print(("Mouse: %d/%d"):format(mousePosition.x, mousePosition.y), 600, 550)
+  love.graphics.print(("Turn: %d Player: %s"):format(game.turn + 1, game:currentPlayer().name), 600, 565)
+  if selectionManager.selected then
+    local comps = entityManager:get(selectionManager.selected)
+    love.graphics.print(("Selected: %d, owner: %s"):format(selectionManager.selected, comps.owner.id), 600, 580)
+  else
+    love.graphics.print("Nothing selected", 600, 580)
+  end
+
 end
 
 function love.update(dt)
@@ -104,11 +123,8 @@ function love.keypressed(key, scancode, isrepeat)
   if scancode == 'escape' then
     love.event.quit()
   end
-  if scancode == 'kp+' then
-    viewport:resize(viewport.w + 2, viewport.h + 2)
-  end
-  if scancode == 'kp-' then
-    viewport:resize(viewport.w - 2, viewport.h - 2)
+  if scancode == 'return' then
+    bus:fire("game.endTurn", nil)
   end
 end
 

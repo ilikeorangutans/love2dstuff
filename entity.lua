@@ -8,6 +8,7 @@ function EntityManager:new(o)
   setmetatable(o, self)
   self.__index = self
   o.lastID = 0
+  o.entities = {}
   o.components = {}
   o.componentIDs = {}
   o.typeIndex = {}
@@ -18,6 +19,7 @@ end
 function EntityManager:create(comps)
   self.lastID = self.lastID + 1
   local id = self.lastID
+  self.entities[id] = comps
 
   local types = {}
   for ctype, component in pairs(comps) do
@@ -30,6 +32,10 @@ function EntityManager:create(comps)
   self:addToTypeIndex(bitmask, id)
 
   return id
+end
+
+function EntityManager:get(id)
+  return self.entities[id]
 end
 
 --- Returns a bitmask for the given component types.
