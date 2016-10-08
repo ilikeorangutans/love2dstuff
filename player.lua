@@ -10,33 +10,31 @@ function Player:new(name)
   return o
 end
 
-Game = {}
+PlayerControl = {}
 
-function Game:new(bus)
-  o = {}
+function PlayerControl:new(bus, game, player)
+  local o = {}
   setmetatable(o, self)
   self.__index = self
-  o.players = {}
   o.bus = bus
-  o.turn = 0
+  o.player = player
+  o.game = game
+  o.active = false
   return o
 end
 
-function Game:addPlayer(player)
-  table.insert(self.players, player)
-  player.id = (#self.players)
-  return player
-end
+function PlayerControl:onNewTurn(event)
+  if event.player == self.player then self.active = true end
+  if not active then return end
+  print("PlayerControl:onNewTurn()", event.player.id)
 
-function Game:currentPlayer()
-  return self.players[self.turn % (#self.players) + 1]
-end
-
-function Game:endTurn()
-  self.turn = self.turn + 1
-  self.bus:fire('game.newTurn', {player = self:currentPlayer()})
-end
-
-function Game:onEndTurn(e)
   self:endTurn()
 end
+
+function PlayerControl:endTurn()
+  print("PlayerControl:endTurn()")
+
+  self.game:newTurn()
+end
+
+

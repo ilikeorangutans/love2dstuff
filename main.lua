@@ -5,18 +5,35 @@ require 'entity'
 require 'selection'
 require 'map'
 require 'player'
+require 'game'
+
+AI = {}
+function AI:onNewTurn(e)
+  if not (self.player == e.player) then return end
+  print("ai onNewTurn", e.player)
+  print("ai endturn")
+  self.control:endTurn()
+end
 
 function love.load()
   bus = Bus:new()
 
   game = Game:new(bus)
-  bus:subscribe('game.endTurn', game, game.onEndTurn)
   local p1 = game:addPlayer(Player:new('Jakob'))
   local p2 = game:addPlayer(Player:new('Hannah'))
 
+  p1Ctrl = PlayerControl:new(bus, game, p1)
+  bus:subscribe('game.newTurn', p1Ctrl, p1Ctrl.onNewTurn)
+  p2Ctrl = PlayerControl:new(bus, game, p2)
+  bus:subscribe('game.newTurn', p2Ctrl, p2Ctrl.onNewTurn)
+
+  ai = AI
+  ai.player = p2
+  ai.control = p2Ctrl
+  bus:subscribe('game.newTurn', ai, ai.onNewTurn)
+
   Tileset:load('assets/countryside.png')
   entityManager = EntityManager:new()
-
   map = Map:new()
   map:randomize(30, 30)
 
@@ -39,12 +56,7 @@ function love.load()
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})
 
-  bus:subscribe('selection.selected', nil, function(_, event)
-    print("Entity selected: ", event.id)
-  end)
-  bus:subscribe('selection.unselected', nil, function(_, event)
-    print("Entity unselected: ", event.id)
-  end)
+  game:start()
 end
 
 function love.resize(w, h)
@@ -94,7 +106,7 @@ function love.keypressed(key, scancode, isrepeat)
     love.event.quit()
   end
   if scancode == 'return' then
-    bus:fire("game.endTurn", nil)
+    p1Ctrl:endTurn()
   end
 end
 
@@ -107,8 +119,4 @@ function love.mousemoved(x, y)
   local posx, posy = viewport:screenToMap(x, y)
   mousePosition.x = posx
   mousePosition.y = posy
-end
-
-function love.wheelmoved(x, y)
-  viewport:moveBy(x, y)
 end

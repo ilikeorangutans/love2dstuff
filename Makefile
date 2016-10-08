@@ -22,3 +22,7 @@ clean:
 	rm -rf build
 	rm -rf dist
 
+
+install_deps:
+	luarocks install --local luaunit
+	luarocks install --local luabitop
