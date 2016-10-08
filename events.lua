@@ -25,7 +25,7 @@ end
 function Bus:fire(topic, event)
   if not self.subscriptions[topic] then return end
 
-  for i, subscription in ipairs(self.subscriptions[topic]) do
+  for _, subscription in ipairs(self.subscriptions[topic]) do
     if subscription.handler(subscription.receiver, event) then
       return
     end

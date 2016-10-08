@@ -1,16 +1,16 @@
-local entity = {}
+bit = require('bit')
 
 EntityManager = {
-  lastID = 0,
-  components = {},
-  componentIDs = {},
-  typeIndex = {},
 }
 
 function EntityManager:new(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
+  o.lastID = 0
+  o.components = {}
+  o.componentIDs = {}
+  o.typeIndex = {}
   return o
 end
 
@@ -28,6 +28,8 @@ function EntityManager:create(comps)
 
   local bitmask = self:typesToBitmask(types)
   self:addToTypeIndex(bitmask, id)
+
+  return id
 end
 
 --- Returns a bitmask for the given component types.
@@ -80,20 +82,56 @@ function EntityManager:getIDsByType(...)
   return result
 end
 
---- Returns all ids and components that match the given component types
+--- Returns all ids and components that match all the given component types
+-- @param p either strings or tables
 function EntityManager:getComponentsByType(...)
-  local ids = self:getIDsByType({...})
+  local types, predicates = extractTypesAndPredicates({...})
+  local ids = self:getIDsByType(types)
 
   local result = {}
   for _, id in ipairs(ids) do
-    result[id] = {}
-    for _, t in ipairs{...} do
-      c = self.components[t][id]
-      result[id][t] = c
+    local components = self:matchesAll(id, types, predicates)
+    if components then
+      result[id] = components
     end
   end
-
   return result
 end
 
-return entity
+function EntityManager:matchesAll(id, types, predicates)
+  local components = {}
+  for _, t in ipairs(types) do
+    local component = self.components[t][id]
+    local predicate = predicates[t]
+
+    if not matches(component, t, predicate) then return nil end
+
+    components[t] = component
+  end
+  return components
+end
+
+function matches(component, t, predicate)
+  if not predicate then return component end
+  if predicate(component) then return component end
+end
+
+function extractTypesAndPredicates(input)
+  local types = {}
+  local predicates = {}
+
+  for _, x in ipairs(input) do
+    local t = type(x)
+    if t == 'string' then
+      table.insert(types, x)
+    elseif t == 'table' then
+      ctype, predicate = next(x)
+      assert(type(predicate) == 'function', "predicate must be a function")
+      table.insert(types, ctype)
+      predicates[ctype] = predicate
+    end
+  end
+
+  return types, predicates
+end
+
