@@ -12,10 +12,18 @@ AI = {
 }
 function AI:onNewTurn(e)
   if not (self.player == e.player) then return end
-  print("ai onNewTurn", e.player)
   self.active = true
-  print("ai endturn")
-  self.control:endTurn()
+  self.time = 0
+end
+
+function AI:update(dt)
+  if not self.active then return end
+  self.time = self.time + dt
+
+  if self.time > 0.5 then
+    self.active = false
+    self.control:endTurn()
+  end
 end
 
 function love.load()
@@ -78,7 +86,7 @@ function love.draw()
     local comps = entityManager:get(selectionManager.selected)
     love.graphics.print(("Selected: %d, owner: %s"):format(selectionManager.selected, comps.owner.id), 600, 580)
   else
-    love.graphics.print("Nothing selected", 600, 580)
+    love.graphics.print("", 600, 580)
   end
 
 end
@@ -102,6 +110,8 @@ function love.update(dt)
   if deltax > 0 or deltax < 0 or deltay > 0 or deltay < 0 then
     bus:fire("viewport.scroll", {deltax=deltax, deltay=deltay})
   end
+
+  ai:update(dt)
 end
 
 function love.keypressed(key, scancode, isrepeat)
