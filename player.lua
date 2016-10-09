@@ -10,6 +10,9 @@ function Player:new(name)
   return o
 end
 
+--- Actions a player can take
+-- Each instance controls access for a single player. Listens to events and
+-- keeps track of who is the current player.
 PlayerControl = {}
 
 function PlayerControl:new(bus, game, player)
@@ -23,18 +26,15 @@ function PlayerControl:new(bus, game, player)
   return o
 end
 
-function PlayerControl:onNewTurn(event)
-  if event.player == self.player then self.active = true end
-  if not active then return end
-  print("PlayerControl:onNewTurn()", event.player.id)
-
-  self:endTurn()
-end
-
+--- Ends the current turn.
 function PlayerControl:endTurn()
-  print("PlayerControl:endTurn()")
+  if not self.active then return end
 
   self.game:newTurn()
 end
 
+--- Listens to newTurn events and marks the control active
+function PlayerControl:onNewTurn(event)
+  self.active = event.player == self.player
+end
 

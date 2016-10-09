@@ -7,10 +7,13 @@ require 'map'
 require 'player'
 require 'game'
 
-AI = {}
+AI = {
+  active = false
+}
 function AI:onNewTurn(e)
   if not (self.player == e.player) then return end
   print("ai onNewTurn", e.player)
+  self.active = true
   print("ai endturn")
   self.control:endTurn()
 end
