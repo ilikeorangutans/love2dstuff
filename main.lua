@@ -6,25 +6,7 @@ require 'selection'
 require 'map'
 require 'player'
 require 'game'
-
-AI = {
-  active = false
-}
-function AI:onNewTurn(e)
-  if not (self.player == e.player) then return end
-  self.active = true
-  self.time = 0
-end
-
-function AI:update(dt)
-  if not self.active then return end
-  self.time = self.time + dt
-
-  if self.time > 0.5 then
-    self.active = false
-    self.control:endTurn()
-  end
-end
+require 'ai'
 
 function love.load()
   bus = Bus:new()
@@ -38,7 +20,7 @@ function love.load()
   p2Ctrl = PlayerControl:new(bus, game, p2)
   bus:subscribe('game.newTurn', p2Ctrl, p2Ctrl.onNewTurn)
 
-  ai = AI
+  ai = AI:new()
   ai.player = p2
   ai.control = p2Ctrl
   bus:subscribe('game.newTurn', ai, ai.onNewTurn)
