@@ -32,9 +32,12 @@ end
 
 function PlayerControl:issueCommand(id, cmd)
   if not self.active then return end
+  local comps = self.entityManager:get(id)
+  if comps.owner.id ~= self.player.id then return end
 
-  print(("Issuing command %q to %d"):format(cmd.action, id))
+  print(("Issuing command %q to %d owned by %d"):format(cmd.action, id, comps.owner.id))
 
+  -- TODO queue up command to entity? if the only command execute right away?
 end
 
 --- Listens to newTurn events and marks the control active

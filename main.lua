@@ -18,16 +18,6 @@ function love.load()
   local p1 = game:addPlayer(Player:new('Jakob'))
   local p2 = game:addPlayer(Player:new('Hannah'))
 
-  p1Ctrl = PlayerControl:new({ game=game, player=p1 })
-  bus:subscribe('game.newTurn', p1Ctrl, p1Ctrl.onNewTurn)
-  p2Ctrl = PlayerControl:new({ game=game, player=p2 })
-  bus:subscribe('game.newTurn', p2Ctrl, p2Ctrl.onNewTurn)
-
-  ai = AI:new()
-  ai.player = p2
-  ai.control = p2Ctrl
-  bus:subscribe('game.newTurn', ai, ai.onNewTurn)
-
   Tileset:load('assets/countryside.png')
   entityManager = EntityManager:new()
   map = Map:new()
@@ -56,6 +46,16 @@ function love.load()
 
   actionSystem = ActionSystem:new({ entityManager=entityManager })
   bus:subscribe("game.newTurn", actionSystem, actionSystem.onNewTurn)
+
+  p1Ctrl = PlayerControl:new({ entityManager=entityManager,game=game,player=p1 })
+  bus:subscribe('game.newTurn', p1Ctrl, p1Ctrl.onNewTurn)
+  p2Ctrl = PlayerControl:new({ entityManager=entityManager,game=game,player=p2 })
+  bus:subscribe('game.newTurn', p2Ctrl, p2Ctrl.onNewTurn)
+
+  ai = AI:new()
+  ai.player = p2
+  ai.control = p2Ctrl
+  bus:subscribe('game.newTurn', ai, ai.onNewTurn)
 
   inputHandler = InputHandler:new({ bus=bus, entityManager = entityManager, control = p1Ctrl })
   bus:subscribe("selection.selected", inputHandler, inputHandler.onSelected)
