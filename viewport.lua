@@ -93,11 +93,11 @@ end
 function Viewport:calculateBounds()
   local tileW, tileH = self.tileset:tileSize()
 
-  local starty = 1 + math.floor(self.y / tileH)
-  local endy = 1 + math.floor((self.y + self.h) / tileH)
+  local starty = math.floor(self.y / tileH)
+  local endy = math.floor((self.y + self.h) / tileH)
 
-  local startx = 1 + math.floor(self.x / tileW)
-  local endx = 1 + math.floor((self.x + self.w) / tileW)
+  local startx = math.floor(self.x / tileW)
+  local endx = math.floor((self.x + self.w) / tileW)
 
   self.visible.offsetx = self.x % 32
   self.visible.offsety = self.y % 32
