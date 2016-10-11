@@ -15,13 +15,10 @@ end
 -- keeps track of who is the current player.
 PlayerControl = {}
 
-function PlayerControl:new(bus, game, player)
-  local o = {}
+function PlayerControl:new(o)
+  o = o or {}
   setmetatable(o, self)
   self.__index = self
-  o.bus = bus
-  o.player = player
-  o.game = game
   o.active = false
   return o
 end
@@ -31,6 +28,13 @@ function PlayerControl:endTurn()
   if not self.active then return end
 
   self.game:newTurn()
+end
+
+function PlayerControl:issueCommand(id, cmd)
+  if not self.active then return end
+
+  print(("Issuing command %q to %d"):format(cmd.action, id))
+
 end
 
 --- Listens to newTurn events and marks the control active

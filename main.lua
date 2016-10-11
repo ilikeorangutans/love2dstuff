@@ -1,3 +1,4 @@
+require 'predicate'
 require 'events'
 require 'tileset'
 require 'viewport'
@@ -7,6 +8,8 @@ require 'map'
 require 'player'
 require 'game'
 require 'ai'
+require 'input'
+require 'action'
 
 function love.load()
   bus = Bus:new()
@@ -15,9 +18,9 @@ function love.load()
   local p1 = game:addPlayer(Player:new('Jakob'))
   local p2 = game:addPlayer(Player:new('Hannah'))
 
-  p1Ctrl = PlayerControl:new(bus, game, p1)
+  p1Ctrl = PlayerControl:new({ game=game, player=p1 })
   bus:subscribe('game.newTurn', p1Ctrl, p1Ctrl.onNewTurn)
-  p2Ctrl = PlayerControl:new(bus, game, p2)
+  p2Ctrl = PlayerControl:new({ game=game, player=p2 })
   bus:subscribe('game.newTurn', p2Ctrl, p2Ctrl.onNewTurn)
 
   ai = AI:new()
@@ -43,11 +46,20 @@ function love.load()
 
   local drawable = {img = 'caravel'}
 
-  entityManager:create({ drawable = drawable, position = {x = 5, y = 5}, selectable = {}, owner = { id = p1.id }})
-  entityManager:create({ drawable = drawable, position = {x = 10, y = 11}, selectable = {}, owner = { id = p2.id }})
+  entityManager:create({ drawable=drawable, position={ x=5, y=5 }, selectable={}, owner={ id=p1.id }, action={maxPoints=2, available=0}})
+  entityManager:create({ drawable=drawable, position={ x=10, y=11 }, selectable={}, owner={ id=p2.id }, action={maxPoints=2, available=0}})
+  entityManager:create({ drawable=drawable, position={ x=13, y=11 }, selectable={}, owner={ id=p2.id }, action={maxPoints=2, available=0}})
 
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})
+
+
+  actionSystem = ActionSystem:new({ entityManager=entityManager })
+  bus:subscribe("game.newTurn", actionSystem, actionSystem.onNewTurn)
+
+  inputHandler = InputHandler:new({ bus=bus, entityManager = entityManager, control = p1Ctrl })
+  bus:subscribe("selection.selected", inputHandler, inputHandler.onSelected)
+  bus:subscribe("selection.deselected", inputHandler, inputHandler.onDeselected)
 
   game:start()
 end
@@ -66,7 +78,7 @@ function love.draw()
   love.graphics.print(("Turn: %d Player: %s"):format(game.turn + 1, game:currentPlayer().name), 600, 565)
   if selectionManager.selected then
     local comps = entityManager:get(selectionManager.selected)
-    love.graphics.print(("Selected: %d, owner: %s"):format(selectionManager.selected, comps.owner.id), 600, 580)
+    love.graphics.print(("Selected: %d, owner: %s, %d"):format(selectionManager.selected, comps.owner.id, comps.action.available), 600, 580)
   else
     love.graphics.print("", 600, 580)
   end
@@ -97,17 +109,11 @@ function love.update(dt)
 end
 
 function love.keypressed(key, scancode, isrepeat)
-  if scancode == 'escape' then
-    love.event.quit()
-  end
-  if scancode == 'return' then
-    p1Ctrl:endTurn()
-  end
+  inputHandler:keypressed(key, scancode, isrepeat)
 end
 
 function love.mousereleased(x, y, button, istouch)
-  local posx, posy = viewport:screenToMap(x, y)
-  bus:fire("viewport.clicked", {button=button, x=posx, y=posy})
+  inputHandler:mousereleased(x, y, button, istouch)
 end
 
 function love.mousemoved(x, y)
@@ -115,3 +121,4 @@ function love.mousemoved(x, y)
   mousePosition.x = posx
   mousePosition.y = posy
 end
+

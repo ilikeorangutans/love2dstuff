@@ -34,10 +34,3 @@ function SelectionManager:unselect()
 
   self.bus:fire('selection.unselected', {id=id})
 end
-
-function onPosition(x, y)
-  return function(input)
-    local result = x == input.x and y == input.y
-    return result
-  end
-end
