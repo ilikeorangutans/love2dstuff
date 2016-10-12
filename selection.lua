@@ -11,16 +11,18 @@ function SelectionManager:onClick(event)
   self:unselect()
 
   for id, comps in pairs(entities) do
-    self:select(id, comps.selectable)
+    self:select(id)
   end
 end
 
-function SelectionManager:select(id, selectable)
+function SelectionManager:select(id)
   if self.selected == id then return end
+  if self.selected then self:unselect() end
+  local comps = self.entityManager:get(id)
 
   self.selected = id
-  self.selectable = selectable
-  selectable.selected = true
+  self.selectable = comps.selectable
+  comps.selectable.selected = true
 
   self.bus:fire('selection.selected', {id=id})
 end

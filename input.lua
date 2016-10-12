@@ -28,8 +28,26 @@ function InputHandler:keypressed(key, scancode, isrepeat)
     love.event.quit()
   end
   if scancode == 'return' then
-    self.control:endTurn()
+    self:handleEndTurn()
   end
+end
+
+function InputHandler:handleEndTurn()
+  local predicate = function(comp)
+    return comp.points.left > 0
+  end
+  local entities = self.entityManager:getComponentsByType({owner=ownedBy(self.player)}, {action=predicate}, position, selectable)
+
+  for id, comps in pairs(entities) do
+    self.selectionManager:select(id)
+    if (#comps.action.queue) > 0 or comps.action.current then
+      self.control:simulate(id)
+    else
+      return
+    end
+  end
+
+  self.control:endTurn()
 end
 
 function InputHandler:onSelected(e)

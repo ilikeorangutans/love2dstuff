@@ -36,9 +36,10 @@ function love.load()
 
   local drawable = {img = 'caravel'}
 
-  entityManager:create({ drawable=drawable, position={ x=5, y=5 }, selectable={}, owner={ id=p1.id }, action={maxPoints=2, available=0}})
-  entityManager:create({ drawable=drawable, position={ x=10, y=11 }, selectable={}, owner={ id=p2.id }, action={maxPoints=2, available=0}})
-  entityManager:create({ drawable=drawable, position={ x=13, y=11 }, selectable={}, owner={ id=p2.id }, action={maxPoints=2, available=0}})
+  entityManager:create({ drawable=drawable, position={ x=5, y=5 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2)})
+  entityManager:create({ drawable=drawable, position={ x=10, y=11 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2)})
+  entityManager:create({ drawable=drawable, position={ x=13, y=11 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2)})
+  entityManager:create({ drawable=drawable, position={ x=3, y=1 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2)})
 
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})
@@ -57,7 +58,7 @@ function love.load()
   ai.control = p2Ctrl
   bus:subscribe('game.newTurn', ai, ai.onNewTurn)
 
-  inputHandler = InputHandler:new({ bus=bus, entityManager = entityManager, control = p1Ctrl })
+  inputHandler = InputHandler:new({ bus=bus, entityManager=entityManager, selectionManager=selectionManager, player=p1, control=p1Ctrl })
   bus:subscribe("selection.selected", inputHandler, inputHandler.onSelected)
   bus:subscribe("selection.deselected", inputHandler, inputHandler.onDeselected)
 
@@ -78,7 +79,7 @@ function love.draw()
   love.graphics.print(("Turn: %d Player: %s"):format(game.turn + 1, game:currentPlayer().name), 600, 565)
   if selectionManager.selected then
     local comps = entityManager:get(selectionManager.selected)
-    love.graphics.print(("Selected: %d, owner: %s, %d"):format(selectionManager.selected, comps.owner.id, comps.action.available), 600, 580)
+    love.graphics.print(("Selected: %d, owner: %s, %d"):format(selectionManager.selected, comps.owner.id, comps.action.points.left), 600, 580)
   else
     love.graphics.print("", 600, 580)
   end
@@ -106,6 +107,7 @@ function love.update(dt)
   end
 
   ai:update(dt)
+  actionSystem:update(dt)
 end
 
 function love.keypressed(key, scancode, isrepeat)
