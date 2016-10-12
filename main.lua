@@ -21,7 +21,7 @@ function love.load()
   Tileset:load('assets/countryside.png')
   entityManager = EntityManager:new()
   map = Map:new()
-  map:randomize(30, 30)
+  map:randomize(60, 60)
 
   selectionManager = SelectionManager
   selectionManager.entityManager = entityManager
@@ -37,9 +37,9 @@ function love.load()
   local drawable = {img = 'caravel'}
 
   entityManager:create({ drawable=drawable, position={ x=5, y=5 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2)})
-  entityManager:create({ drawable=drawable, position={ x=10, y=11 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2)})
-  entityManager:create({ drawable=drawable, position={ x=13, y=11 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2)})
-  entityManager:create({ drawable=drawable, position={ x=3, y=1 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2)})
+  entityManager:create({ drawable=drawable, position={ x=20, y=20 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2)})
+  entityManager:create({ drawable=drawable, position={ x=30, y=30 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2)})
+  entityManager:create({ drawable=drawable, position={ x=40, y=40 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2)})
 
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})
@@ -58,7 +58,7 @@ function love.load()
   ai.control = p2Ctrl
   bus:subscribe('game.newTurn', ai, ai.onNewTurn)
 
-  inputHandler = InputHandler:new({ bus=bus, entityManager=entityManager, selectionManager=selectionManager, player=p1, control=p1Ctrl })
+  inputHandler = InputHandler:new({ bus=bus, entityManager=entityManager, selectionManager=selectionManager, viewport=viewport, player=p1, control=p1Ctrl })
   bus:subscribe("selection.selected", inputHandler, inputHandler.onSelected)
   bus:subscribe("selection.deselected", inputHandler, inputHandler.onDeselected)
 

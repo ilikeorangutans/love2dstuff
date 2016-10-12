@@ -1,3 +1,4 @@
+TESTS=$(wildcard test/*_test.lua)
 
 run:
 	love .
@@ -6,8 +7,10 @@ lint:
 	luacheck .
 
 .PHONY: test clean
-test:
-	lua test/*_test.lua
+test: $(addsuffix .run, $(TESTS))
+
+test/%.lua.run: test/%.lua
+	lua $<
 
 dist: dist.love
 

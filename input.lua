@@ -30,6 +30,10 @@ function InputHandler:keypressed(key, scancode, isrepeat)
   if scancode == 'return' then
     self:handleEndTurn()
   end
+
+  if scancode == 'c' then
+    self:centerOnSelected()
+  end
 end
 
 function InputHandler:handleEndTurn()
@@ -48,6 +52,17 @@ function InputHandler:handleEndTurn()
   end
 
   self.control:endTurn()
+end
+
+function InputHandler:centerOnSelected()
+  if not self.selected then return end
+  local entity = self.entityManager:get(self.selected)
+  if not entity.position then
+    print("can't center on something without a position")
+    return
+  end
+
+  self.viewport:center(entity.position)
 end
 
 function InputHandler:onSelected(e)

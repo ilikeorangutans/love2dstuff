@@ -1,5 +1,3 @@
----
--- fooo
 local viewport = {}
 
 Viewport = {
@@ -15,7 +13,9 @@ Viewport = {
     endx = 0,
     endy = 0,
     offsetx = 0,
-    offsety = 0
+    offsety = 0,
+    widthInTiles = 0,
+    heightInTiles = 0
   },
   entityManager = {}
 }
@@ -43,19 +43,18 @@ function Viewport:drawCursorHighlights()
 end
 
 function Viewport:drawEntities()
-  local drawables = self.entityManager:getComponents("drawable")
-  local v = self.visible
+  local predicate = function(comp)
+    return self:isVisible(comp)
+  end
+  local entities = self.entityManager:getComponentsByType("drawable", {position=predicate}, "selectable")
 
-  for id, drawable in ipairs(drawables) do
-    local pos = self.entityManager:getComponents("position")[id]
-    if pos and self:isVisible(pos) then
-      local drawx, drawy = self:mapToScreen(pos)
-      local selected = self.entityManager:getComponents("selectable")[id]
-      if selected.selected then
-        love.graphics.rectangle('line', drawx, drawy, 32, 32)
-      end
-      love.graphics.draw(self.tileset.units, self.tileset.unit[drawable.img], drawx, drawy, 0, 0.5, 0.5)
+  for id, comps in pairs(entities) do
+    local drawx, drawy = self:mapToScreen(comps.position)
+    local selected = self.entityManager:getComponents("selectable")[id]
+    if comps.selectable.selected then
+      love.graphics.rectangle('line', drawx, drawy, 32, 32)
     end
+    love.graphics.draw(self.tileset.units, self.tileset.unit[comps.drawable.img], drawx, drawy, 0, 0.5, 0.5)
   end
 end
 
@@ -85,9 +84,11 @@ function Viewport:resize(w, h)
   self.w = w
   self.h = h
 
-  tilew, tileh = self.tileset:tileSize()
+  local tilew, tileh = self.tileset:tileSize()
   self.maxx = (self.map.width * tilew) - self.w - 1
   self.maxy = (self.map.height * tileh) - self.h - 1
+  self.visible.widthInTiles = math.ceil(w / tilew)
+  self.visible.heightInTiles = math.ceil(h / tileh)
 
   self:calculateBounds()
 end
@@ -114,6 +115,7 @@ function Viewport:moveBy(deltax, deltay)
   self:moveTo(self.x + deltax, self.y + deltay)
 end
 
+--- Moves the viewport to the x and y position; not tile coordinate.
 function Viewport:moveTo(x, y)
   if x >= self.maxx then x = self.maxx end
   if x < 0 then x = 0 end
@@ -128,6 +130,13 @@ function Viewport:moveTo(x, y)
   self:calculateBounds()
 end
 
+function Viewport:center(pos)
+  local tilew, tileh = self.tileset:tileSize()
+  local x = ((pos.x - (self.visible.widthInTiles / 2)) * tilew) + (tilew/2)
+  local y = ((pos.y - (self.visible.heightInTiles / 2)) * tileh) + (tileh/2)
+  self:moveTo(x, y)
+end
+
 function Viewport:mapToScreen(pos)
   local tilew, tileh = self.tileset:tileSize()
   return (pos.x * tilew) - self.x + self.screenx, (pos.y * tileh) - self.y + self.screeny
@@ -138,9 +147,9 @@ function Viewport:screenToMap(x, y)
   return math.floor((x - self.screenx + self.x) / tilew), math.floor((y - self.screeny + self.y) / tileh)
 end
 
+--- Returns true if the given map coordinate is visible.
 function Viewport:isVisible(pos)
-  return self.visible.startx <= pos.x + 1 and pos.x < self.visible.endx
-      and self.visible.starty <= pos.y + 1 and pos.y < self.visible.endy
+  return self.visible.startx <= pos.x and pos.x <= self.visible.endx and self.visible.starty <= pos.y and pos.y <= self.visible.endy
 end
 
 function Viewport:onScroll(event)
