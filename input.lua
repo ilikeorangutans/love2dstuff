@@ -18,7 +18,7 @@ function InputHandler:mousereleased(x, y, button, istouch)
     bus:fire("viewport.clicked", {button=button, x=posx, y=posy})
   elseif button == 2 then
     if self.selected then
-      self.control:issueCommand(self.selected, {action='move', pos={x=posx, y=posy}})
+      self.control:issueCommand(self.selected, {action='move', pos={x=posx, y=posy}, path={}})
     end
   end
 end

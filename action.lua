@@ -7,6 +7,7 @@ function ActionComponent:new(points)
   o.points = {}
   o.points.left = 0
   o.points.max = points
+  o.points.needed = 0
   o.queue = {}
   o.time = 0
   o.current = nil
@@ -25,6 +26,22 @@ function ActionComponent:execute()
   if not self.current then
     _, self.current = next(self.queue)
   end
+
+  local requiredPoints = 0
+  local action = self.current.action
+  if action == 'nothing' then
+    requiredPoints = self.points.left
+  elseif action == 'move' then
+    requiredPoints = 2
+  end
+
+  self.points.needed =  requiredPoints
+end
+
+function ActionComponent:consumePoint()
+  if self.points.left < 1 then return end
+  self.points.left = self.points.left - 1
+  self.points.needed = self.points.needed - 1
 end
 
 --- Called when the current command is done.
@@ -60,17 +77,19 @@ end
 function ActionSystem:simulate(dt, id, comps)
   local index, cmd = next(comps.action.queue)
 
-  comps.action.time = comps.action.time + dt -- TODO this should go into some kind of "animation" time
+  comps.action.time = comps.action.time + dt
 
-  if comps.action.time > .2 then
+  local itsTime = comps.action.time > .2
+
+  if itsTime then
     comps.action.time = 0
-    comps.action.points.left = comps.action.points.left - 1
-  end
+    comps.action:consumePoint()
 
-  if comps.action.points.left == 0 then
-    -- TODO properly calculate how many points are needed for a task
-    comps.action:done()
-    -- TODO fire off event that something is finished?
+    -- TODO the following check is a bit inelegant. It implies the caller needs to know about points. Should just say isDone?()
+    -- What about actions that run longer, like move commands?
+    if comps.action.points.needed == 0 then
+      comps.action:done()
+    end
   end
 end
 
@@ -83,9 +102,4 @@ end
 
 function ActionSystem:onNewTurn(e)
   self:replenish(e.player)
-end
-
-IdleAction = {}
-function IdleAction:new()
-  return {}
 end
