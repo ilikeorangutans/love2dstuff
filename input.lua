@@ -30,10 +30,17 @@ function InputHandler:keypressed(key, scancode, isrepeat)
   if scancode == 'return' then
     self:handleEndTurn()
   end
-
+  if scancode == 'space' then
+    self:doNothing()
+  end
   if scancode == 'c' then
     self:centerOnSelected()
   end
+end
+
+function InputHandler:doNothing()
+  if not self.selected then return end
+  self.control:issueCommand(self.selected, {action='nothing'})
 end
 
 function InputHandler:handleEndTurn()

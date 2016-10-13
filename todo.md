@@ -1,10 +1,11 @@
 # To Do
 
-[ ] viewport should support a focus on event/method
+[ ] use sprite batch to draw tiles
 [ ] have commands calculate the proper number of required action points
 [ ] completed commands should be removed from queue
 [ ] Android bug: for some reason tile IDs are not passed on to the map rendering function
 
 # Done
 
+[x] viewport should support a focus on event/method
 [ ] instead of subscribing Game, Viewport, etc directly to input events, there should be something in between that also checks what can be done at the current state of the game.
