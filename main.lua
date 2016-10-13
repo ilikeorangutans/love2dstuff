@@ -18,7 +18,8 @@ function love.load()
   local p1 = game:addPlayer(Player:new('Jakob'))
   local p2 = game:addPlayer(Player:new('Hannah'))
 
-  Tileset:load('assets/countryside.png')
+  tileset = Tileset:new()
+  tileset:load('assets/countryside.png')
   entityManager = EntityManager:new()
   map = Map:new()
   map:randomize(60, 60)
@@ -28,11 +29,18 @@ function love.load()
   selectionManager.bus = bus
   bus:subscribe("viewport.clicked", selectionManager, selectionManager.onClick)
 
-  viewport = Viewport:new{map = map, tileset = Tileset, entityManager = entityManager}
+  viewport = Viewport:new{map = map, tileset = tileset, entityManager = entityManager}
+  bus:subscribe("viewport.scroll", viewport, viewport.onScroll)
   viewport.screenx = 0
   viewport.screeny = 0
-  viewport:resize(800, 600)
-  bus:subscribe("viewport.scroll", viewport, viewport.onScroll)
+
+  if love.system.getOS() == "Android" then
+    love.window.setFullscreen(true)
+  else
+  end
+
+  local w, h, flags = love.window.getMode()
+  viewport:resize(w, h)
 
   local drawable = {img = 'caravel'}
 
@@ -83,7 +91,6 @@ function love.draw()
   else
     love.graphics.print("", 600, 580)
   end
-
 end
 
 function love.update(dt)

@@ -1,5 +1,3 @@
-local viewport = {}
-
 Viewport = {
   screenx = 0,
   screeny = 0,
@@ -155,5 +153,3 @@ end
 function Viewport:onScroll(event)
   self:moveBy(event.deltax, event.deltay)
 end
-
-return viewport
