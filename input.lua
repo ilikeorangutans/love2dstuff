@@ -44,8 +44,10 @@ function InputHandler:handleEndTurn()
 
   for id, comps in pairs(entities) do
     self.selectionManager:select(id)
+    self:centerOnSelected()
     if (#comps.action.queue) > 0 or comps.action.current then
       self.control:simulate(id)
+      return
     else
       return
     end
