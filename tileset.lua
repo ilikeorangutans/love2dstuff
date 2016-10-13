@@ -26,6 +26,11 @@ function Tileset:load(filename)
   self.units = units
   self.unit = {}
   self.unit['caravel'] = love.graphics.newQuad(3*60, 60, 60, 60, unitw, unith)
+
+  local cities = love.graphics.newImage("assets/cities.png")
+  self.cities = cities
+  local w, h = cities:getWidth(), cities:getHeight()
+  self.unit['colony'] = love.graphics.newQuad(0, 0, 60, 60, w, h)
 end
 
 function Tileset:draw(x, y, id)

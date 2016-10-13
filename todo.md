@@ -1,5 +1,6 @@
 # To Do
 
+[ ] introduce colonies
 [ ] use sprite batch to draw tiles
 [ ] completed commands should be removed from queue
 [ ] Android bug: for some reason tile IDs are not passed on to the map rendering function

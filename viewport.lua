@@ -52,7 +52,21 @@ function Viewport:drawEntities()
     if comps.selectable.selected then
       love.graphics.rectangle('line', drawx, drawy, 32, 32)
     end
-    love.graphics.draw(self.tileset.units, self.tileset.unit[comps.drawable.img], drawx, drawy, 0, 0.5, 0.5)
+
+    local img = nil
+    local quad = nil
+    if comps.drawable.img == "colony" then
+      img = self.tileset.cities
+    else
+      img = self.tileset.units
+    end
+    quad = self.tileset.unit[comps.drawable.img]
+    love.graphics.draw(img, quad, drawx, drawy, 0, 0.5, 0.5)
+
+    local all = self.entityManager:get(id)
+    if all.colony then
+      love.graphics.print(all.colony.name, drawx, drawy+32)
+    end
   end
 end
 

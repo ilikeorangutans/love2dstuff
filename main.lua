@@ -43,11 +43,15 @@ function love.load()
   viewport:resize(w, h)
 
   local drawable = {img = 'caravel'}
+  local colony = {img = 'colony'}
 
   entityManager:create({ drawable=drawable, position={ x=5, y=5 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2)})
   entityManager:create({ drawable=drawable, position={ x=20, y=20 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2)})
   entityManager:create({ drawable=drawable, position={ x=30, y=30 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2)})
   entityManager:create({ drawable=drawable, position={ x=40, y=40 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2)})
+
+  entityManager:create({ drawable=colony, position={ x=2, y=4 }, selectable={}, owner={ id=p1.id }, colony={name="Jamestown"}})
+  entityManager:create({ drawable=colony, position={ x=10, y=4 }, selectable={}, owner={ id=p1.id }, colony={name="Plymouth"}})
 
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})
@@ -87,7 +91,12 @@ function love.draw()
   love.graphics.print(("Turn: %d Player: %s"):format(game.turn + 1, game:currentPlayer().name), 600, 565)
   if selectionManager.selected then
     local comps = entityManager:get(selectionManager.selected)
-    love.graphics.print(("Selected: %d, owner: %s, %d"):format(selectionManager.selected, comps.owner.id, comps.action.points.left), 600, 580)
+    local points = ""
+    if comps.action then
+      points = ("%d ap"):format(comps.action.points.left)
+    end
+
+    love.graphics.print(("Selected: %d, owner: %s, %s"):format(selectionManager.selected, comps.owner.id, points), 600, 580)
   else
     love.graphics.print("", 600, 580)
   end

@@ -24,6 +24,11 @@ function SelectionManager:select(id)
   self.selectable = comps.selectable
   comps.selectable.selected = true
 
+  print("Selected entity:", id)
+  for comp, v in pairs(comps) do
+    print("   ", comp)
+  end
+
   self.bus:fire('selection.selected', {id=id})
 end
 
