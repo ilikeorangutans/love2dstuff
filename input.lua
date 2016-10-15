@@ -47,7 +47,7 @@ function InputHandler:handleEndTurn()
   local predicate = function(comp)
     return comp.points.left > 0
   end
-  local entities = self.entityManager:getComponentsByType({owner=ownedBy(self.player)}, {action=predicate}, position, selectable)
+  local entities = self.entityManager:getComponentsByType(ownedBy(self.player), {action=predicate}, position, selectable)
 
   for id, comps in pairs(entities) do
     self.selectionManager:select(id)

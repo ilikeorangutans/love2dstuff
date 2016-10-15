@@ -1,13 +1,13 @@
 # To Do
 
 [ ] create function on map to get surroundings?
-[ ] marker for worked fields
 [ ] use sprite batch to draw tiles
 [ ] completed commands should be removed from queue
 [ ] Android bug: for some reason tile IDs are not passed on to the map rendering function
 
 # Done
 
+[x] marker for worked fields
 [x] terrain types
 [x] introduce colonies
 [x] have commands calculate the proper number of required action points

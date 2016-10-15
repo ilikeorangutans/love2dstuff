@@ -62,6 +62,7 @@ function love.load()
 
   colonySystem:foundColony(p1, {x=4,y=7}, "Jamestown")
   colonySystem:foundColony(p1, {x=12,y=10}, "Plymouth")
+  colonySystem:foundColony(p2, {x=22,y=10}, "New Amsterdam")
 
   p1Ctrl = PlayerControl:new({ entityManager=entityManager,game=game,player=p1 })
   bus:subscribe('game.newTurn', p1Ctrl, p1Ctrl.onNewTurn)

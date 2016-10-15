@@ -7,7 +7,9 @@ end
 
 --- Returns a predicate that matches the given owner
 function ownedBy(player)
-  return function(input)
+  local predicate = function(input)
     return input.id == player.id
   end
+
+  return {owner=predicate}
 end

@@ -94,7 +94,7 @@ function ActionSystem:simulate(dt, id, comps)
 end
 
 function ActionSystem:replenish(owner)
-  local entities = self.entityManager:getComponentsByType('action', {owner=ownedBy(owner)})
+  local entities = self.entityManager:getComponentsByType('action', ownedBy(owner))
   for id, comps in pairs(entities) do
     comps.action:replenish()
   end

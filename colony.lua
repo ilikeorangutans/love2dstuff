@@ -30,8 +30,7 @@ function ColonySystem:update(dt)
 end
 
 function ColonySystem:onNewTurn(e)
-  print("ColonySystem:onNewTurn", e.player.name)
-  local entities = self.entityManager:getComponentsByType({owner=ownedBy(e.player)}, 'colony', 'position')
+  local entities = self.entityManager:getComponentsByType(ownedBy(e.player), 'colony', 'position')
 
   for id, comps in pairs(entities) do
     print(id, comps.colony.name)
@@ -53,7 +52,7 @@ function ColonySystem:workedTiles(pos, owner, colony)
     return comp.colony==colony
   end
   return self.entityManager:getComponentsByType(
-    {owner=ownedBy(owner)},
+    ownedBy(owner),
     {workedBy=predicate},
     'position'
   )
