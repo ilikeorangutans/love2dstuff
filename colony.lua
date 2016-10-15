@@ -15,6 +15,7 @@ function ColonySystem:foundColony(owner, pos, name)
     selectable={},
     owner={id=owner.id},
     colony={name=name},
+    visible=true,
   })
 
   self.entityManager:create({

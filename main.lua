@@ -46,10 +46,10 @@ function love.load()
   local drawable = {img = 'caravel'}
   local colony = {img = 'colony'}
 
-  entityManager:create({ drawable=drawable, position={ x=5, y=5 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2)})
-  entityManager:create({ drawable=drawable, position={ x=20, y=20 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2)})
-  entityManager:create({ drawable=drawable, position={ x=30, y=30 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2)})
-  entityManager:create({ drawable=drawable, position={ x=40, y=40 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2)})
+  entityManager:create({ drawable=drawable, position={ x=5, y=5 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2), visible=true})
+  entityManager:create({ drawable=drawable, position={ x=20, y=20 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2), visible=true})
+  entityManager:create({ drawable=drawable, position={ x=30, y=30 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2), visible=true})
+  entityManager:create({ drawable=drawable, position={ x=40, y=40 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2), visible=true})
 
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})

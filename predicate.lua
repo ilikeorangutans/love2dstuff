@@ -13,3 +13,18 @@ function ownedBy(player)
 
   return {owner=predicate}
 end
+
+--- Returns a predicate that matches everything that's not in a colony
+function visible()
+  local predicate = function(visible)
+    return visible
+  end
+  return {visible=predicate}
+end
+
+function inColony()
+  local predicate = function(visible)
+    return not visible
+  end
+  return {visible=predicate}
+end

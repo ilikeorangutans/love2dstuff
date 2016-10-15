@@ -44,7 +44,7 @@ function Viewport:drawEntities()
   local predicate = function(comp)
     return self:isVisible(comp)
   end
-  local entities = self.entityManager:getComponentsByType("drawable", {position=predicate}, "selectable")
+  local entities = self.entityManager:getComponentsByType("drawable", {position=predicate}, visible(), "selectable")
 
   for id, comps in pairs(entities) do
     local drawx, drawy = self:mapToScreen(comps.position)
