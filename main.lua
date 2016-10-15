@@ -10,7 +10,7 @@ require 'game'
 require 'ai'
 require 'input'
 require 'action'
-
+require 'colony'
 
 function love.load()
   bus = Bus:new()
@@ -51,15 +51,17 @@ function love.load()
   entityManager:create({ drawable=drawable, position={ x=30, y=30 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2)})
   entityManager:create({ drawable=drawable, position={ x=40, y=40 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2)})
 
-  entityManager:create({ drawable=colony, position={ x=2, y=4 }, selectable={}, owner={ id=p1.id }, colony={name="Jamestown"}})
-  entityManager:create({ drawable=colony, position={ x=10, y=4 }, selectable={}, owner={ id=p1.id }, colony={name="Plymouth"}})
-
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})
 
-
   actionSystem = ActionSystem:new({ entityManager=entityManager })
   bus:subscribe("game.newTurn", actionSystem, actionSystem.onNewTurn)
+
+  colonySystem = ColonySystem:new({ entityManager=entityManager, map=map })
+  bus:subscribe('game.newTurn', colonySystem, colonySystem.onNewTurn)
+
+  colonySystem:foundColony(p1, {x=4,y=7}, "Jamestown")
+  colonySystem:foundColony(p1, {x=12,y=10}, "Plymouth")
 
   p1Ctrl = PlayerControl:new({ entityManager=entityManager,game=game,player=p1 })
   bus:subscribe('game.newTurn', p1Ctrl, p1Ctrl.onNewTurn)
@@ -126,6 +128,7 @@ function love.update(dt)
 
   ai:update(dt)
   actionSystem:update(dt)
+  colonySystem:update(dt)
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -142,3 +145,38 @@ function love.mousemoved(x, y)
   mousePosition.y = posy
 end
 
+function table.val_to_str ( v )
+  if "string" == type( v ) then
+    v = string.gsub( v, "\n", "\\n" )
+    if string.match( string.gsub(v,"[^'\"]",""), '^"+$' ) then
+      return "'" .. v .. "'"
+    end
+    return '"' .. string.gsub(v,'"', '\\"' ) .. '"'
+  else
+    return "table" == type( v ) and table.tostring( v ) or
+      tostring( v )
+  end
+end
+
+function table.key_to_str ( k )
+  if "string" == type( k ) and string.match( k, "^[_%a][_%a%d]*$" ) then
+    return k
+  else
+    return "[" .. table.val_to_str( k ) .. "]"
+  end
+end
+
+function table.tostring( tbl )
+  local result, done = {}, {}
+  for k, v in ipairs( tbl ) do
+    table.insert( result, table.val_to_str( v ) )
+    done[ k ] = true
+  end
+  for k, v in pairs( tbl ) do
+    if not done[ k ] then
+      table.insert( result,
+        table.key_to_str( k ) .. "=" .. table.val_to_str( v ) )
+    end
+  end
+  return "{" .. table.concat( result, "," ) .. "}"
+end
