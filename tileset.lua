@@ -7,18 +7,25 @@ function Tileset:new(o)
   return o
 end
 
-function Tileset:load(filename)
-  local tileset = love.graphics.newImage(filename)
+function Tileset:load()
+  tilesetCoords = {
+    grassland = {x=192,y=928},
+    savannah = {x=64,y=800},
+    ocean = {x=160,y=448},
+    coniferforrest = {x=288,y=896},
+  }
 
+  local terrain = love.graphics.newImage('assets/terrain_atlas.png')
   self.tileW, self.tileH = 32,32
   local tileW, tileH = self.tileW, self.tileH
-  local tilesetW, tilesetH = tileset:getWidth(), tileset:getHeight()
+  local tilesetW, tilesetH = terrain:getWidth(), terrain:getHeight()
 
-  self.tileset = tileset
+
   self.tiles = {}
-  self.tiles[1] = love.graphics.newQuad(0, 0, tileW, tileH, tilesetW, tilesetH)
-  self.tiles[2] = love.graphics.newQuad(tileW, 0, tileW, tileH, tilesetW, tilesetH)
-  self.tiles[3] = love.graphics.newQuad(0, tileH, tileW, tileH, tilesetW, tilesetH)
+  for t, pos in pairs(tilesetCoords) do
+    self.tiles[t] = love.graphics.newQuad(pos.x, pos.y, tileW, tileH, tilesetW, tilesetH)
+  end
+  self.terrain = terrain
 
   local units = love.graphics.newImage("assets/units.png")
   local unitw, unith = units:getWidth(), units:getHeight()
@@ -34,7 +41,7 @@ function Tileset:load(filename)
 end
 
 function Tileset:draw(x, y, id)
-  love.graphics.draw(self.tileset, self.tiles[id], x, y)
+  love.graphics.draw(self.terrain, self.tiles[id], x, y)
 end
 
 function Tileset:tileSize()

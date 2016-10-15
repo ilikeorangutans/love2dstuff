@@ -11,6 +11,7 @@ require 'ai'
 require 'input'
 require 'action'
 
+
 function love.load()
   bus = Bus:new()
 
@@ -19,7 +20,7 @@ function love.load()
   local p2 = game:addPlayer(Player:new('Hannah'))
 
   tileset = Tileset:new()
-  tileset:load('assets/countryside.png')
+  tileset:load()
   entityManager = EntityManager:new()
   map = Map:new()
   map:randomize(60, 60)
@@ -84,10 +85,11 @@ end
 function love.draw()
   viewport:draw()
 
+  local tile = map:get(mousePosition)
   love.graphics.setColor(0, 0, 0)
   love.graphics.rectangle('fill', 600, 550, 200, 50)
   love.graphics.setColor(255, 255, 255)
-  love.graphics.print(("Mouse: %d/%d"):format(mousePosition.x, mousePosition.y), 600, 550)
+  love.graphics.print(("Mouse: %d/%d (%s)"):format(mousePosition.x, mousePosition.y, tile.terrain.title), 600, 550)
   love.graphics.print(("Turn: %d Player: %s"):format(game.turn + 1, game:currentPlayer().name), 600, 565)
   if selectionManager.selected then
     local comps = entityManager:get(selectionManager.selected)

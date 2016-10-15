@@ -80,9 +80,13 @@ function Viewport:drawMap()
     local row = self.map.tiles[i]
     mapY = i * tileH
     for j = v.startx, v.endx do
-      local col = row[j]
+      local tile = row[j]
       mapX = j * tileW
-      self.tileset:draw(drawX - v.offsetx, drawY - v.offsety, col)
+
+      if tile.terrain.below then
+        self.tileset:draw(drawX - v.offsetx, drawY - v.offsety, tile.terrain.below)
+      end
+      self.tileset:draw(drawX - v.offsetx, drawY - v.offsety, tile.type)
       drawX = drawX + tileW
     end
     drawX = self.screenx
