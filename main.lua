@@ -11,6 +11,7 @@ require 'ai'
 require 'input'
 require 'action'
 require 'colony'
+require 'goods'
 
 function love.load()
   bus = Bus:new()
@@ -21,7 +22,7 @@ function love.load()
 
   tileset = Tileset:new()
   tileset:load()
-  entityManager = EntityManager:new()
+  entityManager = EntityManager:new({bus=bus})
   map = Map:new()
   map:randomize(60, 60)
 
@@ -29,6 +30,7 @@ function love.load()
   selectionManager.entityManager = entityManager
   selectionManager.bus = bus
   bus:subscribe("viewport.clicked", selectionManager, selectionManager.onClick)
+  bus:subscribe("entity.componentRemoved", selectionManager, selectionManager.onComponentRemoved)
 
   viewport = Viewport:new{map = map, tileset = tileset, entityManager = entityManager}
   bus:subscribe("viewport.scroll", viewport, viewport.onScroll)
@@ -46,23 +48,32 @@ function love.load()
   local drawable = {img = 'caravel'}
   local colony = {img = 'colony'}
 
-  entityManager:create({ drawable=drawable, position={ x=5, y=5 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2), visible=true})
-  entityManager:create({ drawable=drawable, position={ x=20, y=20 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2), visible=true})
-  entityManager:create({ drawable=drawable, position={ x=30, y=30 }, selectable={}, owner={ id=p2.id }, action=ActionComponent:new(2), visible=true})
-  entityManager:create({ drawable=drawable, position={ x=40, y=40 }, selectable={}, owner={ id=p1.id }, action=ActionComponent:new(2), visible=true})
+  entityManager:create({ drawable=drawable, position={ x=5, y=5 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}})
+  entityManager:create({ drawable=drawable, position={ x=20, y=20 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}})
+  entityManager:create({ drawable=drawable, position={ x=30, y=30 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}})
+  entityManager:create({ drawable=drawable, position={ x=40, y=40 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}})
 
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})
 
-  actionSystem = ActionSystem:new({ entityManager=entityManager })
-  bus:subscribe("game.newTurn", actionSystem, actionSystem.onNewTurn)
-
-  colonySystem = ColonySystem:new({ entityManager=entityManager, map=map })
+  colonySystem = ColonySystem:new({ bus=bus, entityManager=entityManager, map=map })
   bus:subscribe('game.newTurn', colonySystem, colonySystem.onNewTurn)
 
   colonySystem:foundColony(p1, {x=4,y=7}, "Jamestown")
-  colonySystem:foundColony(p1, {x=12,y=10}, "Plymouth")
-  colonySystem:foundColony(p2, {x=22,y=10}, "New Amsterdam")
+
+  local actionHandlers = {
+    build = function(cmd, id)
+      local entity = entityManager:get(id)
+      local colonyID = colonySystem:foundColony(cmd.owner, entity.position, cmd.name)
+
+      local colony = entityManager:get(colonyID)
+      colonySystem:addColonist(colony, entity)
+    end,
+    move = function(cmd, id)
+    end,
+  }
+  actionSystem = ActionSystem:new({ entityManager=entityManager, handlers=actionHandlers })
+  bus:subscribe("game.newTurn", actionSystem, actionSystem.onNewTurn)
 
   p1Ctrl = PlayerControl:new({ entityManager=entityManager,game=game,player=p1 })
   bus:subscribe('game.newTurn', p1Ctrl, p1Ctrl.onNewTurn)

@@ -36,6 +36,15 @@ function InputHandler:keypressed(key, scancode, isrepeat)
   if scancode == 'c' then
     self:centerOnSelected()
   end
+  if scancode == 'h' then
+    local ent = self.entityManager:get(self.selected)
+    ent.visible = not ent.visible
+  end
+  if scancode == 'b' then
+    -- TODO check if we can actually build here
+    -- TODO check if the given unit can build
+    self.control:issueCommand(self.selected, {action='build', name="colony", owner=self.player})
+  end
 end
 
 function InputHandler:doNothing()
@@ -45,7 +54,7 @@ end
 
 function InputHandler:handleEndTurn()
   local predicate = function(comp)
-    return comp.points.left > 0
+    return comp.active and comp.points.left > 0
   end
   local entities = self.entityManager:getComponentsByType(ownedBy(self.player), {action=predicate}, position, selectable)
 

@@ -6,12 +6,18 @@ SelectionManager = {
 function SelectionManager:onClick(event)
   if not (event.button == 1) then return end
 
-  local entities = self.entityManager:getComponentsByType("selectable", {position=onPosition(event.x, event.y)})
+  local entities = self.entityManager:getComponentsByType(selectable(), onPosition(event))
 
   self:unselect()
 
   for id, comps in pairs(entities) do
     self:select(id)
+  end
+end
+
+function SelectionManager:onComponentRemoved(event)
+  if event.ctype == 'selectable' and event.id == self.selected then
+    self:unselect()
   end
 end
 
@@ -39,5 +45,6 @@ function SelectionManager:unselect()
   self.selected = nil
   self.selectable.selected = false
 
-  self.bus:fire('selection.unselected', {id=id})
+  self.bus:fire('selection.deselected', {id=id})
 end
+

@@ -18,6 +18,7 @@ end
 function EntityManager:create(comps)
   self.lastID = self.lastID + 1
   local id = self.lastID
+  comps.id = id
   self.entities[id] = comps
 
   local types = {}

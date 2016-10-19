@@ -5,9 +5,13 @@ function ActionComponent:new(points)
   self.__index = self
 
   o.points = {}
-  o.points.left = 0
+  o.active = true
+  o.points.left = 0 -- How many points are available in this turn?
   o.points.max = points
-  o.points.needed = 0
+  o.points.needed = 0 -- How many points are needed to finish this action?
+  o.points.timePerPoint = 0.0 -- How much time should be spent per step consuming action points?
+  o.points.consumesPoints = 1 -- How many points to consume in each step?
+  o.func = nil -- Function to call on each step
   o.queue = {}
   o.time = 0
   o.current = nil
@@ -28,20 +32,30 @@ function ActionComponent:execute()
   end
 
   local requiredPoints = 0
+  local timePerPoint = 0
+  local consumesPoints = 1
   local action = self.current.action
   if action == 'nothing' then
     requiredPoints = self.points.left
-  elseif action == 'move' then
+    consumesPoints = requiredPoints
+  elseif action == 'build' then
+    requiredPoints = self.points.left
+    consumesPoints = requiredPoints
+ elseif action == 'move' then
     requiredPoints = 2
+    timePerPoint = .5
   end
 
-  self.points.needed =  requiredPoints
+  self.points.needed = requiredPoints
+  self.points.timePerPoint = timePerPoint
+  self.points.consumesPoints = consumesPoints
 end
 
-function ActionComponent:consumePoint()
-  if self.points.left < 1 then return end
-  self.points.left = self.points.left - 1
-  self.points.needed = self.points.needed - 1
+function ActionComponent:consumePoint(entity)
+  if self.points.left < self.points.consumesPoints then return end
+
+  self.points.left = self.points.left - self.points.consumesPoints
+  self.points.needed = self.points.needed - self.points.consumesPoints
 end
 
 --- Called when the current command is done.
@@ -65,7 +79,7 @@ end
 
 function ActionSystem:update(dt)
   local predicate = function(comp)
-    return (#comp.queue) > 0 and comp.points.left > 0 and comp.current
+    return comp.active and (#comp.queue) > 0 and comp.points.left > 0 and comp.current
   end
   local entities = self.entityManager:getComponentsByType({action = predicate})
 
@@ -78,12 +92,18 @@ function ActionSystem:simulate(dt, id, comps)
   local index, cmd = next(comps.action.queue)
 
   comps.action.time = comps.action.time + dt
-
-  local itsTime = comps.action.time > .2
+  local itsTime = comps.action.time > comps.action.points.timePerPoint
 
   if itsTime then
+    local action = comps.action.current.action
+
+    if self.handlers[action] then
+      -- TODO: check return value? could indicate aborted action?
+      self.handlers[action](comps.action.current, id)
+    end
+
     comps.action.time = 0
-    comps.action:consumePoint()
+    comps.action:consumePoint(id, self.entityManager)
 
     -- TODO the following check is a bit inelegant. It implies the caller needs to know about points. Should just say isDone?()
     -- What about actions that run longer, like move commands?

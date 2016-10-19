@@ -12,19 +12,30 @@ function ColonySystem:foundColony(owner, pos, name)
   local id = self.entityManager:create({
     drawable=drawable,
     position=pos,
-    selectable={},
+    selectable={selectable=true},
     owner={id=owner.id},
     colony={name=name},
-    visible=true,
+    visible={value=true},
+    colonists={},
   })
 
-  self.entityManager:create({
+  local x = self.entityManager:create({
     position=pos,
     owner={id=owner.id},
     workedBy={colony=id},
   })
 
   return id
+end
+
+function ColonySystem:addColonist(colony, colonist)
+  assert(colony.owner.id == colonist.owner.id, "colony and colonist must belong to same owner")
+  assert(colony.position.x == colonist.position.x and colony.position.y == colonist.position.y, "colony and colonist must be at the same coordinates")
+
+  colonist.action.active = false
+  colonist.visible.value = false
+  self.entityManager:removeComponent(colonist.id, 'selectable')
+  self.bus:fire('colonist.joinedColony', {colony=colony, colonist=colonist})
 end
 
 function ColonySystem:update(dt)
@@ -40,7 +51,6 @@ function ColonySystem:onNewTurn(e)
     for i, comps in pairs(worked) do
       local pos = comps.position
       local tile = self.map:get(pos)
-      print("   worked tile at", pos.x, pos.y, tile.terrain.title)
       for k, v in pairs(tile.terrain.produces) do
         print(k, v)
       end

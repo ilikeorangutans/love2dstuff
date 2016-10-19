@@ -1,12 +1,13 @@
 # To Do
 
+[ ] build colonies: should use all action points, settler gets "consumed" and added to colony
 [ ] create function on map to get surroundings?
 [ ] use sprite batch to draw tiles
-[ ] completed commands should be removed from queue
 [ ] Android bug: for some reason tile IDs are not passed on to the map rendering function
 
 # Done
 
+[x] completed commands should be removed from queue
 [x] marker for worked fields
 [x] terrain types
 [x] introduce colonies
