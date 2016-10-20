@@ -1,7 +1,6 @@
 bit = require('bit')
 
-EntityManager = {
-}
+EntityManager = {}
 
 function EntityManager:new(o)
   o = o or {}
@@ -139,5 +138,27 @@ function extractTypesAndPredicates(input)
   end
 
   return types, predicates
+end
+
+function EntityManager:addComponent(id, ctype, component)
+  self:addType(ctype)
+  self.components[ctype][id] = component
+  local typeID = self:typeID(ctype)
+  local bitmask = self.typeIndex[id]
+  bitmask = bit.bor(bitmask, typeID)
+  self.typeIndex[id] = bitmask
+  self.entities[id][ctype] = component
+  self.bus:fire('entity.componentAdded', {id=id, ctype=ctype, component=component})
+end
+
+function EntityManager:removeComponent(id, ctype)
+  local component = self.components[ctype][id]
+  self.components[ctype][id] = nil
+  self.entities[id][ctype] = nil
+  local typeID = self:typeID(ctype)
+  local bitmask = self.typeIndex[id]
+  bitmask = bit.band(bitmask, bit.bnot(typeID))
+  self.typeIndex[id] = bitmask
+  self.bus:fire('entity.componentRemoved', {id=id, ctype=ctype, component=component})
 end
 
