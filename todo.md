@@ -1,12 +1,17 @@
 # To Do
 
-[ ] build colonies: should use all action points, settler gets "consumed" and added to colony
+[ ] check for selected entitiy before issuing commands
+[ ] colony should produce stuff
+[ ] colony screen
+[ ] pathfinding
+[ ] colonist added to colony should get a job assigned
 [ ] create function on map to get surroundings?
 [ ] use sprite batch to draw tiles
 [ ] Android bug: for some reason tile IDs are not passed on to the map rendering function
 
 # Done
 
+[x] build colonies: should use all action points, settler gets "consumed" and added to colony
 [x] completed commands should be removed from queue
 [x] marker for worked fields
 [x] terrain types
