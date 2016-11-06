@@ -75,22 +75,14 @@ function Viewport:drawMap()
   local tileW, tileH = self.tileset:tileSize()
   local v = self.visible
 
-  local mapX, mapY = 0, 0
-  for i = v.starty, v.endy do
-    local row = self.map.tiles[i]
-    mapY = i * tileH
-    for j = v.startx, v.endx do
-      local tile = row[j]
-      mapX = j * tileW
-
-      if tile.terrain.below then
-        self.tileset:draw(drawX - v.offsetx, drawY - v.offsety, tile.terrain.below)
-      end
-      self.tileset:draw(drawX - v.offsetx, drawY - v.offsety, tile.type)
-      drawX = drawX + tileW
+  local area = self.map:getArea(posAt(v.startx, v.starty), posAt(v.endx, v.endy))
+  for pos, tile in area do
+    local x, y = self:mapToScreen(pos)
+    if tile.terrain.below then
+      self.tileset:draw(x, y, tile.terrain.below)
     end
-    drawX = self.screenx
-    drawY = drawY + tileH
+
+    self.tileset:draw(x, y, tile.type)
   end
 
   love.graphics.rectangle('line', self.screenx, self.screeny, self.w, self.h)

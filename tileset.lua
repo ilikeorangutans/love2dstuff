@@ -9,9 +9,10 @@ end
 
 function Tileset:load()
   tilesetCoords = {
-    grassland = {x=192,y=928}, savannah = {x=64,y=800},
-    ocean = {x=160,y=448},
-    coniferforrest = {x=288,y=896},
+    {x=160,y=448},
+    {x=192,y=928},
+    {x=64,y=800},
+    {x=288,y=896},
   }
 
   local terrain = love.graphics.newImage('assets/terrain_atlas.png')

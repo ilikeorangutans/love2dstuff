@@ -1,4 +1,11 @@
 TerrainTypes = {
+  ocean = {
+    title = 'Ocean',
+    terrain = 'ocean',
+    produces = {
+      fish = 4,
+    }
+  },
   grassland = {
     title = 'Grassland',
     terrain = 'land',
@@ -15,17 +22,10 @@ TerrainTypes = {
       sugar = 3,
     }
   },
-  ocean = {
-    title = 'Ocean',
-    terrain = 'ocean',
-    produces = {
-      fish = 4,
-    }
-  },
   coniferforrest = {
     title = 'Conifer Forrest',
     terrain = 'land',
-    below = 'grassland',
+    below = 2,
     produces = {
       corn = 2,
       tobacco = 1,
@@ -34,3 +34,9 @@ TerrainTypes = {
     }
   }
 }
+
+TerrainTypesByID = {}
+for t, v in pairs(TerrainTypes) do
+  local index = (#TerrainTypesByID) + 1
+  TerrainTypesByID[index] = v
+end

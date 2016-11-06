@@ -1,9 +1,14 @@
 # In Progress
 
-[ ] visibility
+
+# Notes
+
+Properly set lua path:
+`eval $(luarocks path --bin)`
 
 # To Do
 
+[ ] visibility
 [ ] check for selected entitiy before issuing commands
 [ ] colony should produce stuff
 [ ] colony screen
@@ -15,6 +20,7 @@
 
 # Done
 
+[x] Map needs methods that return range of tiles, iterators to iterate
 [x] build colonies: should use all action points, settler gets "consumed" and added to colony
 [x] completed commands should be removed from queue
 [x] marker for worked fields

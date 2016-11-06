@@ -1,3 +1,4 @@
+require 'util'
 require 'predicate'
 require 'events'
 require 'tileset'
