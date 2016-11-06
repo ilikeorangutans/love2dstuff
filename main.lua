@@ -4,6 +4,7 @@ require 'tileset'
 require 'viewport'
 require 'entity'
 require 'selection'
+require 'terrain'
 require 'map'
 require 'player'
 require 'game'
@@ -26,6 +27,8 @@ function love.load()
   entityManager = EntityManager:new({bus=bus})
   map = Map:new()
   map:randomize(60, 60)
+
+  local p1MapView = MapView:new({map=map})
 
   selectionManager = SelectionManager
   selectionManager.entityManager = entityManager
@@ -100,7 +103,7 @@ end
 function love.draw()
   viewport:draw()
 
-  local tile = map:get(mousePosition)
+  local tile = map:getAt(mousePosition)
   love.graphics.setColor(0, 0, 0)
   love.graphics.rectangle('fill', 600, 550, 200, 50)
   love.graphics.setColor(255, 255, 255)

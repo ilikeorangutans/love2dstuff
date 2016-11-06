@@ -50,7 +50,7 @@ function ColonySystem:onNewTurn(e)
     local worked = self:workedTiles(comps.position, e.player, id)
     for i, comps in pairs(worked) do
       local pos = comps.position
-      local tile = self.map:get(pos)
+      local tile = self.map:getAt(pos)
       for k, v in pairs(tile.terrain.produces) do
         print(k, v)
       end

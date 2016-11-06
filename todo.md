@@ -1,3 +1,7 @@
+# In Progress
+
+[ ] visibility
+
 # To Do
 
 [ ] check for selected entitiy before issuing commands
