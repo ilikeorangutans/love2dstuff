@@ -10,6 +10,7 @@ require 'game'
 require 'ai'
 require 'input'
 require 'action'
+require 'action_system'
 require 'colony'
 require 'goods'
 
