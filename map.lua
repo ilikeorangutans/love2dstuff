@@ -87,14 +87,15 @@ function Map:randomize(w, h)
   end
 end
 
-
 MapView = {}
+
 function MapView:new(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
 
   assert(o.map, "MapView requires map")
+  assert(o.player, "MapView requires player")
 
   o.explored = {}
   o.visible = {}
@@ -140,4 +141,19 @@ end
 
 function MapView:isVisible(pos)
   return self.visible[self.map:posToIndex(pos)]
+end
+
+function MapView:onEntityCreated(e)
+  if not e.components.vision then return end
+  if not e.components.owner then return end
+  if not e.components.position then return end
+  if e.components.owner.id ~= self.player.id then
+    return
+  end
+
+  self:updateVisibility(e.components)
+end
+
+function MapView:updateVisibility(entity)
+  -- TODO implement me
 end

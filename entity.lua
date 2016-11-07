@@ -31,6 +31,8 @@ function EntityManager:create(comps)
   local bitmask = self:typesToBitmask(types)
   self:addToTypeIndex(bitmask, id)
 
+  self.bus:fire('entity.created', {id=id, components=comps})
+
   return id
 end
 

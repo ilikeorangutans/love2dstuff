@@ -29,7 +29,8 @@ function love.load()
   map = Map:new()
   map:randomize(60, 60)
 
-  local p1MapView = MapView:new({map=map})
+  local p1MapView = MapView:new({map=map,player=p1})
+  bus:subscribe('entity.created', p1MapView, p1MapView.onEntityCreated)
 
   selectionManager = SelectionManager
   selectionManager.entityManager = entityManager
@@ -53,10 +54,10 @@ function love.load()
   local drawable = {img = 'caravel'}
   local colony = {img = 'colony'}
 
-  entityManager:create({ drawable=drawable, position={ x=5, y=5 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}})
-  entityManager:create({ drawable=drawable, position={ x=20, y=20 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}})
-  entityManager:create({ drawable=drawable, position={ x=30, y=30 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}})
-  entityManager:create({ drawable=drawable, position={ x=40, y=40 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}})
+  entityManager:create({ drawable=drawable, position={ x=5, y=5 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}})
+  entityManager:create({ drawable=drawable, position={ x=20, y=20 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}})
+  entityManager:create({ drawable=drawable, position={ x=30, y=30 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}})
+  entityManager:create({ drawable=drawable, position={ x=40, y=40 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}})
 
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})
