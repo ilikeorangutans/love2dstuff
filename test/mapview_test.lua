@@ -1,20 +1,23 @@
 luaunit = require('luaunit')
+require('util')
+require('terrain')
 require('map')
 
-function testIteratorStuff()
+TestMapView = {}
 
-  counter = 0
-  it = function()
-    counter = counter + 1
-    if counter > 10 then
-      return nil
-    end
-    return counter, 2 + counter, 3 + counter
-  end
+function TestMapView:setUp()
+  local map = Map:new()
+  map:fromString(4, 4, "1111122112211111")
+  self.map = map
 
-  for a, b, c in it do
-    print(a, b, c)
-  end
+  local mapView = MapView:new({map=map})
+  self.mapView = mapView
+end
+
+function TestMapView:testIsExplored()
+  luaunit.assertFalse(self.mapView:isExplored(posAt(0, 0)))
+  self.mapView:setExplored(posAt(0, 0))
+  luaunit.assertTrue(self.mapView:isExplored(posAt(0, 0)))
 end
 
 os.exit(luaunit.LuaUnit.run())

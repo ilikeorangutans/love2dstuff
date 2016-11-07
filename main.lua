@@ -37,7 +37,7 @@ function love.load()
   bus:subscribe("viewport.clicked", selectionManager, selectionManager.onClick)
   bus:subscribe("entity.componentRemoved", selectionManager, selectionManager.onComponentRemoved)
 
-  viewport = Viewport:new{map = map, tileset = tileset, entityManager = entityManager}
+  viewport = Viewport:new{map = p1MapView, tileset = tileset, entityManager = entityManager}
   bus:subscribe("viewport.scroll", viewport, viewport.onScroll)
   viewport.screenx = 0
   viewport.screeny = 0

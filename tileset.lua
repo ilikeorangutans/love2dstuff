@@ -9,6 +9,7 @@ end
 
 function Tileset:load()
   tilesetCoords = {
+    {x=864,y=160},
     {x=160,y=448},
     {x=192,y=928},
     {x=64,y=800},

@@ -1,4 +1,9 @@
 TerrainTypes = {
+  unexplored = {
+    title = 'Unexplored',
+    terrain = 'unexplored',
+    produces = {}
+  },
   ocean = {
     title = 'Ocean',
     terrain = 'ocean',
@@ -37,6 +42,7 @@ TerrainTypes = {
 
 TerrainTypesByID = {}
 for t, v in pairs(TerrainTypes) do
-  local index = (#TerrainTypesByID) + 1
+  local index = (#TerrainTypesByID)
   TerrainTypesByID[index] = v
 end
+

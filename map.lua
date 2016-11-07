@@ -101,17 +101,43 @@ function MapView:new(o)
   o.width = o.map.width
   o.height = o.map.height
 
+  for i = 0, o.width*o.height do
+    o.explored[i] = false
+    o.visible[i] = false
+  end
+
+  o.unexplored = {
+    type = 1,
+    terrain = TerrainTypes.unexplored
+  }
+
   return o
 end
 
 function MapView:getAt(pos)
-  return self.map:getAt(pos)
+  local tile = self.map:getAt(pos)
+  if not self:isExplored(pos) then return unexplored end
+  return tile
+end
+
+function MapView:getArea(start, stop)
+  local iterator = self.map:getArea(start, stop)
+  return function()
+    local pos, tile = iterator()
+    if pos == nil then return nil end
+    if not self:isExplored(pos) then tile = self.unexplored end
+    return pos, tile
+  end
 end
 
 function MapView:isExplored(pos)
-  return false
+  return self.explored[self.map:posToIndex(pos)]
+end
+
+function MapView:setExplored(pos)
+  self.explored[self.map:posToIndex(pos)] = true
 end
 
 function MapView:isVisible(pos)
-  return false
+  return self.visible[self.map:posToIndex(pos)]
 end
