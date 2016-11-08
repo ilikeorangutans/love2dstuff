@@ -42,7 +42,7 @@ end
 
 function Viewport:drawEntities()
   local predicate = function(comp)
-    return self:isVisible(comp)
+    return self:isVisible(comp) and self.map:isVisible(comp)
   end
   local entities = self.entityManager:getComponentsByType({position=predicate}, visible(), "selectable", "drawable")
 

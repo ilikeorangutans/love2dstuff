@@ -72,17 +72,12 @@ function Map:randomize(w, h)
   self.width = w
   self.height = h
 
-  local z = {}
-  for t, _ in pairs(TerrainTypes) do
-    table.insert(z, t)
-  end
-
   for i=0, w*h do
     local x = math.random(4)
-    local t = z[x]
+    local t = TerrainTypesByID[x]
     self.tiles[i] = {
       type = x,
-      terrain = TerrainTypes[t],
+      terrain = t,
     }
   end
 end
@@ -108,7 +103,7 @@ function MapView:new(o)
   end
 
   o.unexplored = {
-    type = 1,
+    type = 0,
     terrain = TerrainTypes.unexplored
   }
 
@@ -117,7 +112,7 @@ end
 
 function MapView:getAt(pos)
   local tile = self.map:getAt(pos)
-  if not self:isExplored(pos) then return unexplored end
+  if not self:isExplored(pos) then return self.unexplored end
   return tile
 end
 
@@ -126,7 +121,9 @@ function MapView:getArea(start, stop)
   return function()
     local pos, tile = iterator()
     if pos == nil then return nil end
-    if not self:isExplored(pos) then tile = self.unexplored end
+    if not self:isExplored(pos) then
+      tile = self.unexplored
+    end
     return pos, tile
   end
 end
@@ -140,7 +137,9 @@ function MapView:setExplored(pos)
 end
 
 function MapView:isVisible(pos)
-  return self.visible[self.map:posToIndex(pos)]
+  -- TODO for now until we have implement the active visibility system
+  -- return self.visible[self.map:posToIndex(pos)]
+  return self:isExplored(pos)
 end
 
 function MapView:onEntityCreated(e)
@@ -154,6 +153,17 @@ function MapView:onEntityCreated(e)
   self:updateVisibility(e.components)
 end
 
+function MapView:onEntityDestroyed(e)
+end
+
 function MapView:updateVisibility(entity)
-  -- TODO implement me
+  local pos = entity.position
+  for y = pos.y-1,pos.y+1 do
+    for x = pos.x-1,pos.x+1 do
+      local p = posAt(x, y)
+      if self.map:isValid(p) then
+        self:setExplored(p)
+      end
+    end
+  end
 end

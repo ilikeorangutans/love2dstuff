@@ -29,8 +29,14 @@ function love.load()
   map = Map:new()
   map:randomize(60, 60)
 
-  local p1MapView = MapView:new({map=map,player=p1})
+  p1MapView = MapView:new({map=map,player=p1})
   bus:subscribe('entity.created', p1MapView, p1MapView.onEntityCreated)
+  bus:subscribe('entity.destroyed', p1MapView, p1MapView.onEntityDestroyed)
+  p2MapView = MapView:new({map=map,player=p2})
+  bus:subscribe('entity.created', p2MapView, p2MapView.onEntityCreated)
+  bus:subscribe('entity.destroyed', p2MapView, p2MapView.onEntityDestroyed)
+
+  mapView = p1MapView
 
   selectionManager = SelectionManager
   selectionManager.entityManager = entityManager
@@ -38,7 +44,7 @@ function love.load()
   bus:subscribe("viewport.clicked", selectionManager, selectionManager.onClick)
   bus:subscribe("entity.componentRemoved", selectionManager, selectionManager.onComponentRemoved)
 
-  viewport = Viewport:new{map = p1MapView, tileset = tileset, entityManager = entityManager}
+  viewport = Viewport:new{map = mapView, tileset = tileset, entityManager = entityManager}
   bus:subscribe("viewport.scroll", viewport, viewport.onScroll)
   viewport.screenx = 0
   viewport.screeny = 0
@@ -54,7 +60,7 @@ function love.load()
   local drawable = {img = 'caravel'}
   local colony = {img = 'colony'}
 
-  entityManager:create({ drawable=drawable, position={ x=5, y=5 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}})
+  entityManager:create({ drawable=drawable, position={ x=1, y=1 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}})
   entityManager:create({ drawable=drawable, position={ x=20, y=20 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}})
   entityManager:create({ drawable=drawable, position={ x=30, y=30 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}})
   entityManager:create({ drawable=drawable, position={ x=40, y=40 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}})
@@ -105,11 +111,15 @@ end
 function love.draw()
   viewport:draw()
 
-  local tile = map:getAt(mousePosition)
+  local tile = mapView:getAt(mousePosition)
+  local explored = mapView:isExplored(mousePosition)
+  local tileMap = map:getAt(mousePosition)
   love.graphics.setColor(0, 0, 0)
-  love.graphics.rectangle('fill', 600, 550, 200, 50)
+  love.graphics.rectangle('fill', 600, 520, 200, 50)
   love.graphics.setColor(255, 255, 255)
-  love.graphics.print(("Mouse: %d/%d (%s)"):format(mousePosition.x, mousePosition.y, tile.terrain.title), 600, 550)
+  love.graphics.print(("Mouse: %d/%d"):format(mousePosition.x, mousePosition.y), 600, 520)
+  love.graphics.print(("map  (%s)"):format(tileMap.terrain.title), 600, 535)
+  love.graphics.print(("view (%s) (%s)"):format(tile.terrain.title, explored), 600, 550)
   love.graphics.print(("Turn: %d Player: %s"):format(game.turn + 1, game:currentPlayer().name), 600, 565)
   if selectionManager.selected then
     local comps = entityManager:get(selectionManager.selected)
@@ -140,6 +150,14 @@ function love.update(dt)
     deltay = 4
   end
 
+  if love.keyboard.isDown("1") then
+    mapView = p1MapView
+  end
+  if love.keyboard.isDown("2") then
+    mapView = p2MapView
+  end
+  viewport.map = mapView
+
   if deltax > 0 or deltax < 0 or deltay > 0 or deltay < 0 then
     bus:fire("viewport.scroll", {deltax=deltax, deltay=deltay})
   end
@@ -161,40 +179,4 @@ function love.mousemoved(x, y)
   local posx, posy = viewport:screenToMap(x, y)
   mousePosition.x = posx
   mousePosition.y = posy
-end
-
-function table.val_to_str ( v )
-  if "string" == type( v ) then
-    v = string.gsub( v, "\n", "\\n" )
-    if string.match( string.gsub(v,"[^'\"]",""), '^"+$' ) then
-      return "'" .. v .. "'"
-    end
-    return '"' .. string.gsub(v,'"', '\\"' ) .. '"'
-  else
-    return "table" == type( v ) and table.tostring( v ) or
-      tostring( v )
-  end
-end
-
-function table.key_to_str ( k )
-  if "string" == type( k ) and string.match( k, "^[_%a][_%a%d]*$" ) then
-    return k
-  else
-    return "[" .. table.val_to_str( k ) .. "]"
-  end
-end
-
-function table.tostring( tbl )
-  local result, done = {}, {}
-  for k, v in ipairs( tbl ) do
-    table.insert( result, table.val_to_str( v ) )
-    done[ k ] = true
-  end
-  for k, v in pairs( tbl ) do
-    if not done[ k ] then
-      table.insert( result,
-        table.key_to_str( k ) .. "=" .. table.val_to_str( v ) )
-    end
-  end
-  return "{" .. table.concat( result, "," ) .. "}"
 end

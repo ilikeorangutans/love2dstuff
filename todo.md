@@ -1,6 +1,5 @@
 # In Progress
 
-
 # Notes
 
 Properly set lua path:
@@ -8,6 +7,7 @@ Properly set lua path:
 
 # To Do
 
+[ ] IDEA: when subscribing to events provide filter methods
 [ ] visibility
 [ ] check for selected entitiy before issuing commands
 [ ] colony should produce stuff

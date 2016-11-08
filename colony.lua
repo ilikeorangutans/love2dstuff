@@ -17,6 +17,7 @@ function ColonySystem:foundColony(owner, pos, name)
     colony={name=name},
     visible={value=true},
     colonists={},
+    vision={radius=1},
   })
 
   local x = self.entityManager:create({

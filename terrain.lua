@@ -1,10 +1,12 @@
 TerrainTypes = {
   unexplored = {
+    id = 0,
     title = 'Unexplored',
     terrain = 'unexplored',
     produces = {}
   },
   ocean = {
+    id = 1,
     title = 'Ocean',
     terrain = 'ocean',
     produces = {
@@ -12,6 +14,7 @@ TerrainTypes = {
     }
   },
   grassland = {
+    id = 2,
     title = 'Grassland',
     terrain = 'land',
     produces = {
@@ -20,6 +23,7 @@ TerrainTypes = {
     }
   },
   savannah = {
+    id = 3,
     title = 'Savannah',
     terrain = 'land',
     produces = {
@@ -28,6 +32,7 @@ TerrainTypes = {
     }
   },
   coniferforrest = {
+    id = 4,
     title = 'Conifer Forrest',
     terrain = 'land',
     below = 2,
@@ -43,6 +48,6 @@ TerrainTypes = {
 TerrainTypesByID = {}
 for t, v in pairs(TerrainTypes) do
   local index = (#TerrainTypesByID)
-  TerrainTypesByID[index] = v
+  TerrainTypesByID[v.id] = v
 end
 

@@ -8,13 +8,12 @@ function Tileset:new(o)
 end
 
 function Tileset:load()
-  tilesetCoords = {
-    {x=864,y=160},
-    {x=160,y=448},
-    {x=192,y=928},
-    {x=64,y=800},
-    {x=288,y=896},
-  }
+  tilesetCoords = {}
+  tilesetCoords[0] = {x=864,y=160}
+  tilesetCoords[1] = {x=160,y=448}
+  tilesetCoords[2] = {x=192,y=928}
+  tilesetCoords[3] = {x=64,y=800}
+  tilesetCoords[4] = {x=288,y=896}
 
   local terrain = love.graphics.newImage('assets/terrain_atlas.png')
   self.tileW, self.tileH = 32,32
