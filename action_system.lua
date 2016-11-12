@@ -9,7 +9,10 @@ end
 
 function ActionSystem:update(dt)
   local predicate = function(comp)
-    return comp.active and (#comp.queue) > 0 and comp.points.left > 0 and comp.current
+    return comp.active
+        and comp:hasCommand()
+        and comp.points.left > 0
+        and comp.current
   end
   local entities = self.entityManager:getComponentsByType({action = predicate})
 
@@ -35,10 +38,9 @@ function ActionSystem:simulate(dt, id, comps)
     comps.action.time = 0
     comps.action:consumePoint(id)
 
-    -- TODO the following check is a bit inelegant. It implies the caller needs to know about points. Should just say isDone?()
-    -- What about actions that run longer, like move commands?
-    if comps.action.points.needed == 0 then
-      comps.action:done()
+    if comps.action:isComplete() then
+      comps.action:cleanup()
+      self.bus:fire('action:complete', {id=id})
     end
   end
 end

@@ -54,14 +54,27 @@ function ActionComponent:execute()
 end
 
 function ActionComponent:consumePoint(entity)
+  if self.points.left == 0 then return end
   if self.points.left < self.points.consumesPoints then return end
 
   self.points.left = self.points.left - self.points.consumesPoints
   self.points.needed = self.points.needed - self.points.consumesPoints
 end
 
+function ActionComponent:complete()
+  self.points.needed = 0
+end
+
+function ActionComponent:isComplete()
+  return self.points.needed <= 0
+end
+
+function ActionComponent:hasCommand()
+  return self.current or (#self.queue) > 0
+end
+
 --- Called when the current command is done.
-function ActionComponent:done()
+function ActionComponent:cleanup()
   local id, _ = next(self.queue)
   self.current = nil
   table.remove(self.queue, id)

@@ -1,5 +1,6 @@
 # In Progress
 
+[ ] Action system will simulate any entity that has an action;
 [ ] properly think through how the action system deals with actions that are done
 
 # Notes

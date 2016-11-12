@@ -106,13 +106,13 @@ function love.load()
       entity.position.y = entity.position.y + dy
 
       if pos.x == dest.x and pos.y == dest.y then
-        entity.action:done()
+        entity.action:complete()
       end
 
       bus:fire('position.changed', {id=id, pos=entity.position, components=entity})
     end,
   }
-  actionSystem = ActionSystem:new({ entityManager=entityManager, handlers=actionHandlers })
+  actionSystem = ActionSystem:new({ bus=bus, entityManager=entityManager, handlers=actionHandlers })
   bus:subscribe("game.newTurn", actionSystem, actionSystem.onNewTurn)
 
   p1Ctrl = PlayerControl:new({ entityManager=entityManager,game=game,player=p1 })
