@@ -1,4 +1,5 @@
 ActionComponent = {}
+
 function ActionComponent:new(points)
   local o = {}
   setmetatable(o, self)
@@ -42,8 +43,9 @@ function ActionComponent:execute()
     requiredPoints = self.points.left
     consumesPoints = requiredPoints
   elseif action == 'move' then
-    requiredPoints = 2
-    timePerPoint = .5
+    -- TODO: we should calculate the lenght of the path and estimate the required points based of that.
+    requiredPoints = self.current.path.length
+    timePerPoint = .2
   end
 
   self.points.needed = requiredPoints
@@ -63,6 +65,7 @@ function ActionComponent:done()
   local id, _ = next(self.queue)
   self.current = nil
   table.remove(self.queue, id)
+  self.points.needed = 0
 end
 
 function ActionComponent:replenish()

@@ -32,9 +32,11 @@ function love.load()
   p1MapView = MapView:new({map=map,player=p1})
   bus:subscribe('entity.created', p1MapView, p1MapView.onEntityCreated)
   bus:subscribe('entity.destroyed', p1MapView, p1MapView.onEntityDestroyed)
+  bus:subscribe('position.changed', p1MapView, p1MapView.onPositionChanged)
   p2MapView = MapView:new({map=map,player=p2})
   bus:subscribe('entity.created', p2MapView, p2MapView.onEntityCreated)
   bus:subscribe('entity.destroyed', p2MapView, p2MapView.onEntityDestroyed)
+  bus:subscribe('position.changed', p2MapView, p2MapView.onPositionChanged)
 
   mapView = p1MapView
 
@@ -82,6 +84,32 @@ function love.load()
       colonySystem:addColonist(colony, entity)
     end,
     move = function(cmd, id)
+      local entity = entityManager:get(id)
+
+      local dx = 0
+      local dy = 0
+      local pos = entity.position
+      local dest = cmd.destination
+
+      if pos.x > dest.x then
+        dx = -1
+      elseif pos.x < dest.x then
+        dx = 1
+      end
+      if pos.y > dest.y then
+        dy = -1
+      elseif pos.y < dest.y then
+        dy = 1
+      end
+
+      entity.position.x = entity.position.x + dx
+      entity.position.y = entity.position.y + dy
+
+      if pos.x == dest.x and pos.y == dest.y then
+        entity.action:done()
+      end
+
+      bus:fire('position.changed', {id=id, pos=entity.position, components=entity})
     end,
   }
   actionSystem = ActionSystem:new({ entityManager=entityManager, handlers=actionHandlers })
@@ -118,19 +146,19 @@ function love.draw()
   love.graphics.rectangle('fill', 600, 520, 200, 50)
   love.graphics.setColor(255, 255, 255)
   love.graphics.print(("Mouse: %d/%d"):format(mousePosition.x, mousePosition.y), 600, 520)
-  love.graphics.print(("map  (%s)"):format(tileMap.terrain.title), 600, 535)
-  love.graphics.print(("view (%s) (%s)"):format(tile.terrain.title, explored), 600, 550)
-  love.graphics.print(("Turn: %d Player: %s"):format(game.turn + 1, game:currentPlayer().name), 600, 565)
+  love.graphics.print(("%s"):format(tile.terrain.title, explored), 600, 535)
+  love.graphics.print(("Turn: %d Player: %s"):format(game.turn + 1, game:currentPlayer().name), 600, 550)
   if selectionManager.selected then
     local comps = entityManager:get(selectionManager.selected)
-    local points = ""
     if comps.action then
-      points = ("%d ap"):format(comps.action.points.left)
+      local current = "-no orders-"
+      if comps.action.current then
+        current = comps.action.current.action
+      end
+      love.graphics.print(("%d/%d %s"):format(comps.action.points.left, comps.action.points.max, current), 600, 580)
     end
 
-    love.graphics.print(("Selected: %d, owner: %s, %s"):format(selectionManager.selected, comps.owner.id, points), 600, 580)
-  else
-    love.graphics.print("", 600, 580)
+    love.graphics.print(("Selected: %d, owner: %s"):format(selectionManager.selected, comps.owner.id), 600, 565)
   end
 end
 

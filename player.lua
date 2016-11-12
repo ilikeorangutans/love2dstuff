@@ -36,8 +36,6 @@ function PlayerControl:issueCommand(id, cmd)
   if comps.owner.id ~= self.player.id then return end
   if not comps.action then return end
 
-  print(("Issuing command %s to %d"):format(cmd.action, id))
-
   comps.action:enqueue(cmd)
   comps.action:execute()
 end

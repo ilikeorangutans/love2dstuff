@@ -18,7 +18,14 @@ function InputHandler:mousereleased(x, y, button, istouch)
     bus:fire("viewport.clicked", {button=button, x=posx, y=posy})
   elseif button == 2 then
     if self.selected then
-      self.control:issueCommand(self.selected, {action='move', pos={x=posx, y=posy}, path={}})
+      local entity = self.entityManager:get(self.selected)
+
+      local pos = entity.position
+      local dx = math.abs(pos.x - posx)
+      local dy = math.abs(pos.y - posy)
+      local distance = math.sqrt((dx*dx) + (dy*dy))
+
+      self.control:issueCommand(self.selected, {action='move', destination=posAt(posx, posy), path={length=distance}})
     end
   end
 end

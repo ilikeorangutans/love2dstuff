@@ -33,7 +33,7 @@ function ActionSystem:simulate(dt, id, comps)
     end
 
     comps.action.time = 0
-    comps.action:consumePoint(id, self.entityManager)
+    comps.action:consumePoint(id)
 
     -- TODO the following check is a bit inelegant. It implies the caller needs to know about points. Should just say isDone?()
     -- What about actions that run longer, like move commands?

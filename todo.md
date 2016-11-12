@@ -1,5 +1,7 @@
 # In Progress
 
+[ ] properly think through how the action system deals with actions that are done
+
 # Notes
 
 Properly set lua path:
@@ -20,6 +22,7 @@ Properly set lua path:
 
 # Done
 
+[x] Basic Move system
 [x] Map needs methods that return range of tiles, iterators to iterate
 [x] build colonies: should use all action points, settler gets "consumed" and added to colony
 [x] completed commands should be removed from queue

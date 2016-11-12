@@ -153,6 +153,10 @@ function MapView:onEntityCreated(e)
   self:updateVisibility(e.components)
 end
 
+function MapView:onPositionChanged(e)
+  self:updateVisibility(e.components)
+end
+
 function MapView:onEntityDestroyed(e)
 end
 
