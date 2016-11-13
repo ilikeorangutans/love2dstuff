@@ -1,6 +1,6 @@
 require 'util'
 require 'predicate'
-require 'events'
+require 'bus'
 require 'tileset'
 require 'viewport'
 require 'entity'

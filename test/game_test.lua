@@ -1,5 +1,5 @@
 luaunit = require('luaunit')
-require('events')
+require('bus')
 require('game')
 require('player')
 

@@ -1,6 +1,6 @@
 luaunit = require('luaunit')
 require('entity')
-require('events')
+require('bus')
 
 TestEntityManager = {}
 
