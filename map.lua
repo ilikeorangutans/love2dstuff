@@ -110,6 +110,12 @@ function MapView:new(o)
   return o
 end
 
+function MapView:subscribe(bus)
+  bus:subscribe('entity.created', self, self.onEntityCreated)
+  bus:subscribe('entity.destroyed', self, self.onEntityDestroyed)
+  bus:subscribe('position.changed', self, self.onPositionChanged)
+end
+
 function MapView:getAt(pos)
   local tile = self.map:getAt(pos)
   if not self:isExplored(pos) then return self.unexplored end
@@ -154,6 +160,7 @@ function MapView:onEntityCreated(e)
 end
 
 function MapView:onPositionChanged(e)
+  if e.id ~= self.player.id then return end
   self:updateVisibility(e.components)
 end
 

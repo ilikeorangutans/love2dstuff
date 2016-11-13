@@ -30,19 +30,16 @@ function love.load()
   map:randomize(60, 60)
 
   p1MapView = MapView:new({map=map,player=p1})
-  bus:subscribe('entity.created', p1MapView, p1MapView.onEntityCreated)
-  bus:subscribe('entity.destroyed', p1MapView, p1MapView.onEntityDestroyed)
-  bus:subscribe('position.changed', p1MapView, p1MapView.onPositionChanged)
+  p1MapView:subscribe(bus)
   p2MapView = MapView:new({map=map,player=p2})
-  bus:subscribe('entity.created', p2MapView, p2MapView.onEntityCreated)
-  bus:subscribe('entity.destroyed', p2MapView, p2MapView.onEntityDestroyed)
-  bus:subscribe('position.changed', p2MapView, p2MapView.onPositionChanged)
+  p2MapView:subscribe(bus)
 
   mapView = p1MapView
 
   selectionManager = SelectionManager
   selectionManager.entityManager = entityManager
   selectionManager.bus = bus
+  selectionManager.mapView = mapView
   bus:subscribe("viewport.clicked", selectionManager, selectionManager.onClick)
   bus:subscribe("entity.componentRemoved", selectionManager, selectionManager.onComponentRemoved)
 

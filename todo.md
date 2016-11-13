@@ -23,6 +23,7 @@ Properly set lua path:
 
 # Done
 
+[x] vision system incorrectly updates for wrong players
 [x] Basic Move system
 [x] Map needs methods that return range of tiles, iterators to iterate
 [x] build colonies: should use all action points, settler gets "consumed" and added to colony

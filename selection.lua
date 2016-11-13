@@ -6,6 +6,7 @@ SelectionManager = {
 function SelectionManager:onClick(event)
   if not (event.button == 1) then return end
 
+  if not self.mapView:isVisible(event) then return end
   local entities = self.entityManager:getComponentsByType(selectable(), onPosition(event))
 
   self:unselect()
