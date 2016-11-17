@@ -1,5 +1,6 @@
 # In Progress
 
+[ ] IDEA: when subscribing to events provide filter methods
 [ ] Action system will simulate any entity that has an action;
 [ ] properly think through how the action system deals with actions that are done
 
@@ -10,8 +11,7 @@ Properly set lua path:
 
 # To Do
 
-[ ] IDEA: when subscribing to events provide filter methods
-[ ] visibility
+[ ] visibility: only active visibility where units currently are
 [ ] check for selected entitiy before issuing commands
 [ ] colony should produce stuff
 [ ] colony screen
