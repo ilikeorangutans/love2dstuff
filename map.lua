@@ -160,7 +160,7 @@ function MapView:onEntityCreated(e)
 end
 
 function MapView:onPositionChanged(e)
-  if e.id ~= self.player.id then return end
+  if e.components.owner.id ~= self.player.id then return end
   self:updateVisibility(e.components)
 end
 

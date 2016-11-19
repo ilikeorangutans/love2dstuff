@@ -23,6 +23,7 @@ Properly set lua path:
 
 # Done
 
+[x] visibility system had incorrect owner check
 [x] vision system incorrectly updates for wrong players
 [x] Basic Move system
 [x] Map needs methods that return range of tiles, iterators to iterate

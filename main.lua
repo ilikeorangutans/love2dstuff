@@ -19,6 +19,8 @@ require 'goods'
 function love.load()
   bus = Bus:new()
 
+  bus:subscribe('position.changed', nil, function(_, e) print('position changed') end)
+
   game = Game:new(bus)
   local p1 = game:addPlayer(Player:new('Jakob'))
   local p2 = game:addPlayer(Player:new('Hannah'))
