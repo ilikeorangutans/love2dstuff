@@ -37,3 +37,10 @@ function selectable()
   end
   return {selectable=predicate}
 end
+
+function idleEntities()
+  local predicate = function(action)
+    return action:hasPointsLeft()
+  end
+  return {action=predicate}
+end

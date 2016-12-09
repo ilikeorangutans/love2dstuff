@@ -13,6 +13,7 @@ function ActionSystem:update(dt)
         and comp:hasCommand()
         and comp.points.left > 0
         and comp.current
+        and comp.active
   end
   local entities = self.entityManager:getComponentsByType({action = predicate})
 

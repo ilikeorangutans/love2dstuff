@@ -1,12 +1,20 @@
-SelectionManager = {
-  entityManager = {},
-  bus = {}
-}
+SelectionManager = {}
+
+function SelectionManager:new(o)
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+
+  assert(o.entityManager, "SelectionManager requires entity manager")
+  assert(o.bus, "SelectionManager requires bus")
+  assert(o.visibilityCheck, "SelectionManager requires visiblity check")
+  return o
+end
 
 function SelectionManager:onClick(event)
   if not (event.button == 1) then return end
 
-  if not self.mapView:isVisible(event) then return end
+  if not self.visibilityCheck:isVisible(event) then return end
   local entities = self.entityManager:getComponentsByType(selectable(), onPosition(event))
 
   self:unselect()
@@ -20,6 +28,56 @@ function SelectionManager:onComponentRemoved(event)
   if event.ctype == 'selectable' and event.id == self.selected then
     self:unselect()
   end
+end
+
+function SelectionManager:selectNextIdle()
+  if not self.selected then
+    self:selectFirstIdle()
+    return
+  end
+
+  local entities = self:playersIdleEntities()
+  local last = nil
+  for id, _ in pairs(entities) do
+    if last == self.selected then
+      self:select(id)
+      return
+    end
+    last = id
+  end
+
+  self:selectFirstIdle()
+end
+
+function SelectionManager:selectPrevIdle()
+  if not self.selected then
+    self:selectFirstIdle()
+    return
+  end
+
+  local entities = self:playersIdleEntities()
+  local last = nil
+  for id, _ in pairs(entities) do
+    if self.selected == id and last then
+      self:select(last)
+      return
+    end
+
+    last = id
+  end
+
+  self:select(last)
+end
+
+function SelectionManager:selectFirstIdle()
+  local entities = self:playersIdleEntities()
+  local id, _ = next(entities)
+  if id then self:select(id) end
+end
+
+function SelectionManager:playersIdleEntities()
+  local entities = self.entityManager:getComponentsByType(ownedBy(self.player), selectable(), idleEntities())
+  return entities
 end
 
 function SelectionManager:select(id)

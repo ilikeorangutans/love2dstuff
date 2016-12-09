@@ -6,7 +6,7 @@ function ActionComponent:new(points)
   self.__index = self
 
   o.points = {}
-  o.active = true
+  o.active = false -- do we want to simulate this?
   o.points.left = 0 -- How many points are available in this turn?
   o.points.max = points
   o.points.needed = 0 -- How many points are needed to finish this action?
@@ -85,4 +85,6 @@ function ActionComponent:replenish()
   self.points.left = self.points.max
 end
 
-
+function ActionComponent:hasPointsLeft()
+  return self.points.left > 0
+end

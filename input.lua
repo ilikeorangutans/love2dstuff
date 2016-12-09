@@ -5,6 +5,8 @@ function InputHandler:new(o)
   setmetatable(o, self)
   self.__index = self
 
+  o.modifiers = {}
+
   return o
 end
 
@@ -30,7 +32,16 @@ function InputHandler:mousereleased(x, y, button, istouch)
   end
 end
 
+function InputHandler:keyreleased(key, scancode)
+  if scancode == 'lshift' or scancode == 'rshift'  then
+    self.modifiers.shift = nil
+  end
+end
+
 function InputHandler:keypressed(key, scancode, isrepeat)
+  if scancode == 'lshift' or scancode == 'rshift'  then
+    self.modifiers.shift = true
+  end
   if scancode == 'escape' then
     love.event.quit()
   end
@@ -51,6 +62,14 @@ function InputHandler:keypressed(key, scancode, isrepeat)
     -- TODO check if we can actually build here
     -- TODO check if the given unit can build
     self.control:issueCommand(self.selected, {action='build', name="colony", owner=self.player})
+  end
+  if scancode == ',' then
+    self.selectionManager:selectPrevIdle()
+    self:centerOnSelected()
+  end
+  if scancode == '.' then
+    self.selectionManager:selectNextIdle()
+    self:centerOnSelected()
   end
 end
 

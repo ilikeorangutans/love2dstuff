@@ -1,13 +1,18 @@
 # In Progress
 
-[ ] IDEA: when subscribing to events provide filter methods
 [ ] Action system will simulate any entity that has an action;
+    [ ] action system should listen to events/methods about which one to simulate
 [ ] properly think through how the action system deals with actions that are done
 
 # Notes
 
 Properly set lua path:
 `eval $(luarocks path --bin)`
+
+# Ideas
+
+[ ] have a map view return a function predicate to check if it's visible
+[ ] when subscribing to events provide filter methods so the bus will prefilter
 
 # To Do
 

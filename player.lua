@@ -32,12 +32,13 @@ end
 
 function PlayerControl:issueCommand(id, cmd)
   if not self.active then return end
-  local comps = self.entityManager:get(id)
-  if comps.owner.id ~= self.player.id then return end
-  if not comps.action then return end
+  local selected = self.entityManager:get(id)
+  if selected.owner.id ~= self.player.id then return end
+  if not selected.action then return end
 
-  comps.action:enqueue(cmd)
-  comps.action:execute()
+  selected.action.active = true
+  selected.action:enqueue(cmd)
+  selected.action:execute()
 end
 
 function PlayerControl:simulate(id)

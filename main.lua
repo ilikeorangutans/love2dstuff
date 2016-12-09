@@ -19,8 +19,6 @@ require 'goods'
 function love.load()
   bus = Bus:new()
 
-  bus:subscribe('position.changed', nil, function(_, e) print('position changed') end)
-
   game = Game:new(bus)
   local p1 = game:addPlayer(Player:new('Jakob'))
   local p2 = game:addPlayer(Player:new('Hannah'))
@@ -38,10 +36,7 @@ function love.load()
 
   mapView = p1MapView
 
-  selectionManager = SelectionManager
-  selectionManager.entityManager = entityManager
-  selectionManager.bus = bus
-  selectionManager.mapView = mapView
+  selectionManager = SelectionManager:new({entityManager=entityManager,bus=bus,visibilityCheck=mapView,player=p1})
   bus:subscribe("viewport.clicked", selectionManager, selectionManager.onClick)
   bus:subscribe("entity.componentRemoved", selectionManager, selectionManager.onComponentRemoved)
 
@@ -196,6 +191,10 @@ end
 
 function love.keypressed(key, scancode, isrepeat)
   inputHandler:keypressed(key, scancode, isrepeat)
+end
+
+function love.keyreleased(key, scancode)
+  inputHandler:keyreleased(key, scancode)
 end
 
 function love.mousereleased(x, y, button, istouch)
