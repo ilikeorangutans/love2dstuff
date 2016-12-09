@@ -66,7 +66,7 @@ function SelectionManager:selectPrevIdle()
     last = id
   end
 
-  self:select(last)
+  if last then self:select(last) end
 end
 
 function SelectionManager:selectFirstIdle()
@@ -81,6 +81,7 @@ function SelectionManager:playersIdleEntities()
 end
 
 function SelectionManager:select(id)
+  assert(id, "cannot select nil id")
   if self.selected == id then return end
   if self.selected then self:unselect() end
   local comps = self.entityManager:get(id)
