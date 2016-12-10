@@ -21,6 +21,12 @@ Goods = {
   furs = {
     title = 'Furs',
   },
+  rum = {
+    title = 'Rum',
+  },
+  libertybells = {
+    title = 'Liberty Bells',
+  }
 }
 
 Warehouse = {}
@@ -44,10 +50,16 @@ function Warehouse:add(t, amount)
   self.goods[t] = self.goods[t] + amount
 end
 
+function Warehouse:get(t, amount)
+  local result = math.min(amount, self:quantity(t))
+  self:add(t, -result)
+  return result
+end
+
 function Warehouse:toString()
 	local goods = ""
 	for t, amount in pairs(self.goods) do
     goods = goods .. ("%s: %d "):format(t, amount)
 	end
-  return ("Warehouse: %s"):format(goods)
+  return ("Warehouse [%s]"):format(goods)
 end

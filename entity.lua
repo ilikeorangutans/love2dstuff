@@ -33,7 +33,7 @@ function EntityManager:create(comps)
 
   self.bus:fire('entity.created', {id=id, components=comps})
 
-  return id
+  return id, comps
 end
 
 function EntityManager:get(id)
@@ -61,7 +61,9 @@ function EntityManager:typeID(t)
   for i, v in ipairs(self.componentIDs) do
     if v == t then return 2^i end
   end
-  assert(false, "Unknown type '" .. t .. "' when trying to find typeID!")
+
+  self:addType(t)
+  return self:typeID(t)
 end
 
 --- Registers a new component type and assigns it an id.

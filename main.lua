@@ -67,8 +67,6 @@ function love.load()
   colonySystem = ColonySystem:new({ bus=bus, entityManager=entityManager, map=map })
   bus:subscribe('game.newTurn', colonySystem, colonySystem.onNewTurn)
 
-  colonySystem:foundColony(p1, {x=4,y=7}, "Jamestown")
-
   local actionHandlers = {
     build = function(cmd, id)
       local entity = entityManager:get(id)
