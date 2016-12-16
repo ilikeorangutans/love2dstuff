@@ -14,7 +14,9 @@ require 'input'
 require 'action'
 require 'action_system'
 require 'colony'
+require 'colony_system'
 require 'goods'
+require 'building'
 
 function love.load()
   bus = Bus:new()

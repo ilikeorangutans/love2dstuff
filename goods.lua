@@ -2,9 +2,11 @@
 Goods = {
   corn = {
     title = 'Corn',
+    group = 'food',
   },
   fish = {
     title = 'Fish',
+    group = 'food',
   },
   tobacco = {
     title = 'Tobacco',
@@ -26,7 +28,10 @@ Goods = {
   },
   libertybells = {
     title = 'Liberty Bells',
-  }
+  },
+  crosses = {
+    title = 'Crosses',
+  },
 }
 
 Warehouse = {}

@@ -37,11 +37,11 @@ function Map:fromString(w, h, input)
 end
 
 function Map:posToIndex(pos)
-  assert(self:isValid(pos), ("Invalid position %d/%d"):format(pos.x, pos.y))
+  assert(self:isOnMap(pos), ("Invalid position %d/%d"):format(pos.x, pos.y))
   return self.width * pos.y + pos.x
 end
 
-function Map:isValid(pos)
+function Map:isOnMap(pos)
   return 0 <= pos.x and pos.x < self.width and 0 <= pos.y and pos.y < self.height
 end
 
@@ -172,7 +172,7 @@ function MapView:updateVisibility(entity)
   for y = pos.y-1,pos.y+1 do
     for x = pos.x-1,pos.x+1 do
       local p = posAt(x, y)
-      if self.map:isValid(p) then
+      if self.map:isOnMap(p) then
         self:setExplored(p)
       end
     end
