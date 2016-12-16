@@ -1,36 +1,51 @@
 
 Goods = {
   corn = {
+    id = 'corn',
     title = 'Corn',
     group = 'food',
+    madeIn = 'outside',
   },
   fish = {
+    id = 'fish',
     title = 'Fish',
     group = 'food',
+    madeIn = 'outside',
   },
   tobacco = {
+    id = 'tobacco',
     title = 'Tobacco',
+    madeIn = 'outside',
   },
   sugar = {
+    id = 'sugar',
     title = 'Sugar',
+    madeIn = 'outside',
   },
   lumber = {
+    id = 'lumber',
     title = 'Lumber',
-  },
-  tobacco = {
-    title = 'Tobacco',
+    madeIn = 'outside',
   },
   furs = {
+    id = 'furs',
     title = 'Furs',
+    madeIn = 'outside',
   },
   rum = {
+    id = 'rum',
     title = 'Rum',
+    madeIn = 'building',
   },
   libertybells = {
+    id = 'libertybells',
     title = 'Liberty Bells',
+    madeIn = 'building',
   },
   crosses = {
+    id = 'crosses',
     title = 'Crosses',
+    madeIn = 'building',
   },
 }
 

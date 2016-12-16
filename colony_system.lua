@@ -17,7 +17,7 @@ function ColonySystem:foundColony(owner, pos, name)
     colony={
       name=name,
       warehouse=Warehouse:new(),
-      productions={},
+      worksites={},
       colonists={},
       buildings={},
     },
@@ -59,11 +59,11 @@ function ColonySystem:foundColony(owner, pos, name)
   -- TODO: colony should subscribe to events of the tile below it?
   -- TODO: or colony system listens to tile change events...
 
-  table.insert(comps.colony.productions, tileComps.workedBy)
+  table.insert(comps.colony.worksites, tileComps.workedBy)
   -- TODO: insert production to make liberty bells? maybe building?
-  -- table.insert(comps.colony.productions, townhall) ??
+  -- table.insert(comps.colony.worksites, townhall) ??
 
-  table.insert(comps.colony.productions, {
+  table.insert(comps.colony.worksites, {
     produce = function(_, warehouse)
       local x = 5
       local t, _ = next(warehouse.goods)
@@ -76,7 +76,7 @@ function ColonySystem:foundColony(owner, pos, name)
     end
   })
 
-  table.insert(comps.colony.productions, {
+  table.insert(comps.colony.worksites, {
     produce = function(_, warehouse)
       local needed = #(comps.colony.colonists) * 2
       needed = needed - comps.colony.warehouse:get('fish', needed)
@@ -90,16 +90,17 @@ function ColonySystem:foundColony(owner, pos, name)
     end
   })
 
-  self:addBuilding(comps, Buildings.TownHall)
-  self:addBuilding(comps, Buildings.Chapel)
+  self:addBuilding(comps, BuildingTypes.build('TownHall'))
+  self:addBuilding(comps, BuildingTypes.build('Chapel'))
 
   return id
 end
 
 function ColonySystem:addBuilding(colony, building)
   table.insert(colony.colony.buildings, building)
-  table.insert(colony.colony.productions, building)
+  table.insert(colony.colony.worksites, building)
 end
+
 
 function ColonySystem:addColonist(colony, colonist)
   assert(colony.owner.id == colonist.owner.id, "colony and colonist must belong to same owner")
@@ -108,6 +109,11 @@ function ColonySystem:addColonist(colony, colonist)
   colonist.action.active = false
   colonist.visible.value = false
   table.insert(colony.colony.colonists, colonist)
+
+  -- TODO: we're just assigning the colonist to the first building
+  local _, building = next(colony.colony.buildings)
+  building:addWorker(colonist.colonist)
+
   self.entityManager:removeComponent(colonist.id, 'selectable')
   self.bus:fire('colonist.joinedColony', {colony=colony, colonist=colonist})
 end
@@ -128,7 +134,7 @@ end
 function ColonySystem:produce(id, comps)
   print("Production for", id, comps.colony.name, #(comps.colony.colonists))
 
-  for k, v in pairs(comps.colony.productions) do
+  for k, v in pairs(comps.colony.worksites) do
     local products = v:produce(comps.colony.warehouse)
     for t, amount in pairs(products) do
       print(t, amount)
