@@ -1,5 +1,4 @@
-
-Goods = {
+local GoodsDefinitions = {
   corn = {
     id = 'corn',
     title = 'Corn',
@@ -36,6 +35,7 @@ Goods = {
     id = 'rum',
     title = 'Rum',
     madeIn = 'building',
+    madeFrom = 'sugar'
   },
   libertybells = {
     id = 'libertybells',
@@ -48,6 +48,24 @@ Goods = {
     madeIn = 'building',
   },
 }
+
+function loadGoodsDefinitions(input)
+  local result = {}
+  for _, definition in pairs(input) do
+    result[definition.id] = definition
+  end
+
+  for _, goods in pairs(result) do
+    if goods.madeFrom then
+      local madeFrom = result[goods.madeFrom]
+      assert(madeFrom, ("%q is made from unknown %q"):format(goods.id, goods.madeFrom))
+      goods.madeFrom = madeFrom
+    end
+  end
+
+  return result
+end
+Goods = loadGoodsDefinitions(GoodsDefinitions)
 
 Warehouse = {}
 
