@@ -28,31 +28,11 @@ function Colonist:produce(goods)
   return self.profession.productivity[madeIn]
 end
 
-Profession = {}
-function Profession:new(o)
-  o = o or {}
-  setmetatable(o, self)
-  self.__index = self
-  return o
-end
+function Colonist:capabilities()
+  local result = {}
+  -- TODO: Movement is not in here. should be a different component. reduce coupling.
+  table.insert(result, "move") -- not true if in colony
 
-Professions = {
-  freecolonist = Profession:new({
-    title="Free Colonist",
-    productivity={
-      outside=3,
-      building=3,
-      bonuses={},
-    }
-  }),
-  expertfarmer = Profession:new({
-    title="Expert Farmer",
-    productivity={
-      outside=3,
-      building=3,
-      bonuses={
-        corn=5,
-      },
-    }
-  }),
-}
+  table.insert(result, "found_colony")
+  return result
+end

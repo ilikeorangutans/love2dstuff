@@ -1,3 +1,5 @@
+local pretty = require 'pl.pretty'
+
 SelectionManager = {}
 
 function SelectionManager:new(o)
@@ -5,10 +7,15 @@ function SelectionManager:new(o)
   setmetatable(o, self)
   self.__index = self
 
-  assert(o.entityManager, "SelectionManager requires entity manager")
   assert(o.bus, "SelectionManager requires bus")
+  assert(o.entityManager, "SelectionManager requires entity manager")
   assert(o.visibilityCheck, "SelectionManager requires visiblity check")
   return o
+end
+
+function SelectionManager:subscribe(bus)
+  bus:subscribe("viewport.clicked", self, SelectionManager.onClick)
+  bus:subscribe("entity.componentRemoved", self, SelectionManager.onComponentRemoved)
 end
 
 function SelectionManager:onClick(event)
@@ -90,10 +97,19 @@ function SelectionManager:select(id)
   self.selectable = comps.selectable
   comps.selectable.selected = true
 
-  print("Selected entity:", id)
+  local caps = ""
+  local components = {}
+
+  local x = entityCapabilities(comps)
+  caps = (", "):join(x)
+
+  print(("Selected entity: %d, capabilities: %s"):format(id, caps))
   for comp, v in pairs(comps) do
-    print("   ", comp)
+    table.insert(components, comp)
   end
+
+  table.sort(components)
+  print(" ", (", "):join(components))
 
   self.bus:fire('selection.selected', {id=id})
 end
