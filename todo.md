@@ -16,6 +16,7 @@ Properly set lua path:
 
 # To Do
 
+[ ] selections: should unselect if selected unit goes invisible
 [ ] visibility: only active visibility where units currently are
 [ ] check for selected entitiy before issuing commands
 [ ] colony should produce stuff

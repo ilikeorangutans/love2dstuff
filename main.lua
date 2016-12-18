@@ -1,3 +1,7 @@
+local stringx = require 'pl.stringx'
+stringx.import()
+local tablex = require 'pl.tablex'
+
 require 'util'
 require 'predicate'
 require 'bus'
@@ -18,6 +22,7 @@ require 'colony_system'
 require 'goods'
 require 'building'
 require 'colonist'
+require 'professions'
 
 function love.load()
   bus = Bus:new()

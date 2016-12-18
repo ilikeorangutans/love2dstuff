@@ -90,12 +90,35 @@ function SelectionManager:select(id)
   self.selectable = comps.selectable
   comps.selectable.selected = true
 
-  print("Selected entity:", id)
+
+  local caps = ""
+  local components = {}
+
+  print(("Selected entity: %d, capabilities: %s"):format(id, caps))
   for comp, v in pairs(comps) do
-    print("   ", comp)
+    table.insert(components, comp)
   end
 
+  canDo(comps)
+  table.sort(components)
+  print(" ", (", "):join(components))
+
+
   self.bus:fire('selection.selected', {id=id})
+end
+
+
+function canDo(comps)
+  local result = {}
+
+  for comp, v in pairs(comps) do
+    if v.capabilities then
+      local x = v.capabilities()
+      union(result, x)
+    end
+  end
+
+  return result
 end
 
 function SelectionManager:unselect()

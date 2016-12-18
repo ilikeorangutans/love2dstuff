@@ -114,7 +114,9 @@ function ColonySystem:addColonist(colony, colonist)
   local _, building = next(colony.colony.buildings)
   building:addWorker(colonist.colonist)
 
-  self.entityManager:removeComponent(colonist.id, 'selectable')
+  --self.entityManager:removeComponent(colonist.id, 'selectable')
+  -- TODO: this is really fucky
+  colonist.selectable.selectable = false
   self.bus:fire('colonist.joinedColony', {colony=colony, colonist=colonist})
 end
 
