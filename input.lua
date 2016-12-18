@@ -20,7 +20,7 @@ function InputHandler:mousereleased(x, y, button, istouch)
     bus:fire("viewport.clicked", {button=button, x=posx, y=posy})
   elseif button == 2 then
     if self.selected then
-      local entity = self.entityManager:get(self.selected)
+      local entity = self.comps
 
       local pos = entity.position
       local dx = math.abs(pos.x - posx)
@@ -55,13 +55,17 @@ function InputHandler:keypressed(key, scancode, isrepeat)
     self:centerOnSelected()
   end
   if scancode == 'h' then
-    local ent = self.entityManager:get(self.selected)
+    local ent = self.comps
     ent.visible = not ent.visible
   end
   if scancode == 'b' then
     -- TODO check if we can actually build here
     -- TODO check if the given unit can build
-    self.control:issueCommand(self.selected, {action='build', name="colony", owner=self.player})
+    if entityCanDo(self.comps, 'found_colony') then
+      self.control:issueCommand(self.selected, {action='build', name="colony", owner=self.player})
+    else
+      print("CANNOT FOUND COLONY")
+    end
   end
   if scancode == ',' then
     self.selectionManager:selectPrevIdle()
@@ -100,7 +104,7 @@ end
 
 function InputHandler:centerOnSelected()
   if not self.selected then return end
-  local entity = self.entityManager:get(self.selected)
+  local entity = self.comps
   if not entity.position then
     print("can't center on something without a position")
     return
@@ -111,8 +115,10 @@ end
 
 function InputHandler:onSelected(e)
   self.selected = e.id
+  self.comps = self.entityManager:get(e.id)
 end
 
 function InputHandler:onDeselected(e)
   self.selected = nil
+  self.comps = nil
 end

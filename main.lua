@@ -23,8 +23,14 @@ require 'goods'
 require 'building'
 require 'colonist'
 require 'professions'
+require 'ship'
 
 function love.load()
+  if love.system.getOS() == "Android" then
+    love.window.setFullscreen(true)
+  else
+  end
+
   bus = Bus:new()
 
   game = Game:new(bus)
@@ -45,18 +51,10 @@ function love.load()
   mapView = p1MapView
 
   selectionManager = SelectionManager:new({entityManager=entityManager,bus=bus,visibilityCheck=mapView,player=p1})
-  bus:subscribe("viewport.clicked", selectionManager, selectionManager.onClick)
-  bus:subscribe("entity.componentRemoved", selectionManager, selectionManager.onComponentRemoved)
+  selectionManager:subscribe(bus)
 
   viewport = Viewport:new{map = mapView, tileset = tileset, entityManager = entityManager}
-  bus:subscribe("viewport.scroll", viewport, viewport.onScroll)
-  viewport.screenx = 0
-  viewport.screeny = 0
-
-  if love.system.getOS() == "Android" then
-    love.window.setFullscreen(true)
-  else
-  end
+  viewport:subscribe(bus)
 
   local w, h, flags = love.window.getMode()
   viewport:resize(w, h)
@@ -64,12 +62,12 @@ function love.load()
   local drawable = {img = 'caravel'}
   local colony = {img = 'colony'}
 
-  entityManager:create({ drawable=drawable, position={ x=1, y=1 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}})
-  entityManager:create({ drawable=drawable, position={ x=20, y=20 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}})
+  entityManager:create({ drawable=drawable, position={ x=1, y=1 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, ship=Ship:new()})
+  entityManager:create({ drawable=drawable, position={ x=20, y=20 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, ship=Ship:new()})
   entityManager:create({ drawable={img = 'freecolonist'}, position={ x=2, y=1 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, colonist=Colonist:new()})
   entityManager:create({ drawable={img = 'expertfarmer'}, position={ x=3, y=1 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, colonist=Colonist:new({profession=Professions.expertfarmer})})
-  entityManager:create({ drawable=drawable, position={ x=30, y=30 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}})
-  entityManager:create({ drawable=drawable, position={ x=40, y=40 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}})
+  entityManager:create({ drawable=drawable, position={ x=30, y=30 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, ship=Ship:new()})
+  entityManager:create({ drawable=drawable, position={ x=40, y=40 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, ship=Ship:new()})
 
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})

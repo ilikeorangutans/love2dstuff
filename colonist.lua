@@ -27,3 +27,12 @@ function Colonist:produce(goods)
 
   return self.profession.productivity[madeIn]
 end
+
+function Colonist:capabilities()
+  local result = {}
+  -- TODO: Movement is not in here. should be a different component. reduce coupling.
+  table.insert(result, "move") -- not true if in colony
+
+  table.insert(result, "found_colony")
+  return result
+end

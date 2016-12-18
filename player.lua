@@ -54,3 +54,4 @@ end
 function PlayerControl:onNewTurn(event)
   self.active = event.player == self.player
 end
+

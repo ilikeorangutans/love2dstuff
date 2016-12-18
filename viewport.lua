@@ -22,7 +22,15 @@ function Viewport:new(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
+
+  o.screenx = 0
+  o.screeny = 0
+
   return o
+end
+
+function Viewport:subscribe(bus)
+  bus:subscribe("viewport.scroll", self, Viewport.onScroll)
 end
 
 function Viewport:draw()
