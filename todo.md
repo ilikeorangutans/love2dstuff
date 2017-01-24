@@ -17,6 +17,8 @@ Properly set lua path:
 # To Do
 
 [ ] selections: should unselect if selected unit goes invisible
+  [ ] what does that mean, go invisible? Entities have a state when on board, and when in colony.
+  [ ] when entering a colony they become not controllable.
 [ ] visibility: only active visibility where units currently are
 [ ] check for selected entitiy before issuing commands
 [ ] colony should produce stuff

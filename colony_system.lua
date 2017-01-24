@@ -11,18 +11,11 @@ function ColonySystem:foundColony(owner, pos, name)
   local drawable = {img='colony'}
   local id, comps = self.entityManager:create({
     drawable=drawable,
+    visible={value=true},
     position=pos,
     selectable={selectable=true},
     owner={id=owner.id},
-    colony={
-      name=name,
-      warehouse=Warehouse:new(),
-      worksites={},
-      colonists={},
-      buildings={},
-    },
-    visible={value=true},
-    colonists={},
+    colony=Colony:new({name=name}),
     vision={radius=1}
   })
 
@@ -32,6 +25,9 @@ function ColonySystem:foundColony(owner, pos, name)
     workedBy={
       colony=id,
       produce = function()
+        -- This method sucks because it repicks what to produce every turn
+        -- Also sucks because it references outside elements via closure, can't
+        -- refactor this into a separate method
         local tile = self.map:getAt(pos)
         local maxProducts = 2
         local tileProduces = tile.terrain.produces
@@ -60,29 +56,30 @@ function ColonySystem:foundColony(owner, pos, name)
   -- TODO: or colony system listens to tile change events...
 
   table.insert(comps.colony.worksites, tileComps.workedBy)
-  -- TODO: insert production to make liberty bells? maybe building?
-  -- table.insert(comps.colony.worksites, townhall) ??
 
+  -- table.insert(comps.colony.worksites, {
+    -- produce = function(_, warehouse)
+      -- local x = 5
+      -- local t, _ = next(warehouse.goods)
+      -- local available = warehouse:get('sugar', x)
+--
+      -- local result = {
+        -- rum = available
+      -- }
+      -- return result
+    -- end
+  -- })
+
+  -- Create "worksite" that represents the colonists and the food they consume
   table.insert(comps.colony.worksites, {
     produce = function(_, warehouse)
-      local x = 5
-      local t, _ = next(warehouse.goods)
-      local available = warehouse:get('sugar', x)
-
-      local result = {
-        rum = available
-      }
-      return result
-    end
-  })
-
-  table.insert(comps.colony.worksites, {
-    produce = function(_, warehouse)
-      local needed = #(comps.colony.colonists) * 2
+      local FOOD_PER_COLONIST = 2
+      local needed = #(comps.colony.colonists) * FOOD_PER_COLONIST
       needed = needed - comps.colony.warehouse:get('fish', needed)
       needed = needed - comps.colony.warehouse:get('corn', needed)
 
       if needed > 0 then
+        -- TODO starve colonists?
         print(("NOT ENOUGH FOOD IN %s"):format(comps.colony.name))
       end
 
@@ -100,7 +97,6 @@ function ColonySystem:addBuilding(colony, building)
   table.insert(colony.colony.buildings, building)
   table.insert(colony.colony.worksites, building)
 end
-
 
 function ColonySystem:addColonist(colony, colonist)
   assert(colony.owner.id == colonist.owner.id, "colony and colonist must belong to same owner")
