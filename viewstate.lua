@@ -1,13 +1,19 @@
 -- This thing needs stack methods.
 ViewStack = {}
+function ViewStack:current()
+  return self[#(self)]
+end
 
+function ViewStack:push(view)
+  table.insert(self, view)
+end
 
-ColonyView = {}
-function ColonyView:draw()
-  love.graphics.setColor(80, 80, 80)
-  love.graphics.rectangle('fill', 600, 520, 200, 50)
-  love.graphics.setColor(255, 255, 255)
-  love.graphics.print("COLONY")
+function ViewStack:pop()
+  if #(self) <= 1 then
+    print("CANNOT POP VIEW STATE, NOT ENOUGH LEFT!")
+    return
+  end
+  table.remove(self)
 end
 
 -- map view of the colonies
