@@ -129,13 +129,29 @@ function love.load()
   bus:subscribe("selection.deselected", inputHandler, inputHandler.onDeselected)
 
   game:start()
+
+  gameMapView = GameMapView
+  gameMapView.viewport = viewport
+  gameMapView.mapView = mapView
+
+  viewStack = ViewStack
+  table.insert(viewStack, gameMapView)
 end
 
 function love.resize(w, h)
   viewport:resize(w, h)
 end
 
-function love.draw()
+ViewStack = {}
+
+GameMapView = {
+  viewport = {},
+  mapView = {}
+}
+
+function GameMapView:draw()
+  local mapView = self.mapView
+  local viewport = self.viewport
   viewport:draw()
 
   local tile = mapView:getAt(mousePosition)
@@ -164,6 +180,11 @@ function love.draw()
 
     love.graphics.print(("[%d] %s, owner: %s"):format(selectionManager.selected, desc, comps.owner.id), 600, 565)
   end
+end
+
+function love.draw()
+  local viewState = viewStack[1]
+  viewState:draw()
 end
 
 function love.update(dt)
