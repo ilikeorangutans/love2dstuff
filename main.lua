@@ -25,6 +25,7 @@ require 'building'
 require 'colonist'
 require 'professions'
 require 'ship'
+require 'view/colony_view'
 
 function love.load()
   if love.system.getOS() == "Android" then
@@ -137,7 +138,7 @@ function love.load()
   gameMapView.mapView = mapView
 
   viewStack = ViewStack
-  table.insert(viewStack, gameMapView)
+  viewStack:push(gameMapView)
 
   gameViewStateHandler = GameViewStateHandler
   bus:subscribe("selection.selected", gameViewStateHandler, GameViewStateHandler.onSelectEntity)
@@ -149,18 +150,18 @@ function GameViewStateHandler:onSelectEntity(e)
   local comps = entityManager:get(e.id)
 
   if comps.colony then
-    print("COLONY, CHANGING VIEW STATE")
-    local colonyView = ColonyView
-    table.insert(viewStack, colonyView)
+    local colonyView = ColonyView:new(comps)
+    viewStack:push(colonyView)
   end
 end
 
 function love.resize(w, h)
+  -- TODO should we call resize on the view stack so that each view knows about this event?
   viewport:resize(w, h)
 end
 
 function love.draw()
-  local viewState = viewStack[#(viewStack)]
+  local viewState = viewStack:current()
   viewState:draw()
 end
 
