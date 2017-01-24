@@ -5,16 +5,6 @@ Viewport = {
   y = 0,
   w = 0,
   h = 0,
-  visible = {
-    startx = 0,
-    starty = 0,
-    endx = 0,
-    endy = 0,
-    offsetx = 0,
-    offsety = 0,
-    widthInTiles = 0,
-    heightInTiles = 0
-  },
   entityManager = {}
 }
 
@@ -25,6 +15,20 @@ function Viewport:new(o)
 
   o.screenx = 0
   o.screeny = 0
+  o.x = 0
+  o.y = 0
+  o.w = 0
+  o.h = 0
+  o.visible = {
+    startx = 0,
+    starty = 0,
+    endx = 0,
+    endy = 0,
+    offsetx = 0,
+    offsety = 0,
+    widthInTiles = 0,
+    heightInTiles = 0
+  }
 
   return o
 end
