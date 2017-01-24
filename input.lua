@@ -1,3 +1,6 @@
+-- Input handlers map raw system input to more game specific events.
+-- Still need to figure out where to properly draw the lines. This class
+-- does a little more than just mapping
 InputHandler = {}
 
 function InputHandler:new(o)
