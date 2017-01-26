@@ -1,4 +1,3 @@
-pretty = require('pl.pretty')
 Map = {}
 
 function Map:new(o)

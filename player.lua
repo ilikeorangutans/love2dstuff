@@ -20,7 +20,24 @@ function PlayerControl:new(o)
   setmetatable(o, self)
   self.__index = self
   o.active = false
+  o.selectedID = nil
   return o
+end
+
+function PlayerControl:subscribe(bus)
+  bus:subscribe('game.newTurn', self, PlayerControl.onNewTurn)
+  bus:subscribe('selection.selected', self, PlayerControl.onEntitySelected)
+  bus:subscribe('selection.deselected', self, PlayerControl.onEntityDeselected)
+end
+
+function PlayerControl:onEntitySelected(e)
+  self.selectedID = e.id
+  self.selected = self.entityManager:get(e.id)
+end
+
+function PlayerControl:onEntityDeselected(e)
+  self.selectedID = nil
+  self.selected = nil
 end
 
 --- Ends the current turn.
@@ -28,6 +45,10 @@ function PlayerControl:endTurn()
   if not self.active then return end
 
   self.game:newTurn()
+end
+
+function PlayerControl:foundColony()
+  self:issueCommand(self.selectedID, {action='build', name="colony", owner=self.player})
 end
 
 function PlayerControl:issueCommand(id, cmd)

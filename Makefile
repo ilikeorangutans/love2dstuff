@@ -10,7 +10,7 @@ lint:
 test: $(addsuffix .run, $(TESTS))
 
 test/%.lua.run: test/%.lua
-	lua $<
+	lua $< -o tap
 
 dist: dist.love
 
