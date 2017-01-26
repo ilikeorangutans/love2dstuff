@@ -1,3 +1,4 @@
+pretty = require('pl.pretty')
 local stringx = require 'pl.stringx'
 stringx.import()
 local tablex = require 'pl.tablex'
@@ -25,6 +26,7 @@ require 'building'
 require 'colonist'
 require 'professions'
 require 'ship'
+require 'view/game_map_view'
 require 'view/colony_view'
 
 function love.load()
@@ -118,9 +120,9 @@ function love.load()
   bus:subscribe("game.newTurn", actionSystem, actionSystem.onNewTurn)
 
   p1Ctrl = PlayerControl:new({ entityManager=entityManager,game=game,player=p1 })
-  bus:subscribe('game.newTurn', p1Ctrl, p1Ctrl.onNewTurn)
+  p1Ctrl:subscribe(bus)
   p2Ctrl = PlayerControl:new({ entityManager=entityManager,game=game,player=p2 })
-  bus:subscribe('game.newTurn', p2Ctrl, p2Ctrl.onNewTurn)
+  p2Ctrl:subscribe(bus)
 
   ai = AI:new()
   ai.player = p2
@@ -133,9 +135,9 @@ function love.load()
 
   game:start()
 
-  gameMapView = GameMapView
+  local gameMapView = GameMapView:new(mapView, p1Ctrl)
   gameMapView.viewport = viewport
-  gameMapView.mapView = mapView
+  --gameMapView.mapView = mapView
 
   viewStack = ViewStack
   viewStack:push(gameMapView)
@@ -150,7 +152,7 @@ function GameViewStateHandler:onSelectEntity(e)
   local comps = entityManager:get(e.id)
 
   if comps.colony then
-    local colonyView = ColonyView:new(comps)
+    local colonyView = ColonyView:new(comps, function() viewStack:pop() end)
     viewStack:push(colonyView)
   end
 end
@@ -199,7 +201,10 @@ function love.update(dt)
 end
 
 function love.keypressed(key, scancode, isrepeat)
-  inputHandler:keypressed(key, scancode, isrepeat)
+  local viewState = viewStack:current()
+  viewState:keypressed(key, scancode, isrepeat)
+
+  --inputHandler:keypressed(key, scancode, isrepeat)
 end
 
 function love.keyreleased(key, scancode)
