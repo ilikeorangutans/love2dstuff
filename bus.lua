@@ -20,6 +20,23 @@ function Bus:subscribe(topic, receiver, handler)
   table.insert(self.subscriptions[topic], {receiver=receiver,handler=handler})
 end
 
+function Bus:unsubscribe(topic, receiver, handler)
+  if not self.subscriptions[topic] then return end
+
+  local remove = {}
+
+  for index, subscription in ipairs(self.subscriptions[topic]) do
+    if subscription.handler == handler and subscription.receiver == receiver then
+      table.insert(remove, index)
+    end
+  end
+
+  for x, index in pairs(remove) do
+    -- TODO this assumes ascending order of `remove`
+    table.remove(self.subscriptions[topic], index)
+  end
+end
+
 --- Fires an event on the given topic.
 function Bus:fire(topic, event)
   if not self.subscriptions[topic] then return end
