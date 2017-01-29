@@ -16,6 +16,10 @@ function GameMapView:subscribe(bus)
   bus:subscribe("selection.deselected", self, GameMapView.onEntityDeselected)
 end
 
+function GameMapView:resize(w, h)
+  self.viewport:resize(w, h)
+end
+
 function GameMapView:update(dt)
   local deltax, deltay = 0, 0
   -- Note to self: using love.keyboard.isDown because keypressed (as used below)
@@ -68,6 +72,22 @@ end
 
 function GameMapView:mousereleased(x, y, button, istouch)
   local posx, posy = self.viewport:screenToMap(x, y)
+  print("GameMapView:mousereleased", x, y, button, istouch)
+  if button == 1 then
+    -- TODO might run this through player control
+    self.bus:fire("viewport.clicked", {button=button, x=posx, y=posy})
+  elseif button == 2 then
+    if self.selected then
+      local entity = self.comps
+
+      local pos = entity.position
+      local dx = math.abs(pos.x - posx)
+      local dy = math.abs(pos.y - posy)
+      local distance = math.sqrt((dx*dx) + (dy*dy))
+
+      self.control:issueCommand(self.selected, {action='move', destination=posAt(posx, posy), path={length=distance}})
+    end
+  end
 end
 
 function GameMapView:draw()

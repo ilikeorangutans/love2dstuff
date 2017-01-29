@@ -1,5 +1,6 @@
 Building = {}
 function Building:new(t)
+  print(pretty.dump(t))
   assert(o.name, "Building needs name")
   o = {}
   setmetatable(o, self)
