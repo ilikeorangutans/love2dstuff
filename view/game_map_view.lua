@@ -4,19 +4,42 @@ GameMapView = {
   mapView = {}
 }
 
-function GameMapView:new(map, playerControl)
-  local o = {}
+function GameMapView:new(o)
+  o = o or {}
   setmetatable(o, self)
   self.__index = self
-
-  o.map = map
-  o.control = playerControl
-
   return o
+end
+
+function GameMapView:subscribe(bus)
+  bus:subscribe("selection.selected", self, GameMapView.onEntitySelected)
+  bus:subscribe("selection.deselected", self, GameMapView.onEntityDeselected)
+end
+
+function GameMapView:update(dt)
+  local deltax, deltay = 0, 0
+  -- Note to self: using love.keyboard.isDown because keypressed (as used below)
+  -- doesn't work quite with repeated keys for some reason.
+  if love.keyboard.isDown("a") then
+    deltax = -4
+  end
+  if love.keyboard.isDown("d") then
+    deltax = 4
+  end
+  if love.keyboard.isDown("w") then
+    deltay = -4
+  end
+  if love.keyboard.isDown("s") then
+    deltay = 4
+  end
+  if deltax ~= 0 or deltay ~= 0 then
+    self.viewport:moveBy(deltax, deltay)
+  end
 end
 
 function GameMapView:keypressed(key, scancode, isrepeat)
   if scancode == 'escape' then
+    -- TODO shouldn't just quit here, bring up menu or something
     love.event.quit()
   end
   if scancode == 'b' then
@@ -24,6 +47,27 @@ function GameMapView:keypressed(key, scancode, isrepeat)
     -- TODO should we just post an event if it can't be done?
     self.control:foundColony()
   end
+  if scancode == 'c' then
+    self:centerOnSelected()
+  end
+  if scancode == ',' then
+    self.selectionManager:selectPrevIdle()
+    self:centerOnSelected()
+  end
+  if scancode == '.' then
+    self.selectionManager:selectNextIdle()
+    self:centerOnSelected()
+  end
+  if scancode == 'return' then
+    self:handleEndTurn()
+  end
+  if scancode == 'space' then
+    self:doNothing()
+  end
+end
+
+function GameMapView:mousereleased(x, y, button, istouch)
+  local posx, posy = self.viewport:screenToMap(x, y)
 end
 
 function GameMapView:draw()
@@ -59,4 +103,50 @@ function GameMapView:draw()
   end
 end
 
+function GameMapView:centerOnSelected()
+  if not self.selected then return end
+  if not self.selected.position then
+    print("can't center on something without a position")
+    return
+  end
+
+  self.viewport:center(self.selected.position)
+end
+
+function GameMapView:handleEndTurn()
+  local predicate = function(comp)
+    return comp.active and comp.points.left > 0
+  end
+  -- TODO game map view doesn't know about players... maybe that should
+  -- live in the player control
+  -- local entities = self.entityManager:getComponentsByType(ownedBy(self.player), {action=predicate}, position, selectable)
+
+  -- for id, comps in pairs(entities) do
+    -- self.selectionManager:select(id)
+    -- self:centerOnSelected()
+    -- if (#comps.action.queue) > 0 or comps.action.current then
+      -- self.control:simulate(id)
+      -- return
+    -- else
+      -- return
+    -- end
+  -- end
+
+  self.control:endTurn()
+end
+
+function GameMapView:doNothing()
+  if not self.selected then return end
+  self.control:issueCommand(self.selectedID, {action='nothing'})
+end
+
+function GameMapView:onEntitySelected(e)
+  self.selectedID = e.id
+  self.selected = self.entityManager:get(e.id)
+end
+
+function GameMapView:onEntityDeselected(e)
+  self.selectedID = nil
+  self.selected = nil
+end
 

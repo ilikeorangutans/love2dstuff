@@ -79,7 +79,7 @@ function love.load()
   bus:subscribe('game.newTurn', colonySystem, colonySystem.onNewTurn)
 
   local actionHandlers = {
-    build = function(cmd, id)
+    found_colony = function(cmd, id)
       local entity = entityManager:get(id)
       local colonyID = colonySystem:foundColony(cmd.owner, entity.position, cmd.name)
 
@@ -128,15 +128,14 @@ function love.load()
   ai.control = p2Ctrl
   bus:subscribe('game.newTurn', ai, ai.onNewTurn)
 
-  inputHandler = InputHandler:new({ bus=bus, entityManager=entityManager, selectionManager=selectionManager, viewport=viewport, player=p1, control=p1Ctrl })
-  bus:subscribe("selection.selected", inputHandler, inputHandler.onSelected)
-  bus:subscribe("selection.deselected", inputHandler, inputHandler.onDeselected)
+  -- inputHandler = InputHandler:new({ bus=bus, entityManager=entityManager, selectionManager=selectionManager, viewport=viewport, player=p1, control=p1Ctrl })
+  -- bus:subscribe("selection.selected", inputHandler, inputHandler.onSelected)
+  -- bus:subscribe("selection.deselected", inputHandler, inputHandler.onDeselected)
 
   game:start()
 
-  local gameMapView = GameMapView:new(mapView, p1Ctrl)
-  gameMapView.viewport = viewport
-  --gameMapView.mapView = mapView
+  local gameMapView = GameMapView:new({ viewport=viewport, map=mapView, control=p1Ctrl, selectionManager=selectionManager, entityManager=entityManager })
+  gameMapView:subscribe(bus)
 
   viewStack = ViewStack
   viewStack:push(gameMapView)
@@ -167,20 +166,7 @@ function love.draw()
 end
 
 function love.update(dt)
-  local deltax, deltay = 0, 0
 
-  if love.keyboard.isDown("a") then
-    deltax = -4
-  end
-  if love.keyboard.isDown("d") then
-    deltax = 4
-  end
-  if love.keyboard.isDown("w") then
-    deltay = -4
-  end
-  if love.keyboard.isDown("s") then
-    deltay = 4
-  end
 
   if love.keyboard.isDown("1") then
     mapView = p1MapView
@@ -190,28 +176,27 @@ function love.update(dt)
   end
   viewport.map = mapView
 
-  if deltax > 0 or deltax < 0 or deltay > 0 or deltay < 0 then
-    bus:fire("viewport.scroll", {deltax=deltax, deltay=deltay})
-  end
-
   ai:update(dt)
   actionSystem:update(dt)
   colonySystem:update(dt)
+
+  local viewState = viewStack:current()
+  viewState:update(dt)
 end
 
 function love.keypressed(key, scancode, isrepeat)
   local viewState = viewStack:current()
   viewState:keypressed(key, scancode, isrepeat)
-
-  --inputHandler:keypressed(key, scancode, isrepeat)
 end
 
-function love.keyreleased(key, scancode)
-  inputHandler:keyreleased(key, scancode)
-end
+-- function love.keyreleased(key, scancode)
+  -- inputHandler:keyreleased(key, scancode)
+-- end
 
 function love.mousereleased(x, y, button, istouch)
-  inputHandler:mousereleased(x, y, button, istouch)
+  local viewState = viewStack:current()
+  viewState:mousereleased(x, y, button, istouch)
+  -- inputHandler:mousereleased(x, y, button, istouch)
 end
 
 function love.mousemoved(x, y)

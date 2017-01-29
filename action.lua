@@ -39,7 +39,7 @@ function ActionComponent:execute()
   if action == 'nothing' then
     requiredPoints = self.points.left
     consumesPoints = requiredPoints
-  elseif action == 'build' then
+  elseif action == 'found_colony' then
     requiredPoints = self.points.left
     consumesPoints = requiredPoints
   elseif action == 'move' then
