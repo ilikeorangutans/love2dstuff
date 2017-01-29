@@ -135,19 +135,19 @@ function love.load()
 
   game:start()
 
-  local gameMapView = GameMapView:new({ viewport=viewport, map=mapView, control=p1Ctrl, selectionManager=selectionManager, entityManager=entityManager })
+  local gameMapView = GameMapView:new({ bus=bus, viewport=viewport, map=mapView, control=p1Ctrl, selectionManager=selectionManager, entityManager=entityManager })
   gameMapView:subscribe(bus)
 
   viewStack = ViewStack
   viewStack:push(gameMapView)
 
-  gameViewStateHandler = GameViewStateHandler
-  bus:subscribe("selection.selected", gameViewStateHandler, GameViewStateHandler.onSelectEntity)
+  viewStateHandler = ViewStateHandler
+  bus:subscribe("selection.selected", viewStateHandler, ViewStateHandler.onSelectEntity)
 end
 
-GameViewStateHandler = {}
+ViewStateHandler = {}
 
-function GameViewStateHandler:onSelectEntity(e)
+function ViewStateHandler:onSelectEntity(e)
   local comps = entityManager:get(e.id)
 
   if comps.colony then
@@ -157,18 +157,14 @@ function GameViewStateHandler:onSelectEntity(e)
 end
 
 function love.resize(w, h)
-  -- TODO should we call resize on the view stack so that each view knows about this event?
-  viewport:resize(w, h)
+  viewStack:current():resize(w, h)
 end
 
 function love.draw()
-  local viewState = viewStack:current()
-  viewState:draw()
+  viewStack:current():draw()
 end
 
 function love.update(dt)
-
-
   if love.keyboard.isDown("1") then
     mapView = p1MapView
   end
@@ -181,23 +177,15 @@ function love.update(dt)
   actionSystem:update(dt)
   colonySystem:update(dt)
 
-  local viewState = viewStack:current()
-  viewState:update(dt)
+  viewStack:current():update(dt)
 end
 
 function love.keypressed(key, scancode, isrepeat)
-  local viewState = viewStack:current()
-  viewState:keypressed(key, scancode, isrepeat)
+  viewStack:current():keypressed(key, scancode, isrepeat)
 end
 
--- function love.keyreleased(key, scancode)
-  -- inputHandler:keyreleased(key, scancode)
--- end
-
 function love.mousereleased(x, y, button, istouch)
-  local viewState = viewStack:current()
-  viewState:mousereleased(x, y, button, istouch)
-  -- inputHandler:mousereleased(x, y, button, istouch)
+  viewStack:current():mousereleased(x, y, button, istouch)
 end
 
 function love.mousemoved(x, y)

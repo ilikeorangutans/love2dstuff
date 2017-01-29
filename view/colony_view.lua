@@ -12,6 +12,12 @@ function ColonyView:new(comps, onExit)
   return o
 end
 
+function ColonyView:resize(w, h)
+end
+
+function ColonyView:update(dt)
+end
+
 function ColonyView:keypressed(key, scancode, isrepeat)
   if scancode == 'escape' then
     self.onExit()

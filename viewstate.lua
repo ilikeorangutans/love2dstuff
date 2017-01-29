@@ -5,7 +5,14 @@ function ViewStack:current()
 end
 
 function ViewStack:push(view)
+  self:checkView(view)
   table.insert(self, view)
+end
+
+function ViewStack:checkView(view)
+  assert(view.resize, "view does not implement resize")
+  assert(view.update, "view does not implement update")
+  assert(view.draw, "view does not implement draw")
 end
 
 function ViewStack:pop()
