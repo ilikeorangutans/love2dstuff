@@ -48,7 +48,7 @@ function PlayerControl:endTurn()
 end
 
 function PlayerControl:foundColony()
-  self:issueCommand(self.selectedID, {action='build', name="colony", owner=self.player})
+  self:issueCommand(self.selectedID, {action='found_colony', name="found colony", owner=self.player})
 end
 
 function PlayerControl:issueCommand(id, cmd)
@@ -56,6 +56,10 @@ function PlayerControl:issueCommand(id, cmd)
   local selected = self.entityManager:get(id)
   if selected.owner.id ~= self.player.id then return end
   if not selected.action then return end
+  if not entityCanDo(self.selected, cmd.action) then
+    print(("Entity %d cannot perform %s"):format(self.selectedID, cmd.action))
+    return
+  end
 
   selected.action.active = true
   selected.action:enqueue(cmd)
