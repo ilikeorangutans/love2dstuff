@@ -30,7 +30,7 @@ function Map:fromString(w, h, input)
     local mapIndex = i - 1
     self.tiles[mapIndex] = {
       type = t,
-      terrain = TerrainTypesByID[t]
+      terrain = TerrainTypes[t]
     }
   end
 end

@@ -9,11 +9,28 @@ end
 
 function Tileset:load()
   tilesetCoords = {}
-  tilesetCoords[0] = {x=864,y=160}
-  tilesetCoords[1] = {x=160,y=448}
-  tilesetCoords[2] = {x=192,y=928}
-  tilesetCoords[3] = {x=64,y=800}
-  tilesetCoords[4] = {x=288,y=896}
+  tilesetCoords['unexplored'] = {x=864,y=160}
+  tilesetCoords['shippinglane'] = {x=160,y=448}
+  tilesetCoords['ocean'] = {x=192,y=928}
+  tilesetCoords['arctic'] = {x=64,y=800}
+  tilesetCoords['borealforest'] = {x=288,y=896}
+  tilesetCoords['broadleafforest'] = {x=288,y=896}
+  tilesetCoords['coniferforrest'] = {x=288,y=896}
+  tilesetCoords['desert'] = {x=288,y=896}
+  tilesetCoords['grassland'] = {x=288,y=896}
+  tilesetCoords['hills'] = {x=288,y=896}
+  tilesetCoords['marsh'] = {x=288,y=896}
+  tilesetCoords['mixedforest'] = {x=288,y=896}
+  tilesetCoords['mountains'] = {x=288,y=896}
+  tilesetCoords['plains'] = {x=288,y=896}
+  tilesetCoords['prairie'] = {x=288,y=896}
+  tilesetCoords['rainsforest'] = {x=288,y=896}
+  tilesetCoords['savannah'] = {x=288,y=896}
+  tilesetCoords['scrubforest'] = {x=288,y=896}
+  tilesetCoords['swamp'] = {x=288,y=896}
+  tilesetCoords['tropicalforest'] = {x=288,y=896}
+  tilesetCoords['tundra'] = {x=288,y=896}
+  tilesetCoords['wetlandforest'] = {x=288,y=896}
 
   local terrain = love.graphics.newImage('assets/terrain_atlas.png')
   self.tileW, self.tileH = 32,32
