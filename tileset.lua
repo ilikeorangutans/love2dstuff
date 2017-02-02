@@ -9,13 +9,31 @@ end
 
 function Tileset:load()
   tilesetCoords = {}
-  tilesetCoords[0] = {x=864,y=160}
-  tilesetCoords[1] = {x=160,y=448}
-  tilesetCoords[2] = {x=192,y=928}
-  tilesetCoords[3] = {x=64,y=800}
-  tilesetCoords[4] = {x=288,y=896}
+  tilesetCoords['unexplored'] =         {x=0,y=0}
+  tilesetCoords['shippinglane'] =       {x=1,y=2}
+  tilesetCoords['ocean'] =              {x=0,y=2}
+  tilesetCoords['arctic'] =             {x=1,y=0}
+  tilesetCoords['borealforest'] =       {x=2,y=0}
+  tilesetCoords['broadleafforest'] =    {x=2,y=3}
+  tilesetCoords['coniferforrest'] =     {x=0,y=1}
+  tilesetCoords['desert'] =             {x=0,y=4}
+  tilesetCoords['grassland'] =          {x=3,y=0}
+  tilesetCoords['hills'] =              {x=2,y=4}
+  tilesetCoords['marsh'] =              {x=3,y=3}
+  tilesetCoords['mixedforest'] =        {x=0,y=3}
+  tilesetCoords['mountains'] =          {x=3,y=4}
+  tilesetCoords['plains'] =             {x=3,y=2}
+  tilesetCoords['prairie'] =            {x=3,y=1}
+  tilesetCoords['rainforest'] =         {x=1,y=1}
+  tilesetCoords['savannah'] =           {x=1,y=3}
+  tilesetCoords['scrubforest'] =        {x=1,y=4}
+  tilesetCoords['swamp'] =              {x=3,y=3}
+  tilesetCoords['tropicalforest'] =     {x=3,y=1}
+  tilesetCoords['tundra'] =             {x=1,y=0}
+  tilesetCoords['wetlandforest'] =      {x=3,y=1}
+  tilesetCoords['ice'] =                {x=1,y=0}
 
-  local terrain = love.graphics.newImage('assets/terrain_atlas.png')
+  local terrain = love.graphics.newImage('assets/terrain.png')
   self.tileW, self.tileH = 32,32
   local tileW, tileH = self.tileW, self.tileH
   local tilesetW, tilesetH = terrain:getWidth(), terrain:getHeight()
@@ -23,7 +41,9 @@ function Tileset:load()
 
   self.tiles = {}
   for t, pos in pairs(tilesetCoords) do
-    self.tiles[t] = love.graphics.newQuad(pos.x, pos.y, tileW, tileH, tilesetW, tilesetH)
+    local x = pos.x * self.tileW
+    local y = pos.y * self.tileW
+    self.tiles[t] = love.graphics.newQuad(x, y, tileW, tileH, tilesetW, tilesetH)
   end
   self.terrain = terrain
 
@@ -43,7 +63,14 @@ function Tileset:load()
 end
 
 function Tileset:draw(x, y, id)
-  love.graphics.draw(self.terrain, self.tiles[id], x, y)
+  local t = TerrainTypesByID[id]
+  if not t or not t.handle then
+    print("drawing id", id, "but no tile data found")
+  end
+  if not self.tiles[t.handle] then
+    print("ERROR no tile found for handle", t.handle)
+  end
+  love.graphics.draw(self.terrain, self.tiles[t.handle], x, y)
 end
 
 function Tileset:tileSize()

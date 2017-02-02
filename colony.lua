@@ -12,3 +12,7 @@ function Colony:new(o)
 
   return o
 end
+
+function Colony:size()
+  return #(self.colonists)
+end

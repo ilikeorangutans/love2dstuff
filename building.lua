@@ -1,8 +1,6 @@
 Building = {}
 function Building:new(t)
-  print(pretty.dump(t))
-  assert(o.name, "Building needs name")
-  o = {}
+  local o = {}
   setmetatable(o, self)
   self.__index = self
   o.buildingType = t

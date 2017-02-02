@@ -48,7 +48,7 @@ function PlayerControl:endTurn()
 end
 
 function PlayerControl:foundColony()
-  self:issueCommand(self.selectedID, {action='found_colony', name="found colony", owner=self.player})
+  self:issueCommand(self.selectedID, {action='found_colony', name="Colony", owner=self.player})
 end
 
 function PlayerControl:issueCommand(id, cmd)

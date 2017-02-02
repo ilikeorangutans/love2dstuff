@@ -8,6 +8,7 @@ TestMap = {}
 function TestMap:setUp()
   self.map = Map:new()
   self.map:randomize(10, 10)
+  loadTerrainTypes()
 end
 
 function TestMap:testGetAt()

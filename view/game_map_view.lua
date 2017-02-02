@@ -8,6 +8,10 @@ function GameMapView:new(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
+
+  o.viewport = Viewport:new({ map=o.map, tileset=o.tileset, entityManager=o.entityManager })
+  -- todo : subscribe to bus
+
   return o
 end
 
@@ -39,6 +43,20 @@ function GameMapView:update(dt)
   if deltax ~= 0 or deltay ~= 0 then
     self.viewport:moveBy(deltax, deltay)
   end
+end
+
+function GameMapView:mousemoved(x,y)
+  local posx, posy = self.viewport:screenToMap(x, y)
+  if posx == self.lastx and posy == self.lasty then
+    return
+  end
+
+  self.lastx = posx
+  self.lasty = posy
+
+  local tile = map:getAt(posAt(posx, posy))
+  print(("Mouse over %d/%d: %s"):format(posx, posy, tile.terrain.title))
+  print(pretty.dump(tile))
 end
 
 function GameMapView:keypressed(key, scancode, isrepeat)
@@ -78,14 +96,14 @@ function GameMapView:mousereleased(x, y, button, istouch)
     self.bus:fire("viewport.clicked", {button=button, x=posx, y=posy})
   elseif button == 2 then
     if self.selected then
-      local entity = self.comps
+      local entity = self.selected
 
       local pos = entity.position
       local dx = math.abs(pos.x - posx)
       local dy = math.abs(pos.y - posy)
       local distance = math.sqrt((dx*dx) + (dy*dy))
 
-      self.control:issueCommand(self.selected, {action='move', destination=posAt(posx, posy), path={length=distance}})
+      self.control:issueCommand(self.selectedID, {action='move', destination=posAt(posx, posy), path={length=distance}})
     end
   end
 end

@@ -1,13 +1,15 @@
 -- Detailed colony view
 ColonyView = {}
 
-function ColonyView:new(comps, onExit)
-  o = {}
+function ColonyView:new(o)
+  local o = o or {}
   setmetatable(o, self)
   self.__index = self
 
-  o.comps = comps
-  o.onExit = onExit
+  assert(o.comps.colony, "need colony for colony screen")
+  o.colony = o.comps.colony
+
+  o.viewport = Viewport:new({})
 
   return o
 end
@@ -25,9 +27,9 @@ function ColonyView:keypressed(key, scancode, isrepeat)
 end
 
 function ColonyView:draw()
-  love.graphics.setColor(80, 80, 80)
-  love.graphics.rectangle('fill', 600, 520, 200, 50)
+  --love.graphics.setColor(80, 80, 80)
+  --love.graphics.rectangle('fill', 600, 520, 200, 50)
   love.graphics.setColor(255, 255, 255)
-  love.graphics.print("COLONY", 100, 100)
+  love.graphics.print(("Colony: %q | Size: %d | Wares: %s"):format(self.colony.name, self.colony:size(), self.colony.warehouse:toString()), 0, 0)
 end
 

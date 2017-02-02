@@ -30,7 +30,7 @@ function Map:fromString(w, h, input)
     local mapIndex = i - 1
     self.tiles[mapIndex] = {
       type = t,
-      terrain = TerrainTypesByID[t]
+      terrain = TerrainTypes[t]
     }
   end
 end
@@ -71,14 +71,128 @@ function Map:randomize(w, h)
   self.width = w
   self.height = h
 
+  local max = 20
+
   for i=0, w*h do
-    local x = math.random(4)
+    local x = math.random(max)
     local t = TerrainTypesByID[x]
     self.tiles[i] = {
       type = x,
       terrain = t,
     }
   end
+end
+
+function Map:betterRandomize(w, h)
+  self.width = w
+  self.height = h
+
+  math.randomseed(os.time())
+
+  local border = 2 -- minimum tiles between map limits and terrain
+  local tMin = 1
+  local tMax = 10
+  local equator = h / 2
+  local tStep = equator / tMax
+
+  -- Fill with deep ocean, initial temperature and height distribution:
+  for i=0, w*h do
+    local y = i / w
+    local dist = math.abs(y - equator)
+    local temperature = math.ceil(tMax - (dist / tStep))
+    if temperature <  tMin then temperature = tMin end
+
+    self.tiles[i] = {
+      type = 1,
+      terrain = TerrainTypes['shippinglane'],
+      generator = {
+        terrain = 'shippinglane',
+        temperature = temperature,
+        height = 0
+      },
+    }
+  end
+
+  -- randomly set terrain points with great height
+  local initalPointsPercentage = .1
+  local maxPoints = w*h*initalPointsPercentage
+  print("Initially setting", maxPoints)
+  -- idea: tectonic plate faultlines?
+  for i=0, maxPoints do
+    local x = math.random(border, w-border)
+    local y = math.random(border, h-border)
+    local height = math.random(2, 4)
+    local index = (y * w) + x
+    print(("Setting initial height %d at %d/%d (%d)"):format(height, x, y, index))
+
+    self.tiles[index].generator.height = height
+  end
+
+  -- Alter terrain based on neighbours
+  local iterations = 4
+  for iteration = 1, iterations do
+    for y=1, h-2 do
+      for x=1, w-2 do
+        local i = (y * w) + x
+        local tile = self.tiles[i]
+        local newHeight = tile.generator.height
+
+        local area = self:getArea(posAt(x-1, y-1), posAt(x+1, y+1))
+        local diffBetweenNeighbours = 0
+
+        for pos, otherTile in area do
+          local diff = math.abs(tile.generator.height - otherTile.generator.height)
+          diffBetweenNeighbours = diffBetweenNeighbours + diff
+        end
+        if math.abs(diffBetweenNeighbours) > math.random(10) then
+          newHeight = math.min(newHeight + 1, 4)
+        end
+
+        tile.generator.height = math.max(tile.generator.height, newHeight)
+      end
+    end
+  end
+
+  -- Set terrain type based on height
+  -- 0 deep ocean, 1 ocean, 2 land, 3 hills, 4 mountains
+  for i=0, w*h do
+    local tile = self.tiles[i]
+
+    if tile.generator.height > 1 then
+      tile.generator.terrain = 'land'
+    elseif tile.generator.height == 1 then
+      local def = TerrainTypes['ocean']
+      tile.type = def.id
+      tile.terrain = def
+    end
+  end
+
+
+  -- pick terrain based on temperature
+  for i=0, w*h do
+    local tile = self.tiles[i]
+    if tile.generator.terrain == 'land' then
+      local t = tile.generator.temperature
+
+      local temps = {}
+      for handle, def in pairs(TerrainTypes) do
+        if def.generator.temperatures[t] then
+          table.insert(temps, def)
+        end
+      end
+
+      for _, def in pairs(temps) do
+        local prob = def.generator.temperatures[t]
+        local rand = math.random()
+        if rand < prob  then
+          tile.type = def.id
+          tile.terrain = def
+          break
+        end
+      end
+    end
+  end
+
 end
 
 MapView = {}
@@ -162,14 +276,14 @@ function MapView:onPositionChanged(e)
   if e.components.owner.id ~= self.player.id then return end
   self:updateVisibility(e.components)
 end
-
 function MapView:onEntityDestroyed(e)
 end
 
 function MapView:updateVisibility(entity)
   local pos = entity.position
-  for y = pos.y-1,pos.y+1 do
-    for x = pos.x-1,pos.x+1 do
+  local radius = entity.vision.radius
+  for y = pos.y-radius,pos.y+radius do
+    for x = pos.x-radius,pos.x+radius do
       local p = posAt(x, y)
       if self.map:isOnMap(p) then
         self:setExplored(p)

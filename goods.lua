@@ -16,6 +16,11 @@ local GoodsDefinitions = {
     title = 'Tobacco',
     madeIn = 'outside',
   },
+  cotton = {
+    id = 'cotton',
+    title = 'Cotton',
+    madeIn = 'outside',
+  },
   sugar = {
     id = 'sugar',
     title = 'Sugar',
@@ -31,11 +36,55 @@ local GoodsDefinitions = {
     title = 'Furs',
     madeIn = 'outside',
   },
+  ore = {
+    id = 'ore',
+    title = 'Ore',
+    madeIn = 'outside',
+  },
+  silver = {
+    id = 'silver',
+    title = 'Silver',
+    madeIn = 'outside',
+  },
   rum = {
     id = 'rum',
     title = 'Rum',
     madeIn = 'building',
     madeFrom = 'sugar'
+  },
+  cigars = {
+    id = 'cigars',
+    title = 'Cigars',
+    madeIn = 'building',
+    madeFrom = 'tobacco'
+  },
+  cloth = {
+    id = 'cloth',
+    title = 'Cloth',
+    madeIn = 'building',
+    madeFrom = 'cotton'
+  },
+  coats = {
+    id = 'coats',
+    title = 'Coats',
+    madeIn = 'building',
+    madeFrom = 'furs'
+  },
+  tools = {
+    id = 'tools',
+    title = 'Tools',
+    madeIn = 'building',
+    madeFrom = 'ore'
+  },
+  muskets = {
+    id = 'muskets',
+    title = 'Muskets',
+    madeIn = 'building',
+    madeFrom = 'tools'
+  },
+  tradegoods = {
+    id = 'tradegoods',
+    title = 'Trade goods'
   },
   libertybells = {
     id = 'libertybells',
