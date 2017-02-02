@@ -90,10 +90,11 @@ function Viewport:drawMap()
   local area = self.map:getArea(posAt(v.startx, v.starty), posAt(v.endx, v.endy))
   for pos, tile in area do
     local x, y = self:mapToScreen(pos)
-    if tile.terrain.below then
-      self.tileset:draw(x, y, tile.terrain.below)
-    end
+    --if tile.terrain.below then
+      --self.tileset:draw(x, y, tile.terrain.below)
+    --end
 
+    print(pretty.dump(tile))
     self.tileset:draw(x, y, tile.type)
   end
 

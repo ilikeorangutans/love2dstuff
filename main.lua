@@ -56,11 +56,8 @@ function love.load()
   selectionManager = SelectionManager:new({entityManager=entityManager,bus=bus,visibilityCheck=mapView,player=p1})
   selectionManager:subscribe(bus)
 
-  viewport = Viewport:new{map = mapView, tileset = tileset, entityManager = entityManager}
-  viewport:subscribe(bus)
-
-  local w, h, flags = love.window.getMode()
-  viewport:resize(w, h)
+  --viewport = Viewport:new{map = mapView, tileset = tileset, entityManager = entityManager}
+  --viewport:subscribe(bus)
 
   local drawable = {img = 'caravel'}
   local colony = {img = 'colony'}
@@ -134,11 +131,14 @@ function love.load()
 
   game:start()
 
-  local gameMapView = GameMapView:new({ bus=bus, viewport=viewport, map=mapView, control=p1Ctrl, selectionManager=selectionManager, entityManager=entityManager })
+  local gameMapView = GameMapView:new({ bus=bus, viewport=viewport, map=mapView, tileset=tileset, control=p1Ctrl, selectionManager=selectionManager, entityManager=entityManager })
   gameMapView:subscribe(bus)
 
   viewStack = ViewStack
   viewStack:push(gameMapView)
+
+  local w, h, flags = love.window.getMode()
+  viewStack:current():resize(w, h)
 
   viewStateHandler = ViewStateHandler
   bus:subscribe("selection.selected", viewStateHandler, ViewStateHandler.onSelectEntity)
@@ -150,7 +150,7 @@ function ViewStateHandler:onSelectEntity(e)
   local comps = entityManager:get(e.id)
 
   if comps.colony then
-    local colonyView = ColonyView:new(comps, function() viewStack:pop() end)
+    local colonyView = ColonyView:new({ comps=comps, onExit=function() viewStack:pop() end })
     viewStack:push(colonyView)
   end
 end
@@ -170,7 +170,7 @@ function love.update(dt)
   if love.keyboard.isDown("2") then
     mapView = p2MapView
   end
-  viewport.map = mapView
+  -- viewport.map = mapView
 
   ai:update(dt)
   actionSystem:update(dt)
@@ -188,7 +188,7 @@ function love.mousereleased(x, y, button, istouch)
 end
 
 function love.mousemoved(x, y)
-  local posx, posy = viewport:screenToMap(x, y)
-  mousePosition.x = posx
-  mousePosition.y = posy
+  --local posx, posy = viewport:screenToMap(x, y)
+  --mousePosition.x = posx
+  --mousePosition.y = posy
 end
