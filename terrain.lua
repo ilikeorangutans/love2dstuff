@@ -114,7 +114,7 @@ TerrainTypes = {
     }
   },
   plains = {
-    id = 2,
+    id = 13,
     title = 'Plains',
     terrain = 'land',
     produces = {
@@ -124,7 +124,7 @@ TerrainTypes = {
     }
   },
   prairie = {
-    id = 2,
+    id = 14,
     title = 'Prairie',
     terrain = 'land',
     produces = {
@@ -133,7 +133,7 @@ TerrainTypes = {
     }
   },
   rainforest = {
-    id = 2,
+    id = 15,
     title = 'rainforest',
     terrain = 'land',
     produces = {
@@ -144,7 +144,7 @@ TerrainTypes = {
     }
   },
   savannah = {
-    id = 3,
+    id = 16,
     title = 'Savannah',
     terrain = 'land',
     produces = {
@@ -153,7 +153,7 @@ TerrainTypes = {
     }
   },
   scrubforest = {
-    id = 3,
+    id = 17,
     title = 'Scrub forest',
     terrain = 'land',
     produces = {
@@ -164,7 +164,7 @@ TerrainTypes = {
     }
   },
   swamp = {
-    id = 3,
+    id = 18,
     title = 'Swamp',
     terrain = 'land',
     produces = {
@@ -174,7 +174,7 @@ TerrainTypes = {
     }
   },
   tropicalforest = {
-    id = 3,
+    id = 19,
     title = 'Tropical forest',
     terrain = 'land',
     produces = {
@@ -184,7 +184,7 @@ TerrainTypes = {
     }
   },
   tundra = {
-    id = 2,
+    id = 20,
     title = 'Grassland',
     terrain = 'land',
     produces = {
@@ -192,7 +192,7 @@ TerrainTypes = {
     }
   },
   wetlandforest = {
-    id = 3,
+    id = 21,
     title = 'Wetland forest',
     terrain = 'land',
     produces = {
@@ -210,9 +210,9 @@ function loadTerrainTypes()
   print("Loading terrain definitions")
   for t, v in pairs(TerrainTypes) do
     --local index = (#TerrainTypesByID)
-    print("  ", t, v)
-    v.id = t
-    TerrainTypes[t].id = t
+    print("  adding ", t, v.id)
+    -- v.id = t
+    -- TerrainTypes[t].id = t
     TerrainTypesByID[v.id] = v
     print(pretty.dump(v))
   end

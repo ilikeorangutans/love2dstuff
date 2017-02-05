@@ -60,7 +60,10 @@ function Tileset:load()
 end
 
 function Tileset:draw(x, y, id)
-  love.graphics.draw(self.terrain, self.tiles[id], x, y)
+  print("drawing", id)
+  local t = TerrainTypesByID[id]
+  print("found", t)
+  love.graphics.draw(self.terrain, self.tiles[t.terrain.id], x, y)
 end
 
 function Tileset:tileSize()

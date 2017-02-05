@@ -94,6 +94,7 @@ function Viewport:drawMap()
       --self.tileset:draw(x, y, tile.terrain.below)
     --end
 
+    print("drawMap() TILE")
     print(pretty.dump(tile))
     self.tileset:draw(x, y, tile.type)
   end

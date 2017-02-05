@@ -71,8 +71,10 @@ function Map:randomize(w, h)
   self.width = w
   self.height = h
 
+  local max = 20
+
   for i=0, w*h do
-    local x = math.random(4)
+    local x = math.random(max)
     local t = TerrainTypesByID[x]
     self.tiles[i] = {
       type = x,
