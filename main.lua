@@ -34,6 +34,7 @@ function love.load()
   else
   end
 
+  loadTerrainTypes()
   bus = Bus:new()
 
   game = Game:new(bus)
@@ -44,7 +45,7 @@ function love.load()
   tileset:load()
   entityManager = EntityManager:new({bus=bus})
   map = Map:new()
-  map:randomize(60, 60)
+  map:betterRandomize(50, 50)
 
   p1MapView = MapView:new({map=map,player=p1})
   p1MapView:subscribe(bus)
@@ -62,7 +63,7 @@ function love.load()
   local drawable = {img = 'caravel'}
   local colony = {img = 'colony'}
 
-  entityManager:create({ drawable=drawable, position={ x=1, y=1 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, ship=Ship:new()})
+  entityManager:create({ drawable=drawable, position={ x=10, y=10 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(10), visible={value=true}, vision={radius=10}, ship=Ship:new()})
   entityManager:create({ drawable=drawable, position={ x=20, y=20 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, ship=Ship:new()})
   entityManager:create({ drawable={img = 'freecolonist'}, position={ x=2, y=1 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, colonist=Colonist:new()})
   entityManager:create({ drawable={img = 'expertfarmer'}, position={ x=3, y=1 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, colonist=Colonist:new({profession=Professions.expertfarmer})})
@@ -188,7 +189,5 @@ function love.mousereleased(x, y, button, istouch)
 end
 
 function love.mousemoved(x, y)
-  --local posx, posy = viewport:screenToMap(x, y)
-  --mousePosition.x = posx
-  --mousePosition.y = posy
+  viewStack:current():mousemoved(x, y)
 end

@@ -45,6 +45,20 @@ function GameMapView:update(dt)
   end
 end
 
+function GameMapView:mousemoved(x,y)
+  local posx, posy = self.viewport:screenToMap(x, y)
+  if posx == self.lastx and posy == self.lasty then
+    return
+  end
+
+  self.lastx = posx
+  self.lasty = posy
+
+  local tile = map:getAt(posAt(posx, posy))
+  print(("Mouse over %d/%d: %s"):format(posx, posy, tile.terrain.title))
+  print(pretty.dump(tile))
+end
+
 function GameMapView:keypressed(key, scancode, isrepeat)
   if scancode == 'escape' then
     -- TODO shouldn't just quit here, bring up menu or something
