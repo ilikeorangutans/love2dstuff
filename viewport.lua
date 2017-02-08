@@ -30,6 +30,8 @@ function Viewport:new(o)
     heightInTiles = 0
   }
 
+  o.mapRenderer = MapRenderer:new({ tileset = o.tileset, map = o.map })
+
   return o
 end
 
@@ -38,9 +40,10 @@ function Viewport:subscribe(bus)
 end
 
 function Viewport:draw()
-  self:drawMap()
+  self.mapRenderer:draw()
+  --self:drawMap()
   self:drawEntities()
-  self:drawCursorHighlights()
+  --self:drawCursorHighlights()
 end
 
 function Viewport:drawCursorHighlights()
@@ -80,24 +83,6 @@ function Viewport:drawEntities()
       love.graphics.print(all.colony.name, drawx, drawy+32)
     end
   end
-end
-
-function Viewport:drawMap()
-  local drawX, drawY = self.screenx, self.screeny
-  local tileW, tileH = self.tileset:tileSize()
-  local v = self.visible
-
-  local area = self.map:getArea(posAt(v.startx, v.starty), posAt(v.endx, v.endy))
-  for pos, tile in area do
-    local x, y = self:mapToScreen(pos)
-    --if tile.terrain.below then
-      --self.tileset:draw(x, y, tile.terrain.below)
-    --end
-
-    self.tileset:draw(x, y, tile.type)
-  end
-
-  love.graphics.rectangle('line', self.screenx, self.screeny, self.w, self.h)
 end
 
 function Viewport:resize(w, h)

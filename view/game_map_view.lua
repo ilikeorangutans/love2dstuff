@@ -9,8 +9,9 @@ function GameMapView:new(o)
   setmetatable(o, self)
   self.__index = self
 
-  o.viewport = Viewport:new({ map=o.map, tileset=o.tileset, entityManager=o.entityManager })
+  --o.viewport = Viewport:new({ map=o.map, tileset=o.tileset, entityManager=o.entityManager })
   -- todo : subscribe to bus
+  o.mapView = MapRenderer:new({ x=10, y=10, tileset=o.tileset, map=o.map })
 
   return o
 end
@@ -21,6 +22,7 @@ function GameMapView:subscribe(bus)
 end
 
 function GameMapView:resize(w, h)
+  print("GameMapView:resize()", w, h)
   self.viewport:resize(w, h)
 end
 

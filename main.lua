@@ -3,6 +3,10 @@ local stringx = require 'pl.stringx'
 stringx.import()
 local tablex = require 'pl.tablex'
 
+require 'ui/widgets'
+require 'view/map_renderer'
+require 'view/main_menu'
+require 'view/map_generator_view'
 require 'util'
 require 'viewstate'
 require 'predicate'
@@ -38,11 +42,23 @@ function love.load()
   loadTerrainTypes()
   bus = Bus:new()
 
+  viewStack = ViewStack
+  local w, h, flags = love.window.getMode()
+  viewStack:resize(w, h)
+
+  local mainMenu = MainMenu:new()
+  viewStack:push(mainMenu)
+
+  viewStateHandler = ViewStateHandler
+  bus:subscribe("selection.selected", viewStateHandler, ViewStateHandler.onSelectEntity)
+end
+
+function xxx(viewstack)
   game = Game:new(bus)
   local p1 = game:addPlayer(Player:new('Jakob'))
   local p2 = game:addPlayer(Player:new('Hannah'))
 
-  tileset = Tileset:new()
+  local tileset = Tileset:new()
   tileset:load()
   entityManager = EntityManager:new({bus=bus})
   map = Map:new()
@@ -57,9 +73,6 @@ function love.load()
 
   selectionManager = SelectionManager:new({entityManager=entityManager,bus=bus,visibilityCheck=mapView,player=p1})
   selectionManager:subscribe(bus)
-
-  --viewport = Viewport:new{map = mapView, tileset = tileset, entityManager = entityManager}
-  --viewport:subscribe(bus)
 
   local drawable = {img = 'caravel'}
   local colony = {img = 'colony'}
@@ -133,17 +146,10 @@ function love.load()
 
   game:start()
 
-  local gameMapView = GameMapView:new({ bus=bus, viewport=viewport, map=mapView, tileset=tileset, control=p1Ctrl, selectionManager=selectionManager, entityManager=entityManager })
+  local gameMapView = GameMapView:new({ bus=bus, map=mapView, tileset=tileset, control=p1Ctrl, selectionManager=selectionManager, entityManager=entityManager })
   gameMapView:subscribe(bus)
 
-  viewStack = ViewStack
   viewStack:push(gameMapView)
-
-  local w, h, flags = love.window.getMode()
-  viewStack:current():resize(w, h)
-
-  viewStateHandler = ViewStateHandler
-  bus:subscribe("selection.selected", viewStateHandler, ViewStateHandler.onSelectEntity)
 end
 
 ViewStateHandler = {}
@@ -158,7 +164,7 @@ function ViewStateHandler:onSelectEntity(e)
 end
 
 function love.resize(w, h)
-  viewStack:current():resize(w, h)
+  viewStack:resize(w, h)
 end
 
 function love.draw()
@@ -166,17 +172,9 @@ function love.draw()
 end
 
 function love.update(dt)
-  if love.keyboard.isDown("1") then
-    mapView = p1MapView
-  end
-  if love.keyboard.isDown("2") then
-    mapView = p2MapView
-  end
-  -- viewport.map = mapView
-
-  ai:update(dt)
-  actionSystem:update(dt)
-  colonySystem:update(dt)
+  --ai:update(dt)
+  --actionSystem:update(dt)
+  --colonySystem:update(dt)
 
   viewStack:current():update(dt)
 end

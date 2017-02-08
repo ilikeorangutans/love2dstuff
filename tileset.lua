@@ -70,7 +70,9 @@ function Tileset:draw(x, y, id)
   if not self.tiles[t.handle] then
     print("ERROR no tile found for handle", t.handle)
   end
-  love.graphics.draw(self.terrain, self.tiles[t.handle], x, y)
+  local quad = self.tiles[t.handle]
+  assert(quad, ("no quad found for handle %q"):format(t.handle))
+  love.graphics.draw(self.terrain, quad, x, y)
 end
 
 function Tileset:tileSize()
