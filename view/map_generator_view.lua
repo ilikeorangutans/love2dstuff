@@ -14,7 +14,7 @@ function MapGeneratorView:new(o)
   o.generator = PureRandomMapGenerator
   o.map = o.generator:generate(50, 50)
 
-  o.mapView = MapRenderer:new({ x=10, y=10, w=10, h=10, tileset=tileset, map=o.map })
+  o.mapView = MapRenderer:new({ x=0, y=0, w=10, h=10, tileset=tileset, map=o.map })
   o.widgets:add(o.mapView)
 
   o.button = Button:new({ label='pure random', w=100, h=23 })
@@ -48,7 +48,7 @@ function MapGeneratorView:randomizeMap(w, h)
 end
 
 function MapGeneratorView:resize(w, h)
-  self.mapView:resize(w-120, h-20)
+  self.mapView:resize(w, h)
 end
 
 function MapGeneratorView:update(dt)

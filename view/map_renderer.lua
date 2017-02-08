@@ -33,9 +33,6 @@ function MapRenderer:draw()
 
     self.tileset:draw(x, y, tile.type)
   end
-
-  love.graphics.setColor(255, 0, 0, 255)
-  love.graphics.rectangle('line', self.x, self.y, self.w, self.h)
 end
 
 function MapRenderer:resize(w, h)
