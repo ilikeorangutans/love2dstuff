@@ -1,0 +1,153 @@
+Tilemancer 0.2.0
+
+Color 0 73 122
+Color 155 215 255
+Color 0 48 79
+Color 0 84 1
+Color 0 109 0
+Color 65 114 0
+Color 97 112 0
+Color 163 145 11
+PaletteSave1 
+PaletteSave2 
+FileSave1 /Users/jakob/code/love2dstuff/assets/tiles
+FileSave2 tilemancer_defs
+Indexed 0
+Size 32
+Camera -61.0848 -779.526
+Node {
+Name cells.lua
+Position 425.048 53.2416
+Parameter 4 -1 -1 0
+Parameter 2 2 -1 0
+Parameter 30 0 100 0
+Parameter 100 0 -1 0
+}
+Node {
+Name colorizer.lua
+Position 259.175 97.3338
+Ramp {
+Point 0 214.992 0.999141 1
+}
+Parameter 0 0 0 0
+Parameter 0 0 0 0
+Parameter 214.992 0.999141 1 0
+}
+Node {
+Name blend.lua
+Position 625.708 57.8402
+Parameter 0 0 5 0
+Parameter 100 0 100 0
+Connection 0 1 0
+Connection 1 0 0
+}
+Node {
+Name perlin_noise.lua
+Position 383.891 296.035
+Parameter 0 -1 -1 0
+Parameter 7 2 -1 0
+Parameter 2 1 -1 0
+Parameter 205 100 -1 0
+Parameter 80 0 100 0
+Parameter 100 0 -1 0
+}
+Node {
+Name colorizer.lua
+Position 230.996 342.496
+Ramp {
+Point 0 264.56 0.944637 0.921608
+}
+Parameter 0 0 0 0
+Parameter 0 0 0 0
+Parameter 264.56 0.944637 0.921608 0
+}
+Node {
+Name blend.lua
+Position 635.456 287.257
+Parameter 3 0 5 0
+Parameter 70 0 100 0
+Connection 0 4 0
+Connection 1 3 0
+}
+Node {
+Name colorizer.lua
+Position 514.152 516.252
+Ramp {
+Point 0 310.914 0.86167 0.334225
+}
+Parameter 0 0 0 0
+Parameter 0 0 0 0
+Parameter 310 0 0 3
+}
+Node {
+Name perlin_noise.lua
+Position 289.858 549.514
+Parameter 61 -1 -1 0
+Parameter 7 2 -1 0
+Parameter 2 1 -1 0
+Parameter 205 100 -1 0
+Parameter 80 0 100 0
+Parameter 100 0 -1 0
+}
+Node {
+Name blend.lua
+Position 707.548 541.637
+Parameter 3 0 5 0
+Parameter 70 0 100 0
+Connection 0 6 0
+Connection 1 7 0
+}
+Node {
+Name perlin_noise.lua
+Position 206.829 1024.96
+Parameter 43 -1 -1 0
+Parameter 9 2 -1 0
+Parameter 3 1 -1 0
+Parameter 200 100 -1 0
+Parameter 80 0 100 0
+Parameter 123 0 -1 0
+}
+Node {
+Name cells.lua
+Position 147.483 818.878
+Parameter 0 -1 -1 0
+Parameter 32 2 -1 0
+Parameter 25 0 100 0
+Parameter 100 0 -1 0
+}
+Node {
+Name blend.lua
+Position 428.908 906.128
+Parameter 3 0 5 0
+Parameter 100 0 100 0
+Connection 0 10 0
+Connection 1 9 0
+}
+Node {
+Name colorizer.lua
+Position 569.815 889.549
+Ramp {
+Point 0 354.289 0.700484 0.504272
+Point 100 130.236 1 0.685774
+Point 17 106.699 0.914866 0.17241
+Point 30 128.29 1 0.208366
+}
+Parameter 0 0 0 0
+Parameter 0 0 0 0
+Parameter 354.289 0.700484 0.504272 6
+Connection 0 11 0
+}
+Node {
+Name colorizer.lua
+Position 575.201 1097.13
+Ramp {
+Point 0 108.435 0.323375 0.476653
+Point 64 106.699 0.31959 0.733309
+Point 100 51.3402 0.741659 0.730207
+Point 73 135 0.722623 0.559135
+}
+Parameter 0 0 0 0
+Parameter 0 0 0 0
+Parameter 135 0.722623 0.559135 5
+Connection 0 11 0
+}
