@@ -67,6 +67,22 @@ function Map:getArea(start, stop)
   end
 end
 
+function Map:getNeighbours(pos, radius)
+  radius = radius or 1
+  local start = posAt(pos.x - radius, pos.y - radius)
+  local stop = posAt(pos.x + radius, pos.y + radius)
+  local it = self:getArea(start, stop)
+
+  return function()
+    local p, tile = it()
+    if p and p.x == pos.x and p.y == pos.y then
+      p, tile = it()
+    end
+
+    return p, tile
+  end
+end
+
 function Map:randomize(w, h)
   self.width = w
   self.height = h
@@ -255,6 +271,7 @@ function BetterRandomMapGenerator:generate(w, h)
         local newHeight = tile.generator.height
 
         local area = map:getArea(posAt(x-1, y-1), posAt(x+1, y+1))
+        local area = map:getNeighbours(posAt(x, y))
         local diffBetweenNeighbours = 0
 
         for pos, otherTile in area do
