@@ -18,7 +18,6 @@ local TerrainDefinitions = {
       temperatures = {
       },
     }
-
   },
   ocean = {
     id = 2,
@@ -40,7 +39,7 @@ local TerrainDefinitions = {
     generator = {
       temperatures = {
         0.8,
-        0.6,
+        0.3,
       },
     }
   },
@@ -55,10 +54,9 @@ local TerrainDefinitions = {
     },
     generator = {
       temperatures = {
-        0.0,
-        0.4,
-        0.2,
         0.1,
+        0.4,
+        0.2
       },
     }
   },
@@ -124,7 +122,7 @@ local TerrainDefinitions = {
       temperatures = {
         0.0,
         0.0,
-        0.2,
+        0.1,
         0.2,
         0.2,
         0.2,
@@ -251,7 +249,6 @@ local TerrainDefinitions = {
         0.2, -- 10
       },
     }
-
   },
   plains = {
     id = 13,
@@ -276,7 +273,6 @@ local TerrainDefinitions = {
         0.2, -- 10
       },
     }
-
   },
   prairie = {
     id = 14,
@@ -300,7 +296,6 @@ local TerrainDefinitions = {
         0.8, -- 10
       },
     }
-
   },
   rainforest = {
     id = 15,
@@ -326,7 +321,6 @@ local TerrainDefinitions = {
         0.8, -- 10
       },
     }
-
   },
   savannah = {
     id = 16,
@@ -350,7 +344,6 @@ local TerrainDefinitions = {
         0.9, -- 10
       },
     }
-
   },
   scrubforest = {
     id = 17,
@@ -400,7 +393,6 @@ local TerrainDefinitions = {
         0.2, -- 10
       },
     }
-
   },
   tropicalforest = {
     id = 19,
@@ -425,7 +417,6 @@ local TerrainDefinitions = {
         0.9, -- 10
       },
     }
-
   },
   tundra = {
     id = 20,

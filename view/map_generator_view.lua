@@ -10,32 +10,32 @@ function MapGeneratorView:new(o)
 
   local entityManager = EntityManager:new()
 
+  o.mapWidth = 70
+  o.mapHeight = 70
   o.widgets = Widgets:new()
   o.generator = PureRandomMapGenerator
-  o.map = o.generator:generate(50, 50)
+  o.map = o.generator:generate(o.mapWidth, o.mapHeight)
 
   o.mapView = MapRenderer:new({ x=0, y=0, w=10, h=10, tileset=tileset, map=o.map })
   o.widgets:add(o.mapView)
 
   o.button = Button:new({ label='pure random', w=100, h=23 })
   o.button.onclick = function()
-    print("BANGO")
     if o.button.label == 'pure random' then
       o.button.label = 'better'
       o.generator = BetterRandomMapGenerator
-      o:randomizeMap(50, 50)
+      o:randomizeMap(o.mapWidth, o.mapHeight)
     else
       o.button.label = 'pure random'
       o.generator = PureRandomMapGenerator
-      o:randomizeMap(50, 50)
+      o:randomizeMap(o.mapWidth, o.mapHeight)
     end
   end
   o.widgets:add(o.button)
 
   o.randomizeButton = Button:new({label="randomize", w=100, h=23, y = 38})
   o.randomizeButton.onclick = function()
-    print("BOOYA")
-    o:randomizeMap(50, 50)
+    o:randomizeMap(o.mapWidth, o.mapHeight)
   end
   o.widgets:add(o.randomizeButton)
 
@@ -43,7 +43,6 @@ function MapGeneratorView:new(o)
 end
 
 function MapGeneratorView:randomizeMap(w, h)
-  print("randomizeMap()")
   self.mapView.map = self.generator:generate(w, h)
 end
 
@@ -71,6 +70,7 @@ function MapGeneratorView:update(dt)
 end
 
 function MapGeneratorView:mousemoved(x, y)
+  self.widgets:mousemoved(x, y)
 end
 
 function MapGeneratorView:keypressed(key, scancode, isrepeat)
@@ -80,7 +80,7 @@ function MapGeneratorView:keypressed(key, scancode, isrepeat)
 end
 
 function MapGeneratorView:mousereleased(x, y, button, istouch)
-  self.widgets:mousereleased(x, y, button, istouch)
+  if self.widgets:mousereleased(x, y, button, istouch) then return end
 end
 
 function MapGeneratorView:draw()

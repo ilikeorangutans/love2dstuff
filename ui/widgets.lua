@@ -28,6 +28,22 @@ function Widgets:mousereleased(x, y, button, istouch)
   end
 end
 
+function Widgets:mousemoved(x, y)
+  for _, widget in pairs(self.widgets) do
+    if widget:mousemoved(x, y) then
+      return true
+    end
+  end
+end
+
+function overBox(x, y, box)
+  return over(x, y, box.x, box.y, box.x + box.w, box.y + box.h)
+end
+
+function over(x, y, tlx, tly, brx, bry)
+  return tlx < x and x < brx and tly < y and y < bry
+end
+
 Button = {}
 function Button:new(o)
   o = o or {}
@@ -41,23 +57,39 @@ function Button:new(o)
   if not o.w then o.w = 200 end
   if not o.h then o.h = 50 end
 
+  o.state = 'out'
+
   return o
 end
 
 function Button:draw()
-  love.graphics.setColor(255, 255, 255)
+  local r, g, b = self:color()
+  love.graphics.setColor(r, g, b)
   love.graphics.rectangle('fill', self.x, self.y, self.w, self.h, 5, 5)
   love.graphics.setColor(0, 0, 0)
   love.graphics.print(self.label, self.x + 5, self.y + 5)
 end
 
-function Button:mousereleased(x, y, button, istouch)
-  if self.x < x and x < self.x + self.w and self.y < y and y < self.y + self.h then
-    self:onclick()
+function Button:color()
+  if self.state == 'over' then
+    return 255, 255, 255
+  else
+    return 210, 210, 210
   end
-  return true
+end
+
+function Button:mousereleased(x, y, button, istouch)
+  if overBox(x, y, self) then
+    self:onclick()
+    return true
+  end
 end
 
 function Button:mousemoved(x, y)
+  if overBox(x, y, self) then
+    self.state = 'over'
+  else
+    self.state = 'out'
+  end
 end
 

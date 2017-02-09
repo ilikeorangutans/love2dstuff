@@ -222,7 +222,7 @@ function BetterRandomMapGenerator:generate(w, h)
 
   math.randomseed(os.time())
 
-  local border = 2 -- minimum tiles between map limits and terrain
+  local border = 5 -- minimum tiles between map limits and terrain
   local tMin = 1
   local tMax = 10
   local equator = h / 2
@@ -247,22 +247,20 @@ function BetterRandomMapGenerator:generate(w, h)
   end
 
   -- randomly set terrain points with great height
-  local initalPointsPercentage = .1
+  local initalPointsPercentage = .05
   local maxPoints = w*h*initalPointsPercentage
-  print("Initially setting", maxPoints)
   -- idea: tectonic plate faultlines?
   for i=0, maxPoints do
     local x = math.random(border, w-border)
     local y = math.random(border, h-border)
     local height = math.random(2, 4)
     local index = (y * w) + x
-    print(("Setting initial height %d at %d/%d (%d)"):format(height, x, y, index))
 
     map.tiles[index].generator.height = height
   end
 
   -- Alter terrain based on neighbours
-  local iterations = 4
+  local iterations = 6
   for iteration = 1, iterations do
     for y=1, h-2 do
       for x=1, w-2 do

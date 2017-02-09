@@ -35,6 +35,9 @@ function MapRenderer:draw()
   end
 end
 
+function MapRenderer:mousemoved(x, y)
+end
+
 function MapRenderer:resize(w, h)
   self.viewportArea:resize(w, h)
   self.w = w

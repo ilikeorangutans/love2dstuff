@@ -21,6 +21,7 @@ function MainMenu:update(dt)
 end
 
 function MainMenu:mousemoved(x, y)
+  self.widgets:mousemoved(x, y)
 end
 
 function MainMenu:keypressed(key, scancode, isrepeat)
