@@ -3,7 +3,6 @@ local stringx = require 'pl.stringx'
 stringx.import()
 local tablex = require 'pl.tablex'
 
-require 'ui/widgets'
 require 'view/map_renderer'
 require 'view/main_menu'
 require 'view/map_generator_view'
