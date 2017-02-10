@@ -13,7 +13,7 @@ function GameMapView:new(o)
   assert(o.map, "map needed")
   assert(o.tileset, "tileset needed")
 
-  o.viewport = ViewportArea:new({
+  o.viewport = Viewport:new({
     screenx=0,
     screeny=0,
     w=10,

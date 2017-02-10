@@ -476,13 +476,7 @@ TerrainTypes = {}
 TerrainTypesByID = {}
 
 function loadTerrainTypes()
-  print("Loading terrain definitions")
   for handle, def in pairs(TerrainDefinitions) do
-    print("  adding ", handle, def.id)
-    -- v.id = t
-    --TerrainTypes[t].id = t
-    --TerrainTypesByID[v.id] = v
-    --
     def.handle = handle
     TerrainTypes[handle] = def
     TerrainTypesByID[def.id] = def

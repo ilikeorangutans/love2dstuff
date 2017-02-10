@@ -17,7 +17,7 @@ function MapGeneratorView:new(o)
   o.generator = PureRandomMapGenerator
   o.map = o.generator:generate(o.mapWidth, o.mapHeight)
 
-  o.viewport = ViewportArea:new({
+  o.viewport = Viewport:new({
     screenx=0,
     screeny=0,
     w=10,
