@@ -83,25 +83,6 @@ function Map:getNeighbours(pos, radius)
   end
 end
 
-function Map:randomize(w, h)
-  self.width = w
-  self.height = h
-
-  local max = 20
-
-  for i=0, w*h do
-    local x = math.random(max)
-    local t = TerrainTypesByID[x]
-    self.tiles[i] = {
-      type = x,
-      terrain = t,
-    }
-  end
-end
-
-function Map:betterRandomize(w, h)
-end
-
 MapView = {}
 
 function MapView:new(o)

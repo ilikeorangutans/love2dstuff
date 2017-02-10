@@ -17,7 +17,17 @@ function MapGeneratorView:new(o)
   o.generator = PureRandomMapGenerator
   o.map = o.generator:generate(o.mapWidth, o.mapHeight)
 
-  o.mapView = MapRenderer:new({ x=0, y=0, w=10, h=10, tileset=tileset, map=o.map })
+  o.viewport = ViewportArea:new({
+    screenx=0,
+    screeny=0,
+    w=10,
+    h=10,
+    tileW=tileset.tileW,
+    tileH=tileset.tileH,
+    mapWidth=o.map.width,
+    mapHeight=o.map.height })
+
+  o.mapView = MapRenderer:new({ x=0, y=0, w=10, h=10, tileset=tileset, map=o.map, viewport=o.viewport })
   o.widgets:add(o.mapView)
 
   o.button = Button:new({ label='pure random', w=100, h=23 })
@@ -66,7 +76,7 @@ function MapGeneratorView:update(dt)
     deltay = 4
   end
   if deltax ~= 0 or deltay ~= 0 then
-    self.mapView.viewportArea:moveBy(deltax, deltay)
+    self.viewport:moveBy(deltax, deltay)
   end
 end
 
@@ -76,7 +86,7 @@ function MapGeneratorView:mousemoved(x, y)
   if self.pressed[1] then
     local deltax = self.lastx - x
     local deltay = self.lasty - y
-    self.mapView.viewportArea:moveBy(deltax, deltay)
+    self.viewport:moveBy(deltax, deltay)
   end
 
   self.lastx = x

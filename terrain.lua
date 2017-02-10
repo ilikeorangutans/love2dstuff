@@ -299,7 +299,7 @@ local TerrainDefinitions = {
   },
   rainforest = {
     id = 15,
-    title = 'rainforest',
+    title = 'Rainforest',
     terrain = 'land',
     produces = {
       corn = 2,

@@ -40,7 +40,6 @@ function love.load()
   end
 
   loadTerrainTypes()
-  bus = Bus:new()
 
   viewStack = ViewStack
   local w, h, flags = love.window.getMode()
@@ -50,11 +49,12 @@ function love.load()
   viewStack:push(mainMenu)
 
   viewStateHandler = ViewStateHandler
-  bus:subscribe("selection.selected", viewStateHandler, ViewStateHandler.onSelectEntity)
 end
 
 function xxx(viewstack)
-  game = Game:new(bus)
+  bus = Bus:new()
+  bus:subscribe("selection.selected", viewStateHandler, ViewStateHandler.onSelectEntity)
+  game = Game:new({ bus=bus })
   local p1 = game:addPlayer(Player:new('Jakob'))
   local p2 = game:addPlayer(Player:new('Hannah'))
 
@@ -78,11 +78,6 @@ function xxx(viewstack)
   local colony = {img = 'colony'}
 
   entityManager:create({ drawable=drawable, position={ x=10, y=10 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(10), visible={value=true}, vision={radius=10}, ship=Ship:new()})
-  entityManager:create({ drawable=drawable, position={ x=20, y=20 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, ship=Ship:new()})
-  entityManager:create({ drawable={img = 'freecolonist'}, position={ x=2, y=1 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, colonist=Colonist:new()})
-  entityManager:create({ drawable={img = 'expertfarmer'}, position={ x=3, y=1 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, colonist=Colonist:new({profession=Professions.expertfarmer})})
-  entityManager:create({ drawable=drawable, position={ x=30, y=30 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, ship=Ship:new()})
-  entityManager:create({ drawable=drawable, position={ x=40, y=40 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, ship=Ship:new()})
 
   mousePosition = {x=0, y=0}
   entityManager:create({position = mousePosition, cursor = {}})

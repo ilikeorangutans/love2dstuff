@@ -9,9 +9,24 @@ function GameMapView:new(o)
   setmetatable(o, self)
   self.__index = self
 
-  --o.viewport = Viewport:new({ map=o.map, tileset=o.tileset, entityManager=o.entityManager })
-  -- todo : subscribe to bus
-  o.mapView = MapRenderer:new({ x=10, y=10, tileset=o.tileset, map=o.map })
+  assert(o.game, "game needed")
+  assert(o.map, "map needed")
+  assert(o.tileset, "tileset needed")
+
+  o.viewport = ViewportArea:new({
+    screenx=0,
+    screeny=0,
+    w=10,
+    h=10,
+    tileW=o.tileset.tileW,
+    tileH=o.tileset.tileH,
+    mapWidth=o.map.width,
+    mapHeight=o.map.height })
+
+  o.mapView = MapRenderer:new({ x=0, y=0, w=10, h=10, tileset=o.tileset, map=o.map, viewport=o.viewport })
+
+  o.widgets = Widgets:new()
+  o.widgets:add(o.mapView)
 
   return o
 end
@@ -24,6 +39,7 @@ end
 function GameMapView:resize(w, h)
   print("GameMapView:resize()", w, h)
   self.viewport:resize(w, h)
+  --self.widgets:resize(w, h)
 end
 
 function GameMapView:update(dt)
@@ -47,7 +63,7 @@ function GameMapView:update(dt)
   end
 end
 
-function GameMapView:mousemoved(x,y)
+function GameMapView:mousemoved(x, y)
   local posx, posy = self.viewport:screenToMap(x, y)
   if posx == self.lastx and posy == self.lasty then
     return
@@ -56,9 +72,8 @@ function GameMapView:mousemoved(x,y)
   self.lastx = posx
   self.lasty = posy
 
-  local tile = map:getAt(posAt(posx, posy))
+  local tile = self.map:getAt(posAt(posx, posy))
   print(("Mouse over %d/%d: %s"):format(posx, posy, tile.terrain.title))
-  print(pretty.dump(tile))
 end
 
 function GameMapView:keypressed(key, scancode, isrepeat)
@@ -95,7 +110,7 @@ function GameMapView:mousereleased(x, y, button, istouch)
   print("GameMapView:mousereleased", x, y, button, istouch)
   if button == 1 then
     -- TODO might run this through player control
-    self.bus:fire("viewport.clicked", {button=button, x=posx, y=posy})
+    --self.bus:fire("viewport.clicked", {button=button, x=posx, y=posy})
   elseif button == 2 then
     if self.selected then
       local entity = self.selected
@@ -111,6 +126,10 @@ function GameMapView:mousereleased(x, y, button, istouch)
 end
 
 function GameMapView:draw()
+  self.widgets:draw()
+end
+
+function foo()
   local viewport = self.viewport
   viewport:draw()
 

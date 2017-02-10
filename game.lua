@@ -1,12 +1,16 @@
 Game = {}
 
-function Game:new(bus)
-  o = {}
+function Game:new(o)
+  o = o or {}
   setmetatable(o, self)
   self.__index = self
+
+  assert(o.bus, "bus needed")
+
   o.players = {}
   o.bus = bus
   o.turn = 0
+
   return o
 end
 
@@ -32,3 +36,11 @@ function Game:newTurn()
   self.bus:fire('game.newTurn', {player = self:currentPlayer()})
 end
 
+Engine = {}
+
+function Engine:new(o)
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+  return o
+end

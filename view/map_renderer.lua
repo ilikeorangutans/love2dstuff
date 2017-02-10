@@ -8,16 +8,7 @@ function MapRenderer:new(o)
   assert(o.map, "map needed")
   assert(o.x, "x needed")
   assert(o.y, "y needed")
-
-  o.viewportArea = ViewportArea:new({
-    screenx=o.x,
-    screeny=o.y,
-    w=o.w,
-    h=o.h,
-    tileW=o.tileset.tileW,
-    tileH=o.tileset.tileH,
-    mapWidth=o.map.width,
-    mapHeight=o.map.height })
+  assert(o.viewport, "viewport needed")
 
   return o
 end
@@ -25,11 +16,11 @@ end
 function MapRenderer:draw()
   love.graphics.setColor(255, 255, 255, 255)
   local tileW, tileH = self.tileset:tileSize()
-  local v = self.viewportArea.visible
+  local v = self.viewport.visible
 
   local area = self.map:getArea(posAt(v.startx, v.starty), posAt(v.endx, v.endy))
   for pos, tile in area do
-    local x, y = self.viewportArea:mapToScreen(pos)
+    local x, y = self.viewport:mapToScreen(pos)
 
     self.tileset:draw(x, y, tile.type)
   end
@@ -39,7 +30,7 @@ function MapRenderer:mousemoved(x, y)
 end
 
 function MapRenderer:resize(w, h)
-  self.viewportArea:resize(w, h)
+  self.viewport:resize(w, h)
   self.w = w
   self.h = h
 end
@@ -120,8 +111,19 @@ function ViewportArea:resize(w, h)
   self:calculateBounds()
 end
 
+function ViewportArea:center(pos)
+  local x = ((pos.x - (self.visible.widthInTiles / 2)) * self.tileW) + (self.tileW/2)
+  local y = ((pos.y - (self.visible.heightInTiles / 2)) * self.tileH) + (self.tileH/2)
+  self:moveTo(x, y)
+end
+
 function ViewportArea:mapToScreen(pos)
   local tilew, tileh = self.tileW, self.tileH
   return (pos.x * tilew) - self.x + self.screenx, (pos.y * tileh) - self.y + self.screeny
+end
+
+function ViewportArea:screenToMap(x, y)
+  local tilew, tileh = self.tileW, self.tileH
+  return math.floor((x - self.screenx + self.x) / tilew), math.floor((y - self.screeny + self.y) / tileh)
 end
 
