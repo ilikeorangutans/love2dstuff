@@ -183,10 +183,15 @@ function love.keypressed(key, scancode, isrepeat)
   viewStack:current():keypressed(key, scancode, isrepeat)
 end
 
+function love.mousepressed(x, y, button, istouch)
+  viewStack:mousepressed(x, y, button, istouch)
+end
+
 function love.mousereleased(x, y, button, istouch)
   viewStack:current():mousereleased(x, y, button, istouch)
 end
 
 function love.mousemoved(x, y)
-  viewStack:current():mousemoved(x, y)
+  viewStack:mousemoved(x, y)
 end
+

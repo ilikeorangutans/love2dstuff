@@ -28,8 +28,29 @@ end
 function ViewStack:resize(w, h)
   self.w = w
   self.h = h
-  print("ViewStack:resize()", w, h)
   if #(self) > 0 then
     self:current():resize(w, h)
   end
 end
+
+function ViewStack:keypressed(key, scancode, isrepeat)
+  local current = self:current()
+  if current.keypressed then
+    current:keypressed(key, scancode, isrepeat)
+  end
+end
+
+function ViewStack:mousepressed(x, y, button, istouch)
+  local current = self:current()
+  if current.mousepressed then
+    current:mousepressed(x, y, button, istouch)
+  end
+end
+
+function ViewStack:mousemoved(x, y)
+  local current = self:current()
+  if current.mousemoved then
+    current:mousemoved(x, y)
+  end
+end
+

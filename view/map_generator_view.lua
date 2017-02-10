@@ -10,6 +10,7 @@ function MapGeneratorView:new(o)
 
   local entityManager = EntityManager:new()
 
+  o.pressed = {}
   o.mapWidth = 70
   o.mapHeight = 70
   o.widgets = Widgets:new()
@@ -71,6 +72,19 @@ end
 
 function MapGeneratorView:mousemoved(x, y)
   self.widgets:mousemoved(x, y)
+
+  if self.pressed[1] then
+    local deltax = self.lastx - x
+    local deltay = self.lasty - y
+    self.mapView.viewportArea:moveBy(deltax, deltay)
+  end
+
+  self.lastx = x
+  self.lasty = y
+end
+
+function MapGeneratorView:mousepressed(x, y, button, istouch)
+  self.pressed[button] = true
 end
 
 function MapGeneratorView:keypressed(key, scancode, isrepeat)
@@ -80,12 +94,10 @@ function MapGeneratorView:keypressed(key, scancode, isrepeat)
 end
 
 function MapGeneratorView:mousereleased(x, y, button, istouch)
+  self.pressed[button] = false
   if self.widgets:mousereleased(x, y, button, istouch) then return end
 end
 
 function MapGeneratorView:draw()
   self.widgets:draw()
-end
-
-function MapGeneratorView:openMapGeneratorView()
 end

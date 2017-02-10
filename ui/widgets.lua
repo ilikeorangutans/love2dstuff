@@ -79,7 +79,7 @@ function Button:color()
 end
 
 function Button:mousereleased(x, y, button, istouch)
-  if overBox(x, y, self) then
+  if button == 1 and overBox(x, y, self) then
     self:onclick()
     return true
   end
