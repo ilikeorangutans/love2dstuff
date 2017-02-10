@@ -1,3 +1,5 @@
+local ui = require('ui/widgets')
+
 MapGeneratorView = {}
 
 function MapGeneratorView:new(o)
@@ -13,7 +15,7 @@ function MapGeneratorView:new(o)
   o.pressed = {}
   o.mapWidth = 70
   o.mapHeight = 70
-  o.widgets = Widgets:new()
+  o.widgets = ui.Widgets:new()
   o.generator = PureRandomMapGenerator
   o.map = o.generator:generate(o.mapWidth, o.mapHeight)
 
@@ -30,7 +32,7 @@ function MapGeneratorView:new(o)
   o.mapView = MapRenderer:new({ x=0, y=0, w=10, h=10, tileset=tileset, map=o.map, viewport=o.viewport })
   o.widgets:add(o.mapView)
 
-  o.button = Button:new({ label='pure random', w=100, h=23 })
+  o.button = ui.Button:new({ label='pure random', w=100, h=23 })
   o.button.onclick = function()
     if o.button.label == 'pure random' then
       o.button.label = 'better'
@@ -44,7 +46,7 @@ function MapGeneratorView:new(o)
   end
   o.widgets:add(o.button)
 
-  o.randomizeButton = Button:new({label="randomize", w=100, h=23, y = 38})
+  o.randomizeButton = ui.Button:new({label="randomize", w=100, h=23, y = 38})
   o.randomizeButton.onclick = function()
     o:randomizeMap(o.mapWidth, o.mapHeight)
   end

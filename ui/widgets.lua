@@ -1,5 +1,5 @@
+local Widgets = {}
 
-Widgets = {}
 function Widgets:new(o)
   o = o or {}
   setmetatable(o, self)
@@ -44,7 +44,7 @@ function over(x, y, tlx, tly, brx, bry)
   return tlx < x and x < brx and tly < y and y < bry
 end
 
-Button = {}
+local Button = {}
 function Button:new(o)
   o = o or {}
   setmetatable(o, self)
@@ -93,3 +93,9 @@ function Button:mousemoved(x, y)
   end
 end
 
+local ui = {}
+
+ui.Widgets = Widgets
+ui.Button = Button
+
+return ui

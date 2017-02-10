@@ -1,3 +1,4 @@
+local ui = require('ui/widgets')
 
 MainMenu = {}
 
@@ -6,10 +7,10 @@ function MainMenu:new(o)
   setmetatable(o, self)
   self.__index = self
 
-  o.widgets = Widgets:new()
-  o.widgets:add(Button:new({ x = 100, y = 30, w = 200, h = 60, label = "Map", onclick = function() o:openMapGeneratorView() end }))
-  o.widgets:add(Button:new({ x = 100, y = 100, w = 200, h = 60, label = "game", onclick = function() o:openGameView() end }))
-  o.widgets:add(Button:new({ x = 100, y = 170, w = 200, h = 60, label = "Quit", onclick = function() love.event.quit() end }))
+  o.widgets = ui.Widgets:new()
+  o.widgets:add(ui.Button:new({ x = 100, y = 30, w = 200, h = 60, label = "Map", onclick = function() o:openMapGeneratorView() end }))
+  o.widgets:add(ui.Button:new({ x = 100, y = 100, w = 200, h = 60, label = "game", onclick = function() o:openGameView() end }))
+  o.widgets:add(ui.Button:new({ x = 100, y = 170, w = 200, h = 60, label = "Quit", onclick = function() love.event.quit() end }))
   return o
 end
 

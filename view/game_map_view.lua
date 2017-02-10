@@ -1,3 +1,5 @@
+local ui = require('ui/widgets')
+
 -- map view of the colonies
 GameMapView = {
   viewport = {},
@@ -25,7 +27,7 @@ function GameMapView:new(o)
 
   o.mapView = MapRenderer:new({ x=0, y=0, w=10, h=10, tileset=o.tileset, map=o.map, viewport=o.viewport })
 
-  o.widgets = Widgets:new()
+  o.widgets = ui.Widgets:new()
   o.widgets:add(o.mapView)
 
   return o
@@ -107,7 +109,6 @@ end
 
 function GameMapView:mousereleased(x, y, button, istouch)
   local posx, posy = self.viewport:screenToMap(x, y)
-  print("GameMapView:mousereleased", x, y, button, istouch)
   if button == 1 then
     -- TODO might run this through player control
     --self.bus:fire("viewport.clicked", {button=button, x=posx, y=posy})
