@@ -7,16 +7,17 @@ function MainMenu:new(o)
   setmetatable(o, self)
   self.__index = self
 
-  o.ui = ui.Panel:new({x=100, y=100, color={80,80,80}})
+  o.ui = ui.Panel:new()
+  o.ui.margin = ui.Margin:new(11, 13, 23, 17)
   --o.ui = ui.VerticalContainer:new({ x = 100, y = 0 })
   --
   local container = ui.VerticalContainer:new({ x = 100, y = 0 })
 
-  container:add(ui.Button:new({ w = 200, h = 60, label = "Map", onclick = function() o:openMapGeneratorView() end }))
-  container:add(ui.Button:new({ w = 200, h = 60, label = "game", onclick = function() o:openGameView() end }))
+  --container:add(ui.Button:new({ w = 200, h = 60, label = "Map", onclick = function() o:openMapGeneratorView() end }))
+  --container:add(ui.Button:new({ w = 200, h = 60, label = "game", onclick = function() o:openGameView() end }))
   container:add(ui.Button:new({ w = 200, h = 60, label = "Quit", onclick = function() love.event.quit() end }))
 
-  o.ui:add(container)
+  --o.ui:add(container)
   return o
 end
 
@@ -44,6 +45,7 @@ function MainMenu:mousereleased(x, y, button, istouch)
 end
 
 function MainMenu:draw()
+  self.ui:layout()
   self.ui:draw()
 end
 

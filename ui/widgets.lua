@@ -1,14 +1,21 @@
 local util = require('ui/utils')
 local box = require('ui/boxmodel')
+local margin = require('ui/margin')
 
-local Widget = {}
+local Widget = box.Model:new()
 
 function Widget:new(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
 
+  o.margin = o.margin or box.Margin:new(0, 0, 0, 0)
+
   return o
+end
+
+function Widget:layout()
+  self:recalculate()
 end
 
 function Widget:draw()
@@ -31,9 +38,10 @@ function Widget:mousereleased(x, y, button, istouch)
 end
 
 function Widget:resize(w, h)
-  print("Widget:resize()", w, h, self)
   self.w = w
   self.h = h
+
+  self:setBounds(self.bounds.x, self.bounds.y, w, h)
 end
 
 local Container = Widget:new()
@@ -51,6 +59,21 @@ end
 function Container:add(widget)
   table.insert(self.widgets, widget)
   return widget
+end
+
+function Container:resize(w, h)
+  print("Container:resize()", w, h)
+  self:setBounds(self.bounds.x, self.bounds.y, w, h)
+  for _, widget in pairs(self.widgets) do
+    widget:resize(w, h)
+  end
+end
+
+function Container:layout()
+  self:recalculate()
+  for _, widget in pairs(self.widgets) do
+    widget:layout()
+  end
 end
 
 function Container:draw()
@@ -88,16 +111,16 @@ function Panel:new(o)
   setmetatable(o, self)
   self.__index = self
 
-  o.superDraw = Container.draw
-  o.color = o.color or { 0, 0, 0}
+  o.drawChildren = Container.draw
+  o.color = o.color or { 0, 0, 80 }
 
   return o
 end
 
 function Panel:draw()
   love.graphics.setColor(self.color[1], self.color[2], self.color[3])
-  love.graphics.rectangle('fill', self.x, self.y, self.w, self.h)
-  self:superDraw()
+  love.graphics.rectangle('fill', self.marginArea.x, self.marginArea.y, self.marginArea.w, self.marginArea.h)
+  self:drawChildren()
 end
 
 local VerticalContainer = Container:new()
@@ -110,7 +133,6 @@ function VerticalContainer:new(o)
   assert(o.x, "x needed")
   assert(o.y, "y needed")
 
-  o.margin = o.margin or { 11, 11, 11, 11}
   o.widgets = o.widgets or Widgets:new()
 
   o.w = 10
@@ -120,21 +142,22 @@ function VerticalContainer:new(o)
 end
 
 function VerticalContainer:resize(w, h)
-  self.w = w
-  self.h = h
-  self:layout()
+  print("VerticalContainer:resize()", w, h)
+  self:setBounds(self.bounds.x, self.bounds.y, w, h)
 end
 
 function VerticalContainer:layout()
-  local y = self.y
+  print("VerticalContainer:layout()", self.bounds.x, self.bounds.y)
+  self:recalculate()
+
+  local y = self.bounds.y
   for _, widget in pairs(self.widgets) do
-    local x = self.x + self.margin[4]
-    y = y + self.margin[1]
+    local x = self.bounds.x + self.margin.left
+    y = y + self.margin.top
 
-    widget.x = x
-    widget.y = y
+    widget:setBounds(x, y, widget.bounds.w, widget.bounds.h)
 
-    y = y + self.margin[3] + widget.h
+    y = y + self.margin.bottom + widget.bounds.h
   end
 end
 
@@ -194,5 +217,6 @@ ui.Container = Container
 ui.VerticalContainer = VerticalContainer
 ui.Button = Button
 ui.Panel = Panel
+ui.Margin = margin.Margin
 
 return ui
