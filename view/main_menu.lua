@@ -7,22 +7,30 @@ function MainMenu:new(o)
   setmetatable(o, self)
   self.__index = self
 
-  o.widgets = ui.Widgets:new()
-  o.widgets:add(ui.Button:new({ x = 100, y = 30, w = 200, h = 60, label = "Map", onclick = function() o:openMapGeneratorView() end }))
-  o.widgets:add(ui.Button:new({ x = 100, y = 100, w = 200, h = 60, label = "game", onclick = function() o:openGameView() end }))
-  o.widgets:add(ui.Button:new({ x = 100, y = 170, w = 200, h = 60, label = "Quit", onclick = function() love.event.quit() end }))
+  o.ui = ui.Panel:new({x=100, y=100, color={80,80,80}})
+  --o.ui = ui.VerticalContainer:new({ x = 100, y = 0 })
+  --
+  local container = ui.VerticalContainer:new({ x = 100, y = 0 })
+
+  container:add(ui.Button:new({ w = 200, h = 60, label = "Map", onclick = function() o:openMapGeneratorView() end }))
+  container:add(ui.Button:new({ w = 200, h = 60, label = "game", onclick = function() o:openGameView() end }))
+  container:add(ui.Button:new({ w = 200, h = 60, label = "Quit", onclick = function() love.event.quit() end }))
+
+  o.ui:add(container)
   return o
 end
 
 function MainMenu:resize(w, h)
-  print("MainMenu:resize()", w, h)
+  print("MainMen:resize()", w, h)
+  self.ui:resize(w, h)
 end
 
 function MainMenu:update(dt)
+  self.ui:update(dt)
 end
 
 function MainMenu:mousemoved(x, y)
-  self.widgets:mousemoved(x, y)
+  self.ui:mousemoved(x, y)
 end
 
 function MainMenu:keypressed(key, scancode, isrepeat)
@@ -32,11 +40,11 @@ function MainMenu:keypressed(key, scancode, isrepeat)
 end
 
 function MainMenu:mousereleased(x, y, button, istouch)
-  self.widgets:mousereleased(x, y, button, istouch)
+  self.ui:mousereleased(x, y, button, istouch)
 end
 
 function MainMenu:draw()
-  self.widgets:draw()
+  self.ui:draw()
 end
 
 function MainMenu:openMapGeneratorView()
