@@ -23,14 +23,18 @@ function Margin:reduce(box)
   assert(box.w, "cannot reduce box without width")
   assert(box.h, "cannot reduce box without height")
 
-  box.x = box.x + self.left
-  box.y = box.y + self.top
-  box.w = box.w - box.x - box.x
-  box.h = box.h - box.y - box.y
+  local result = {}
+  result.x = box.x + self.left
+  result.y = box.y + self.top
+  result.w = box.w - result.x - result.x
+  result.h = box.h - result.y - result.y
 
-  return box
+  return result
 end
 
 local module = {}
-module.new = Margin.new
+module.new = function(top, right, bottom, left)
+  return Margin:new(top, right, bottom, left)
+end
+module.Margin = Margin
 return module
