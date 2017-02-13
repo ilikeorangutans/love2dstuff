@@ -1,7 +1,8 @@
+local util = require('ui/utils')
 local Margin = {}
 
 function Margin:new(top, right, bottom, left)
-  o = o or {}
+  local o = {}
   setmetatable(o, self)
   self.__index = self
 
@@ -26,10 +27,14 @@ function Margin:reduce(box)
   local result = {}
   result.x = box.x + self.left
   result.y = box.y + self.top
-  result.w = box.w - result.x - result.x
-  result.h = box.h - result.y - result.y
+  result.w = box.w - self.left - self.right
+  result.h = box.h - self.top - self.bottom
 
   return result
+end
+
+function Margin:__tostring()
+  return ("%d %d %d %d"):format(self.top, self.right, self.bottom, self.right)
 end
 
 local module = {}

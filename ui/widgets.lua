@@ -5,11 +5,10 @@ local margin = require('ui/margin')
 local Widget = box.Model:new()
 
 function Widget:new(o)
+  print("> Widget:new()")
   o = o or {}
   setmetatable(o, self)
   self.__index = self
-
-  o.margin = o.margin or box.Margin:new(0, 0, 0, 0)
 
   return o
 end
@@ -19,7 +18,15 @@ function Widget:layout()
 end
 
 function Widget:draw()
-  print("Widget:draw()")
+
+  if false then
+    love.graphics.setColor(255, 0, 0)
+    love.graphics.rectangle('line', self.bounds.x, self.bounds.y, self.bounds.w, self.bounds.h)
+    love.graphics.setColor(0, 255, 0)
+    love.graphics.rectangle('line', self.marginArea.x, self.marginArea.y, self.marginArea.w, self.marginArea.h)
+    love.graphics.setColor(0, 0, 255)
+    love.graphics.rectangle('line', self.widgetArea.x, self.widgetArea.y, self.widgetArea.w, self.widgetArea.h)
+  end
 end
 
 function Widget:update(dt)
@@ -38,26 +45,28 @@ function Widget:mousereleased(x, y, button, istouch)
 end
 
 function Widget:resize(w, h)
-  self.w = w
-  self.h = h
-
+  print("Widget:resize()", w, h)
   self:setBounds(self.bounds.x, self.bounds.y, w, h)
 end
 
 local Container = Widget:new()
 
 function Container:new(o)
+  print("> Container:new()")
   o = o or {}
   setmetatable(o, self)
   self.__index = self
 
-  o.widgets = {}
-
   return o
+end
+
+function Container:init()
+  self.widgets = {}
 end
 
 function Container:add(widget)
   table.insert(self.widgets, widget)
+  self.layoutChanged = true
   return widget
 end
 
@@ -70,13 +79,14 @@ function Container:resize(w, h)
 end
 
 function Container:layout()
-  self:recalculate()
+  Widget.layout(self)
   for _, widget in pairs(self.widgets) do
     widget:layout()
   end
 end
 
 function Container:draw()
+  Widget.draw(self)
   for _, widget in pairs(self.widgets) do
     widget:draw()
   end
@@ -104,60 +114,87 @@ function Container:update(dt)
   end
 end
 
-local Panel = Container:new()
+local Panel = Widget:new()
 
 function Panel:new(o)
+  print("> Panel:new()")
   o = o or {}
   setmetatable(o, self)
   self.__index = self
 
-  o.drawChildren = Container.draw
+  Container.init(o)
+  box.Model.init(o)
+
   o.color = o.color or { 0, 0, 80 }
 
   return o
 end
 
+function Panel:add(widget)
+  self.child = widget
+  self.layoutChanged = true
+  return widget
+end
+
+function Panel:layout()
+  Widget.layout(self)
+  if self.child then
+    self.child:setBounds(self.widgetArea.x, self.widgetArea.y, self.widgetArea.w, self.widgetArea.h)
+    self.child:layout()
+  end
+end
+
+function Panel:resize(w, h)
+  print("Panel:resize()", w, h)
+  Widget.resize(self, w, h)
+  if self.child then self.child:resize(w, h) end
+end
+
 function Panel:draw()
+  Widget.draw(self)
   love.graphics.setColor(self.color[1], self.color[2], self.color[3])
-  love.graphics.rectangle('fill', self.marginArea.x, self.marginArea.y, self.marginArea.w, self.marginArea.h)
-  self:drawChildren()
+  love.graphics.rectangle('fill', self.widgetArea.x, self.widgetArea.y, self.widgetArea.w, self.widgetArea.h)
+
+  if self.child then self.child:draw() end
 end
 
 local VerticalContainer = Container:new()
 
 function VerticalContainer:new(o)
+  print("> VerticalContainer:new()")
   o = o or {}
   setmetatable(o, self)
   self.__index = self
 
-  assert(o.x, "x needed")
-  assert(o.y, "y needed")
-
-  o.widgets = o.widgets or Widgets:new()
-
-  o.w = 10
-  o.h = 10
+  box.Model.init(o)
+  Container.init(o)
 
   return o
 end
 
 function VerticalContainer:resize(w, h)
   print("VerticalContainer:resize()", w, h)
-  self:setBounds(self.bounds.x, self.bounds.y, w, h)
+  Container.resize(self, w, h)
 end
 
 function VerticalContainer:layout()
-  print("VerticalContainer:layout()", self.bounds.x, self.bounds.y)
-  self:recalculate()
+  Widget.layout(self)
+  --local children = #(self.widgets)
+  -- print("VerticalContainer:layout() bounds:", util.box2string(self.bounds), "children:", children)
 
-  local y = self.bounds.y
-  for _, widget in pairs(self.widgets) do
-    local x = self.bounds.x + self.margin.left
-    y = y + self.margin.top
+  local x = self.widgetArea.x
+  local y = self.widgetArea.y
+  for i, widget in pairs(self.widgets) do
+    local w = self.widgetArea.w
+    local h = self.widgetArea.h
 
-    widget:setBounds(x, y, widget.bounds.w, widget.bounds.h)
+    --print("VerticalContainer:layout() bounds for child: ", i, x, y, w, h)
+    widget:setBounds(x, y, w, h)
+    widget:layout()
 
-    y = y + self.margin.bottom + widget.bounds.h
+    local effective = widget.widgetArea.h + widget.margin.top + widget.margin.bottom
+
+    y = y + effective
   end
 end
 
@@ -168,24 +205,44 @@ function Button:new(o)
   setmetatable(o, self)
   self.__index = self
 
+  box.Model.init(o)
+
   if not o.label then o.label = "Button" end
   if not o.onclick then o.onclick = function() print("clicked") end end
-  if not o.x then o.x = 10 end
-  if not o.y then o.y = 10 end
-  if not o.w then o.w = 200 end
-  if not o.h then o.h = 50 end
 
+  o.dimensions = o.dimensions or { x=0, y=0, w=100, h=23 }
+  print("Button:new() dimensions", o.dimensions.w, o.dimensions.h)
   o.state = 'out'
 
   return o
 end
 
+function Button:resize(w, h)
+  print("Button:resize()", w, h)
+  Widget.resize(self, w, h)
+end
+
+function Button:layout()
+  --print("Button:layout()")
+  Widget.layout(self)
+
+  --print("Button:layout() done")
+end
+
 function Button:draw()
+  Widget.draw(self)
+
   local r, g, b = self:color()
+  local x = self.widgetArea.x
+  local y = self.widgetArea.y
+  local w = self.widgetArea.w
+  local h = self.widgetArea.h
+
+  --print("Button:draw()", x, y, w, h)
   love.graphics.setColor(r, g, b)
-  love.graphics.rectangle('fill', self.x, self.y, self.w, self.h, 5, 5)
+  love.graphics.rectangle('fill', x, y, w, h, 5, 5)
   love.graphics.setColor(0, 0, 0)
-  love.graphics.print(self.label, self.x + 5, self.y + 5)
+  love.graphics.print(self.label, x + 5, y + 5)
 end
 
 function Button:color()
@@ -204,7 +261,7 @@ function Button:mousereleased(x, y, button, istouch)
 end
 
 function Button:mousemoved(x, y)
-  if util.overBox(x, y, self) then
+  if util.overBox(x, y, self.widgetArea) then
     self.state = 'over'
   else
     self.state = 'out'
