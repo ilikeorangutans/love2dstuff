@@ -1,4 +1,6 @@
-MapRenderer = {}
+local ui = require('ui/widgets')
+
+MapRenderer = ui.Widget:new()
 function MapRenderer:new(o)
   o = o or {}
   setmetatable(o, self)

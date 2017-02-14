@@ -15,9 +15,6 @@ function MainMenu:new(o)
   --
   --local container = ui.VerticalContainer:new({ x = 100, y = 0 })
 
-  --container:add(ui.Button:new({ w = 200, h = 60, label = "Map", onclick = function() o:openMapGeneratorView() end }))
-  --container:add(ui.Button:new({ w = 200, h = 60, label = "game", onclick = function() o:openGameView() end }))
-  --container:add(ui.Button:new({ dimensions={x=0, w=200, h=23, y=0}, label = "Quit", onclick = function() love.event.quit() end }))
 
   --o.ui:add(container)
 
@@ -27,13 +24,17 @@ function MainMenu:new(o)
   o.ui:setMargin(11, 11, 11, 11)
 
   local c = o.ui:add(ui.VerticalContainer:new()):setAlignment('fill', 'fill'):setMargin(23, 23, 23, 23)
-  local b = c:add(ui.Button:new({w=200, h=33}))
-  b:setMargin(0, 0, 11, 0)
-  b:setAlignment('fill', 'top')
+  --local b = c:add(ui.Button:new({w=200, h=33}))
+  --b:setMargin(0, 0, 11, 0)
+  --b:setAlignment('fill', 'top')
 
-  local b2 = c:add(ui.Button:new({w=200, h=33}))
-  b2:setMargin(0, 0, 11, 0)
-  c:add(ui.Button:new({w=200, h=33}))
+  --local b2 = c:add(ui.Button:new({w=200, h=33}))
+  --b2:setMargin(0, 0, 11, 0)
+  --c:add(ui.Button:new({w=200, h=33}))
+
+  c:add(ui.Button:new({ w = 200, h = 31, label = "Map", onclick = function() o:openMapGeneratorView() end }))
+  c:add(ui.Button:new({ w = 200, h = 31, label = "Start", onclick = function() o:openGameView() end })):setMargin(11, 0, 0, 0)
+  c:add(ui.Button:new({ w = 200, h = 31, label = "Quit", onclick = function() love.event.quit() end })):setMargin(11, 0, 0, 0)
 
   print("---------------")
   --local b = ui.Button:new({label="button", w=200, h=23})

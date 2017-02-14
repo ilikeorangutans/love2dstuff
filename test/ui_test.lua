@@ -68,4 +68,7 @@ function testFillNested()
   luaunit.assertEquals(c.marginArea, {x=111+13, y=11+13, w=174, h=174})
 end
 
+function testMousereleased()
+end
+
 os.exit(luaunit.LuaUnit.run())

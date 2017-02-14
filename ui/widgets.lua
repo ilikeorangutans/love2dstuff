@@ -18,8 +18,7 @@ function Widget:layout()
 end
 
 function Widget:draw()
-
-  if false then
+  if true then
     love.graphics.setColor(255, 0, 0)
     love.graphics.rectangle('line', self.bounds.x, self.bounds.y, self.bounds.w, self.bounds.h)
     love.graphics.setColor(0, 255, 0)
@@ -33,7 +32,20 @@ function Widget:update(dt)
 end
 
 function Widget:mousemoved(x, y)
-  print("Widget:mousemoved()")
+  local orig = self.mouse_is_over
+  if util.overBox(x, y, self.widgetArea) then
+    self.mouse_is_over = true
+  else
+    self.mouse_is_over = false
+  end
+
+  if orig ~= self.mouse_is_over then
+    if self.mouse_is_over and self.mouseover then
+      self:mouseover()
+    elseif not self.mouse_is_over and self.mouseout then
+      self:mouseout()
+    end
+  end
 end
 
 function Widget:mousepressed(x, y, button, istouch)
@@ -58,6 +70,14 @@ function Container:new(o)
   self.__index = self
 
   return o
+end
+
+function Container:mousemoved(x, y)
+  Widget.mousemoved(self, x, y)
+
+  for _, widget in pairs(self.widgets) do
+    widget:mousemoved(x, y)
+  end
 end
 
 function Container:init()
@@ -93,17 +113,11 @@ function Container:draw()
 end
 
 function Container:mousereleased(x, y, button, istouch)
-  for _, widget in pairs(self.widgets) do
-    if widget:mousereleased(x, y, button, istouch) then
-      return true
-    end
-  end
-end
-
-function Container:mousemoved(x, y)
-  for _, widget in pairs(self.widgets) do
-    if widget:mousemoved(x, y) then
-      return true
+  for i, widget in pairs(self.widgets) do
+    if util.overBox(x, y, widget.bounds) then
+      if widget:mousereleased(x, y, button, istouch) then
+        return true
+      end
     end
   end
 end
@@ -117,7 +131,6 @@ end
 local Panel = Widget:new()
 
 function Panel:new(o)
-  print("> Panel:new()")
   o = o or {}
   setmetatable(o, self)
   self.__index = self
@@ -158,10 +171,22 @@ function Panel:draw()
   if self.child then self.child:draw() end
 end
 
-local VerticalContainer = Container:new()
+function Panel:mousemoved(x, y)
+  Widget.mousemoved(self, x, y)
 
-function VerticalContainer:new(o)
-  print("> VerticalContainer:new()")
+  if self.child then self.child:mousemoved(x, y) end
+end
+
+function Panel:mousereleased(x, y, button, istouch)
+  print("Panel:mousereleased()")
+  if self.child and util.overBox(x, y, self.child.bounds) then
+    self.child:mousereleased(x, y, button, istouch)
+  end
+end
+
+local HorizontalContainer = Container:new()
+
+function HorizontalContainer:new(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
@@ -172,23 +197,46 @@ function VerticalContainer:new(o)
   return o
 end
 
-function VerticalContainer:resize(w, h)
-  print("VerticalContainer:resize()", w, h)
-  Container.resize(self, w, h)
+function HorizontalContainer:layout()
+  Widget.layout(self)
+
+  local x = self.widgetArea.x
+  local y = self.widgetArea.y
+  for _, widget in pairs(self.widgets) do
+    local w = self.widgetArea.w
+    local h = self.widgetArea.h
+
+    widget:setBounds(x, y, w, h)
+    widget:layout()
+
+    local effective = widget.widgetArea.w + widget.margin.left + widget.margin.right
+
+    x = x + effective
+  end
+end
+
+local VerticalContainer = Container:new()
+
+function VerticalContainer:new(o)
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+
+  box.Model.init(o)
+  Container.init(o)
+
+  return o
 end
 
 function VerticalContainer:layout()
   Widget.layout(self)
-  --local children = #(self.widgets)
-  -- print("VerticalContainer:layout() bounds:", util.box2string(self.bounds), "children:", children)
 
   local x = self.widgetArea.x
   local y = self.widgetArea.y
-  for i, widget in pairs(self.widgets) do
+  for _, widget in pairs(self.widgets) do
     local w = self.widgetArea.w
     local h = self.widgetArea.h
 
-    --print("VerticalContainer:layout() bounds for child: ", i, x, y, w, h)
     widget:setBounds(x, y, w, h)
     widget:layout()
 
@@ -213,6 +261,8 @@ function Button:new(o)
   o.dimensions = o.dimensions or { x=0, y=0, w=100, h=23 }
   print("Button:new() dimensions", o.dimensions.w, o.dimensions.h)
   o.state = 'out'
+  o.mouseover = function() o.state = 'over'end
+  o.mouseout = function() o.state = 'out' end
 
   return o
 end
@@ -254,26 +304,22 @@ function Button:color()
 end
 
 function Button:mousereleased(x, y, button, istouch)
-  if button == 1 and util.overBox(x, y, self) then
+  print("Button:mousereleased()", x, y, "over", util.box2string(self.bounds))
+  if button == 1 and util.overBox(x, y, self.widgetArea) then
+    print(("Button:mousereleased() clicked %q"):format(self.label))
     self:onclick()
     return true
-  end
-end
-
-function Button:mousemoved(x, y)
-  if util.overBox(x, y, self.widgetArea) then
-    self.state = 'over'
-  else
-    self.state = 'out'
   end
 end
 
 local ui = {}
 
 ui.Container = Container
+ui.HorizontalContainer = HorizontalContainer
 ui.VerticalContainer = VerticalContainer
 ui.Button = Button
 ui.Panel = Panel
 ui.Margin = margin.Margin
+ui.Widget = Widget
 
 return ui

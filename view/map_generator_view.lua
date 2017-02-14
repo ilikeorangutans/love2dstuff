@@ -15,10 +15,11 @@ function MapGeneratorView:new(o)
   o.pressed = {}
   o.mapWidth = 70
   o.mapHeight = 70
-  o.widgets = ui.Widgets:new()
+  o.widgets = ui.VerticalContainer:new()
   o.generator = PureRandomMapGenerator
   o.map = o.generator:generate(o.mapWidth, o.mapHeight)
 
+  print("MapGeneratorView:new() creating viewport")
   o.viewport = Viewport:new({
     screenx=0,
     screeny=0,
@@ -32,6 +33,8 @@ function MapGeneratorView:new(o)
   o.mapView = MapRenderer:new({ x=0, y=0, w=10, h=10, tileset=tileset, map=o.map, viewport=o.viewport })
   o.widgets:add(o.mapView)
 
+  local c = o.widgets:add(ui.HorizontalContainer:new({h=35}))
+
   o.button = ui.Button:new({ label='pure random', w=100, h=23 })
   o.button.onclick = function()
     if o.button.label == 'pure random' then
@@ -44,13 +47,13 @@ function MapGeneratorView:new(o)
       o:randomizeMap(o.mapWidth, o.mapHeight)
     end
   end
-  o.widgets:add(o.button)
+  c:add(o.button)
 
   o.randomizeButton = ui.Button:new({label="randomize", w=100, h=23, y = 38})
   o.randomizeButton.onclick = function()
     o:randomizeMap(o.mapWidth, o.mapHeight)
   end
-  o.widgets:add(o.randomizeButton)
+  c:add(o.randomizeButton)
 
   return o
 end
