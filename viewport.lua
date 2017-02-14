@@ -1,4 +1,6 @@
-Viewport = {}
+local ui = require('ui/widgets')
+
+Viewport = ui.Widget:new()
 
 function Viewport:new(o)
   o = o or {}
