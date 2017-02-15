@@ -294,6 +294,56 @@ function Button:mousereleased(x, y, button, istouch)
   end
 end
 
+local Label = Widget:new()
+
+function Label:new(o)
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+
+  box.Model.init(o)
+
+  o.text = o.text or ""
+
+  return o
+end
+
+function Label:setText(text)
+  if self.text == text then return end
+
+  self.text = text
+  self.changedText = true
+end
+
+function Label:layout()
+  if self.changedText then
+    self:calculateTextSize()
+  end
+  Widget.layout(self)
+end
+
+function Label:calculateTextSize()
+  if self.widgetArea.w == 0 then return end
+  local font = love.graphics.getFont()
+  local lineHeight = font:getHeight()
+  local width, wrappedText = font:getWrap(self.text, self.widgetArea.w)
+
+  local height = lineHeight * #(wrappedText)
+
+  self:setDimensions(self.dimensions.x, self.dimensions.y, self.dimensions.w, height)
+
+  self.changedText = false
+  print("Label:calculateTextSize()", self.widgetArea.w, width, height, wrappedText, lineHeight)
+end
+
+function Label:draw()
+  local x = self.widgetArea.x
+  local y = self.widgetArea.y
+  local w = self.widgetArea.w
+  love.graphics.setColor(255, 255, 255)
+  love.graphics.printf(self.text, x, y, w, 'left')
+end
+
 local ui = {}
 
 ui.Container = Container
@@ -303,5 +353,6 @@ ui.Button = Button
 ui.Panel = Panel
 ui.Margin = margin.Margin
 ui.Widget = Widget
+ui.Label = Label
 
 return ui
