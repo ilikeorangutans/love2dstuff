@@ -1,4 +1,5 @@
 local ui = require('ui/widgets')
+local util = require('ui/utils')
 
 MainMenu = {}
 
@@ -7,43 +8,21 @@ function MainMenu:new(o)
   setmetatable(o, self)
   self.__index = self
 
-  --o.ui = ui.Panel:new({ dimensions = {x = 0, y = 0, w = 300, h = 200 } })
-  --o.ui.margin = ui.Margin:new(11, 13, 23, 17)
-  --o.ui:setAlignment('center', 'middle')
-
-  --o.ui = ui.VerticalContainer:new({ x = 100, y = 0 })
-  --
-  --local container = ui.VerticalContainer:new({ x = 100, y = 0 })
-
-
-  --o.ui:add(container)
-
-  o.ui = ui.Panel:new({w=200, h=150})
-  o.ui:setDimensions(0, 0, 300, 200)
+  o.ui = ui.Panel:new({w=200, h=400})
+  --o.ui:setDimensions(0, 0, 300, 200)
   o.ui:setAlignment('center', 'top')
   o.ui:setMargin(11, 11, 11, 11)
 
   local c = o.ui:add(ui.VerticalContainer:new()):setAlignment('fill', 'fill'):setMargin(23, 23, 23, 23)
-  --local b = c:add(ui.Button:new({w=200, h=33}))
-  --b:setMargin(0, 0, 11, 0)
-  --b:setAlignment('fill', 'top')
-
-  --local b2 = c:add(ui.Button:new({w=200, h=33}))
-  --b2:setMargin(0, 0, 11, 0)
-  --c:add(ui.Button:new({w=200, h=33}))
 
   c:add(ui.Button:new({ w = 200, h = 31, label = "Map", onclick = function() o:openMapGeneratorView() end }))
-  c:add(ui.Button:new({ w = 200, h = 31, label = "Start", onclick = function() o:openGameView() end })):setMargin(11, 0, 0, 0)
-  c:add(ui.Button:new({ w = 200, h = 31, label = "Quit", onclick = function() love.event.quit() end })):setMargin(11, 0, 0, 0)
+  c:add(ui.Button:new({ w = 200, h = 31 + 11, label = "Start", onclick = function() o:openGameView() end })):setMargin(11, 0, 0, 0)
+  c:add(ui.Button:new({ w = 200, h = 31 + 11, label = "Quit", onclick = function() love.event.quit() end })):setMargin(11, 0, 0, 0)
 
-  print("---------------")
-  --local b = ui.Button:new({label="button", w=200, h=23})
-  --o.ui:add(b)
   return o
 end
 
 function MainMenu:resize(w, h)
-  print("MainMenu:resize()", w, h)
   self.ui:resize(w, h)
 end
 
@@ -66,9 +45,7 @@ function MainMenu:mousereleased(x, y, button, istouch)
 end
 
 function MainMenu:draw()
-  --print("--> MainMenu:draw() layout")
   self.ui:layout()
-  --print("--> MainMenu:draw() draw")
   self.ui:draw()
 end
 

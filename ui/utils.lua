@@ -10,7 +10,43 @@ function box2string(box)
   return ("%dx%d at %d/%d"):format(box.w, box.h, box.x, box.y)
 end
 
+function distributeSizes(available, sizes)
+  if not sizes or #(sizes) == 0 then assert(false, "no input sizes given") end
+
+  local result = {}
+  local remaining = available
+  local required = 0
+  local fillers = {}
+
+  for i, s in pairs(sizes) do
+    remaining = remaining - s
+    required = required + s
+    result[i] = s
+
+    if s == 0 then
+      table.insert(fillers, i)
+    end
+  end
+
+  if remaining < 0 then
+    local ratio = available / required
+    for i in pairs(result) do
+      result[i] = result[i] * ratio
+    end
+  end
+
+  if #(fillers) > 0 and remaining > 0 then
+    local fillerWidth = remaining / #(fillers)
+    for _, i in pairs(fillers) do
+      result[i] = fillerWidth
+    end
+  end
+
+  return result
+end
+
 local module = {}
 module.overBox = overBox
 module.box2string = box2string
+module.distributeSizes = distributeSizes
 return module
