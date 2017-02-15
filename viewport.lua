@@ -1,6 +1,4 @@
-local ui = require('ui/widgets')
-
-Viewport = ui.Widget:new()
+Viewport = {}
 
 function Viewport:new(o)
   o = o or {}
@@ -9,8 +7,6 @@ function Viewport:new(o)
 
   assert(o.screenx, "screen x needed")
   assert(o.screeny, "screen y needed")
-  assert(o.w, "width needed")
-  assert(o.h, "height needed")
   assert(o.tileW, "tile width needed")
   assert(o.tileH, "tile height needed")
   assert(o.mapWidth, "map width needed")

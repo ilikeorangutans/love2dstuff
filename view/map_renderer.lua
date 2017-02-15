@@ -1,6 +1,7 @@
 local ui = require('ui/widgets')
 
 MapRenderer = ui.Widget:new()
+
 function MapRenderer:new(o)
   o = o or {}
   setmetatable(o, self)
@@ -11,6 +12,8 @@ function MapRenderer:new(o)
   assert(o.x, "x needed")
   assert(o.y, "y needed")
   assert(o.viewport, "viewport needed")
+
+  ui.Widget.init(self)
 
   return o
 end
@@ -28,15 +31,25 @@ function MapRenderer:draw()
   end
 end
 
+function MapRenderer:mousepressed(x, y, button, istouch)
+end
+
 function MapRenderer:mousemoved(x, y)
 end
 
-function MapRenderer:resize(w, h)
-  self.viewport:resize(w, h)
-  self.w = w
-  self.h = h
+function MapRenderer:mousereleased(x, y, button, istouch)
 end
 
-function MapRenderer:mousereleased(x, y, button, istouch)
+function MapRenderer:layout()
+  ui.Widget.layout(self)
+
+  self.viewport.screenx = self.widgetArea.x
+  self.viewport.screeny = self.widgetArea.y
+  self.viewport:resize(self.widgetArea.w, self.widgetArea.h)
+end
+
+function MapRenderer:resize(w, h)
+  ui.Widget.resize(self, w, h)
+  self.viewport:resize(self.widgetArea.w, self.widgetArea.h)
 end
 

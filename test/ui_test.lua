@@ -1,6 +1,7 @@
 luaunit = require('luaunit')
 pretty = require('pl.pretty')
 ui = require('ui/widgets')
+util = require('ui/utils')
 box = require('ui/boxmodel')
 
 empty = {x=0,y=0,w=0,h=0}
@@ -68,7 +69,26 @@ function testFillNested()
   luaunit.assertEquals(c.marginArea, {x=111+13, y=11+13, w=174, h=174})
 end
 
-function testMousereleased()
+function testLayoutWithoutDimensions()
+  p = ui.Panel:new()
+  p:setBounds(11, 11, 200, 100)
+  p:setAlignment('fill', 'fill')
+
+  p:layout()
+
+  luaunit.assertEquals(p.bounds, { x=11, y=11, w=200, h=100 })
+  luaunit.assertEquals(p.marginArea, { x=11, y=11, w=200, h=100 })
+  luaunit.assertEquals(p.widgetArea, { x=11, y=11, w=200, h=100 })
+end
+
+function testDistributeSizes()
+  luaunit.assertError(util.distributeSizes, 100, nil)
+  luaunit.assertError(util.distributeSizes, 100, {})
+
+  luaunit.assertEquals(util.distributeSizes(100, {50, 50}), {50, 50})
+  luaunit.assertEquals(util.distributeSizes(100, {50, 0}), {50, 50})
+  luaunit.assertEquals(util.distributeSizes(100, {0, 0}), {50, 50})
+  luaunit.assertEquals(util.distributeSizes(100, {0, 50, 0}), {25, 50, 25})
 end
 
 os.exit(luaunit.LuaUnit.run())

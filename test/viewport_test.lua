@@ -4,7 +4,7 @@ require('viewport')
 TestViewport = {}
 
 function TestViewport:setUp()
-  self.vp = Viewport:new({tileset={tileSize=function()return 32,32 end}, map={width=100, height=100}})
+  self.vp = Viewport:new({screenx=0, screeny=0, w=320, h=160, tileW=32, tileH=32, mapWidth=100, mapHeight=100})
   self.vp:resize(320, 160)
 end
 
@@ -61,6 +61,24 @@ function TestViewport:testIsVisible()
   luaunit.assertTrue(self.vp:isVisible({x=30,y=30}))
   luaunit.assertTrue(self.vp:isVisible({x=40,y=35}))
   luaunit.assertFalse(self.vp:isVisible({x=41,y=36}))
+end
+
+function TestViewport:testRelative()
+  self.vp:resize(100, 100)
+  self.vp.screenx = 13
+  self.vp.screeny = 17
+
+  local x, y = self.vp:mapToScreen({x=0, y=0})
+  luaunit.assertEquals({x, y}, {13, 17})
+
+  local v = self.vp.visible
+  luaunit.assertEquals(v, {})
+end
+
+function TestViewport:testMoveToEnd()
+  self.vp:moveBy(self.vp.mapWidth * 32 + 10, 0)
+
+  luaunit.assertEquals(self.vp.visible.endx, 99)
 end
 
 os.exit(luaunit.LuaUnit.run())

@@ -28,7 +28,6 @@ function Alignment:new(horizontal, vertical)
 end
 
 function Alignment:fill(available, fill)
-  print("Alignment:fill()", self)
   if self.horizontal == Horizontal.FILL and self.vertical == Vertical.FILL then
     local result = { x = available.x, y = available.y, w = available.w, h = available.h}
     return result
@@ -48,6 +47,8 @@ function Alignment:fill(available, fill)
   elseif self.horizontal == Horizontal.RIGHT then
     w = math.min(fill.w, available.w)
     x = available.x + available.w - w
+  else
+    assert(false, ("unknown horizontal alignment %q"):format(self.horizontal))
   end
 
   if self.vertical == Vertical.FILL then
@@ -62,9 +63,12 @@ function Alignment:fill(available, fill)
   elseif self.vertical == Vertical.BOTTOM then
     h = math.min(fill.h, available.h)
     y = available.y + available.h - h
+  else
+    assert(false, ("unknown vertical alignment %q"):format(self.vertical))
   end
 
-  return { x=x, y=y, w=w, h=h }
+  local result = { x=x, y=y, w=w, h=h }
+  return result
 end
 
 function Alignment:__tostring()
@@ -104,12 +108,9 @@ function Box:init()
   o.widgetArea = { x=0, y=0, w=0, h=0 }
 
   o.layoutChanged = true
-
-  print(("Box:init() with dimensions: %s"):format(util.box2string(self.dimensions)))
 end
 
 function Box:setMargin(t, r, b, l)
-  print(("Box:setMargin(%d, %d, %d, %d) on %s"):format(t, r, b, l, self))
   self.margin = margin.new(t, r, b, l)
   self.layoutChanged = true
 
@@ -137,10 +138,8 @@ function Box:setAlignment(horizontal, vertical)
 end
 
 function Box:setBounds(x, y, w, h)
-  --print("Box:setBounds()", x, y, w, h)
-  if self.bounds.x == x and self.bounds.y == y and self.bounds.w == w and self.bounds.h == h then
-    return
-  end
+  local unchanged = self.bounds.x == x and self.bounds.y == y and self.bounds.w == w and self.bounds.h == h
+  if unchanged then return end
 
   self.layoutChanged = true
   self.bounds.x = x
@@ -156,12 +155,9 @@ function Box:recalculate()
 
   -- Take bounds and reduce margins:
   self.marginArea = self.margin:reduce(self.bounds)
-  print(("Box:recalculate() margin %d/%d/%d/%d"):format(self.margin.top, self.margin.right, self.margin.bottom, self.margin.left))
-  print(("Box:recalculate() new margin area %dx%d at %d/%d"):format(self.marginArea.w, self.marginArea.h, self.marginArea.x, self.marginArea.y))
 
   -- Within reduced area, place contents based on alignment:
   self.widgetArea = self.alignment:fill(self.marginArea, self.dimensions)
-  print(("Box:recalculate() new widget area %dx%d at %d/%d"):format(self.widgetArea.w, self.widgetArea.h, self.widgetArea.x, self.widgetArea.y))
 
   self.layoutChanged = false
 end

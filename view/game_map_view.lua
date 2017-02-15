@@ -18,17 +18,17 @@ function GameMapView:new(o)
   o.viewport = Viewport:new({
     screenx=0,
     screeny=0,
-    w=10,
-    h=10,
     tileW=o.tileset.tileW,
     tileH=o.tileset.tileH,
     mapWidth=o.map.width,
     mapHeight=o.map.height })
 
-  o.mapView = MapRenderer:new({ x=0, y=0, w=10, h=10, tileset=o.tileset, map=o.map, viewport=o.viewport })
+  o.mapView = MapRenderer:new({ x=0, y=0, tileset=o.tileset, map=o.map, viewport=o.viewport })
+  o.mapView:setAlignment('fill', 'fill')
 
-  o.widgets = ui.Widgets:new()
-  o.widgets:add(o.mapView)
+  o.ui = ui.VerticalContainer:new()
+  o.ui:setAlignment('fill', 'fill')
+  o.ui:add(o.mapView)
 
   return o
 end
@@ -40,8 +40,7 @@ end
 
 function GameMapView:resize(w, h)
   print("GameMapView:resize()", w, h)
-  self.viewport:resize(w, h)
-  --self.widgets:resize(w, h)
+  self.ui:resize(w, h)
 end
 
 function GameMapView:update(dt)
@@ -127,7 +126,8 @@ function GameMapView:mousereleased(x, y, button, istouch)
 end
 
 function GameMapView:draw()
-  self.widgets:draw()
+  self.ui:layout()
+  self.ui:draw()
 end
 
 function foo()

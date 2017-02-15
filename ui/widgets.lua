@@ -5,7 +5,6 @@ local margin = require('ui/margin')
 local Widget = box.Model:new()
 
 function Widget:new(o)
-  print("> Widget:new()")
   o = o or {}
   setmetatable(o, self)
   self.__index = self
@@ -18,7 +17,7 @@ function Widget:layout()
 end
 
 function Widget:draw()
-  if true then
+  if false then
     love.graphics.setColor(255, 0, 0)
     love.graphics.rectangle('line', self.bounds.x, self.bounds.y, self.bounds.w, self.bounds.h)
     love.graphics.setColor(0, 255, 0)
@@ -49,22 +48,18 @@ function Widget:mousemoved(x, y)
 end
 
 function Widget:mousepressed(x, y, button, istouch)
-  print("Widget:mousepressed()")
 end
 
 function Widget:mousereleased(x, y, button, istouch)
-  print("Widget:mousereleased()")
 end
 
 function Widget:resize(w, h)
-  print("Widget:resize()", w, h)
   self:setBounds(self.bounds.x, self.bounds.y, w, h)
 end
 
 local Container = Widget:new()
 
 function Container:new(o)
-  print("> Container:new()")
   o = o or {}
   setmetatable(o, self)
   self.__index = self
@@ -91,7 +86,6 @@ function Container:add(widget)
 end
 
 function Container:resize(w, h)
-  print("Container:resize()", w, h)
   self:setBounds(self.bounds.x, self.bounds.y, w, h)
   for _, widget in pairs(self.widgets) do
     widget:resize(w, h)
@@ -158,7 +152,6 @@ function Panel:layout()
 end
 
 function Panel:resize(w, h)
-  print("Panel:resize()", w, h)
   Widget.resize(self, w, h)
   if self.child then self.child:resize(w, h) end
 end
@@ -178,7 +171,6 @@ function Panel:mousemoved(x, y)
 end
 
 function Panel:mousereleased(x, y, button, istouch)
-  print("Panel:mousereleased()")
   if self.child and util.overBox(x, y, self.child.bounds) then
     self.child:mousereleased(x, y, button, istouch)
   end
@@ -231,18 +223,24 @@ end
 function VerticalContainer:layout()
   Widget.layout(self)
 
+  local sizes = {}
+  for _, widget in pairs(self.widgets) do
+    local h = widget.dimensions.h
+    table.insert(sizes, h)
+  end
+
+  local heights = util.distributeSizes(self.widgetArea.h, sizes)
   local x = self.widgetArea.x
   local y = self.widgetArea.y
-  for _, widget in pairs(self.widgets) do
-    local w = self.widgetArea.w
-    local h = self.widgetArea.h
+  local w = self.widgetArea.w
+
+  for i, widget in pairs(self.widgets) do
+    local h = heights[i]
 
     widget:setBounds(x, y, w, h)
     widget:layout()
 
-    local effective = widget.widgetArea.h + widget.margin.top + widget.margin.bottom
-
-    y = y + effective
+    y = y + h
   end
 end
 
@@ -259,24 +257,11 @@ function Button:new(o)
   if not o.onclick then o.onclick = function() print("clicked") end end
 
   o.dimensions = o.dimensions or { x=0, y=0, w=100, h=23 }
-  print("Button:new() dimensions", o.dimensions.w, o.dimensions.h)
   o.state = 'out'
   o.mouseover = function() o.state = 'over'end
   o.mouseout = function() o.state = 'out' end
 
   return o
-end
-
-function Button:resize(w, h)
-  print("Button:resize()", w, h)
-  Widget.resize(self, w, h)
-end
-
-function Button:layout()
-  --print("Button:layout()")
-  Widget.layout(self)
-
-  --print("Button:layout() done")
 end
 
 function Button:draw()
@@ -288,7 +273,6 @@ function Button:draw()
   local w = self.widgetArea.w
   local h = self.widgetArea.h
 
-  --print("Button:draw()", x, y, w, h)
   love.graphics.setColor(r, g, b)
   love.graphics.rectangle('fill', x, y, w, h, 5, 5)
   love.graphics.setColor(0, 0, 0)
@@ -304,9 +288,7 @@ function Button:color()
 end
 
 function Button:mousereleased(x, y, button, istouch)
-  print("Button:mousereleased()", x, y, "over", util.box2string(self.bounds))
   if button == 1 and util.overBox(x, y, self.widgetArea) then
-    print(("Button:mousereleased() clicked %q"):format(self.label))
     self:onclick()
     return true
   end
