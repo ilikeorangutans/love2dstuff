@@ -330,10 +330,12 @@ function Label:calculateTextSize()
 
   local height = lineHeight * #(wrappedText)
 
-  self:setDimensions(self.dimensions.x, self.dimensions.y, self.dimensions.w, height)
+  height = height + self.margin.top + self.margin.bottom
+  width = width + self.margin.left + self.margin.right
+
+  self:setDimensions(self.dimensions.x, self.dimensions.y, width, height)
 
   self.changedText = false
-  print("Label:calculateTextSize()", self.widgetArea.w, width, height, wrappedText, lineHeight)
 end
 
 function Label:draw()
