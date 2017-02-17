@@ -1,6 +1,7 @@
 local util = require('ui/utils')
 local box = require('ui/boxmodel')
 local margin = require('ui/margin')
+local alig = require('ui/alignment')
 
 local Widget = box.Model:new()
 
