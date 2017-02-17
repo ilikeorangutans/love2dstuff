@@ -1,3 +1,5 @@
+local util = require('ui/utils')
+
 local Horizontal = {
   FILL = 'fill',
   LEFT = 'left',
@@ -26,7 +28,7 @@ end
 
 function Alignment:fill(available, fill)
   if self.horizontal == Horizontal.FILL and self.vertical == Vertical.FILL then
-    local result = { x = available.x, y = available.y, w = available.w, h = available.h}
+    local result = util.box(available.x, available.y, available.w, available.h)
     return result
   end
 
@@ -73,6 +75,14 @@ function Alignment:__tostring()
 end
 
 local module = {}
+
+for _, horizontal in pairs(Horizontal) do
+  for _, vertical in pairs(Vertical) do
+    local name = ("%s_%s"):format(horizontal, vertical)
+    module[name] = Alignment:new(horizontal, vertical)
+  end
+end
+
 module.Alignment = Alignment
 module.Horizontal = Horizontal
 module.Vertical = Vertical

@@ -10,6 +10,10 @@ function box2string(box)
   return ("%dx%d at %d/%d"):format(box.w, box.h, box.x, box.y)
 end
 
+function box(x, y, w, h)
+  return {x=x, y=y, w=w, h=h}
+end
+
 function distributeSizes(available, sizes)
   if not sizes or #(sizes) == 0 then assert(false, "no input sizes given") end
 
@@ -49,4 +53,5 @@ local module = {}
 module.overBox = overBox
 module.box2string = box2string
 module.distributeSizes = distributeSizes
+module.box = box
 return module
