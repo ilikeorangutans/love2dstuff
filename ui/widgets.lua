@@ -18,7 +18,7 @@ function Widget:layout()
 end
 
 function Widget:draw()
-  if true then
+  if false then
     love.graphics.setColor(255, 0, 0)
     love.graphics.rectangle('line', self.bounds.x, self.bounds.y, self.bounds.w, self.bounds.h)
     love.graphics.setColor(0, 255, 0)
@@ -340,16 +340,12 @@ function Label:calculateTextSize()
 
   local font = love.graphics.getFont()
   local lineHeight = font:getHeight()
-  local width, wrappedText = font:getWrap(self.text, self.bounds.w)
-
-  print("Layout:calculateTextSize() ", util.box2string(self.bounds), util.box2string(self.widgetArea))
+  local width, wrappedText = font:getWrap(self.text, self.widgetArea.w)
 
   local height = lineHeight * #(wrappedText)
 
   height = height + self.margin.top + self.margin.bottom
   width = width + self.margin.left + self.margin.right
-
-  --self:setDimensions(self.dimensions.x, self.dimensions.y, width, height)
 
   self.changedText = false
 end
