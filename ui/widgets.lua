@@ -18,7 +18,7 @@ function Widget:layout()
 end
 
 function Widget:draw()
-  if false then
+  if true then
     love.graphics.setColor(255, 0, 0)
     love.graphics.rectangle('line', self.bounds.x, self.bounds.y, self.bounds.w, self.bounds.h)
     love.graphics.setColor(0, 255, 0)
@@ -193,18 +193,26 @@ end
 function HorizontalContainer:layout()
   Widget.layout(self)
 
+  if #(self.widgets) == 0 then return end
+
+  local sizes = {}
+  for _, widget in pairs(self.widgets) do
+    local w = widget.dimensions.w
+    table.insert(sizes, w)
+  end
+
+  local widths = util.distributeSizes(self.widgetArea.w, sizes)
   local x = self.widgetArea.x
   local y = self.widgetArea.y
-  for _, widget in pairs(self.widgets) do
-    local w = self.widgetArea.w
-    local h = self.widgetArea.h
+  local h = self.widgetArea.h
+
+  for i, widget in pairs(self.widgets) do
+    local w = widths[i]
 
     widget:setBounds(x, y, w, h)
     widget:layout()
 
-    local effective = widget.widgetArea.w + widget.margin.left + widget.margin.right
-
-    x = x + effective
+    x = x + w
   end
 end
 
@@ -223,6 +231,8 @@ end
 
 function VerticalContainer:layout()
   Widget.layout(self)
+
+  if #(self.widgets) == 0 then return end
 
   local sizes = {}
   for _, widget in pairs(self.widgets) do
@@ -305,6 +315,8 @@ function Label:new(o)
   box.Model.init(o)
 
   o.text = o.text or ""
+  o.color = o.color or {r=255,g=255,b=255}
+  o.changedText = true
 
   return o
 end
@@ -325,16 +337,19 @@ end
 
 function Label:calculateTextSize()
   if self.widgetArea.w == 0 then return end
+
   local font = love.graphics.getFont()
   local lineHeight = font:getHeight()
-  local width, wrappedText = font:getWrap(self.text, self.widgetArea.w)
+  local width, wrappedText = font:getWrap(self.text, self.bounds.w)
+
+  print("Layout:calculateTextSize() ", util.box2string(self.bounds), util.box2string(self.widgetArea))
 
   local height = lineHeight * #(wrappedText)
 
   height = height + self.margin.top + self.margin.bottom
   width = width + self.margin.left + self.margin.right
 
-  self:setDimensions(self.dimensions.x, self.dimensions.y, width, height)
+  --self:setDimensions(self.dimensions.x, self.dimensions.y, width, height)
 
   self.changedText = false
 end
@@ -343,7 +358,7 @@ function Label:draw()
   local x = self.widgetArea.x
   local y = self.widgetArea.y
   local w = self.widgetArea.w
-  love.graphics.setColor(255, 255, 255)
+  love.graphics.setColor(self.color.r, self.color.g, self.color.b)
   love.graphics.printf(self.text, x, y, w, 'left')
 end
 

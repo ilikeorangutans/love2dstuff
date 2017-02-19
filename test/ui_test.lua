@@ -91,4 +91,17 @@ function testDistributeSizes()
   luaunit.assertEquals(util.distributeSizes(100, {0, 50, 0}), {25, 50, 25})
 end
 
+function testHorizontalLayout()
+  local c = ui.HorizontalContainer:new({w=400, h=100}):setAlignment('fill', 'top')
+
+  local c1 = c:add(ui.Button:new({}))
+  local c2 = c:add(ui.Button:new({}))
+
+  c:setBounds(0, 0, 300, 75)
+  c:layout()
+
+  luaunit.assertEquals(c1.bounds, {x=0,y=0,w=150,h=75})
+  luaunit.assertEquals(c2.bounds, {x=150,y=0,w=150,h=75})
+end
+
 os.exit(luaunit.LuaUnit.run())
