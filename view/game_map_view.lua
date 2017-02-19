@@ -23,12 +23,21 @@ function GameMapView:new(o)
     mapWidth=o.map.width,
     mapHeight=o.map.height })
 
-  o.mapView = MapRenderer:new({ x=0, y=0, tileset=o.tileset, map=o.map, viewport=o.viewport })
-  o.mapView:setAlignment('fill', 'fill')
+  o.mapView = MapRenderer:new({ x=0, y=0, tileset=o.tileset, map=o.map, viewport=o.viewport, bus=o.bus })
+  o.mapView:setAlignment('fill', 'fill'):setDimensions(0, 0, 0, 0)
+
+  o.menuBar = ui.HorizontalContainer:new():setAlignment('fill', 'top'):setDimensions(0, 0, 0, 33)
+
+  o.sidebar = ui.VerticalContainer:new():setAlignment('fill', 'fill'):setDimensions(0, 0, 200, 0)
 
   o.ui = ui.VerticalContainer:new()
   o.ui:setAlignment('fill', 'fill')
-  o.ui:add(o.mapView)
+  o.ui:add(o.menuBar)
+
+  local h = o.ui:add(ui.HorizontalContainer:new())
+  h:setAlignment('fill', 'fill'):setDimensions(0, 0, 0, 0)
+  h:add(o.mapView)
+  h:add(o.sidebar)
 
   return o
 end
@@ -65,16 +74,8 @@ function GameMapView:update(dt)
 end
 
 function GameMapView:mousemoved(x, y)
-  local posx, posy = self.viewport:screenToMap(x, y)
-  if posx == self.lastx and posy == self.lasty then
-    return
-  end
-
-  self.lastx = posx
-  self.lasty = posy
-
-  local tile = self.map:getAt(posAt(posx, posy))
-  print(("Mouse over %d/%d: %s"):format(posx, posy, tile.terrain.title))
+  self.ui:mousemoved(x, y)
+  return
 end
 
 function GameMapView:keypressed(key, scancode, isrepeat)

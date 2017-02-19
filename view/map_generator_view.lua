@@ -10,6 +10,7 @@ function MapGeneratorView:new(o)
   local tileset = Tileset:new()
   tileset:load()
 
+  local bus = Bus:new()
   local entityManager = EntityManager:new()
 
   o.pressed = {}
@@ -28,7 +29,7 @@ function MapGeneratorView:new(o)
     mapWidth=o.map.width,
     mapHeight=o.map.height })
 
-  o.mapView = MapRenderer:new({ x=0, y=0, tileset=tileset, map=o.map, viewport=o.viewport })
+  o.mapView = MapRenderer:new({ bus=bus, x=0, y=0, tileset=tileset, map=o.map, viewport=o.viewport })
   o.ui:add(o.mapView)
   o.mapView:setAlignment('fill', 'fill')
 
@@ -52,18 +53,28 @@ function MapGeneratorView:new(o)
   end
   c:add(o.button)
 
-  o.randomizeButton = ui.Button:new({label="randomize", w=100, h=23, y = 38})
+  o.randomizeButton = ui.Button:new({label="randomize", w=100, h=23})
   o.randomizeButton:setMargin(5, 5, 0, 5)
   o.randomizeButton.onclick = function()
     o:randomizeMap(o.mapWidth, o.mapHeight)
   end
   c:add(o.randomizeButton)
+  o.hoverLabel = c:add(ui.Label:new({ text="Hover over" }):setAlignment('fill', 'fill'):setMargin(3, 3, 3, 3))
+
+  bus:subscribe("map:hover_tile", o, MapGeneratorView.onHoverTile)
 
   return o
 end
 
+function MapGeneratorView:onHoverTile(e)
+  local tile = self.map:getAt(e)
+  self.hoverLabel:setText(("%d/%d: %s"):format(e.x, e.y, tile.terrain.title))
+end
+
 function MapGeneratorView:randomizeMap(w, h)
-  self.mapView.map = self.generator:generate(w, h)
+  local map = self.generator:generate(w, h)
+  self.mapView.map = map
+  self.map = map
 end
 
 function MapGeneratorView:resize(w, h)

@@ -1,4 +1,5 @@
 local ui = require('ui/widgets')
+local util = require('ui/utils')
 
 MapRenderer = ui.Widget:new()
 
@@ -12,6 +13,7 @@ function MapRenderer:new(o)
   assert(o.x, "x needed")
   assert(o.y, "y needed")
   assert(o.viewport, "viewport needed")
+  assert(o.bus, "bus needed")
 
   ui.Widget.init(self)
 
@@ -35,6 +37,17 @@ function MapRenderer:mousepressed(x, y, button, istouch)
 end
 
 function MapRenderer:mousemoved(x, y)
+  if not util.overBox(x, y, self.widgetArea) then return end
+
+  local posx, posy = self.viewport:screenToMap(x, y)
+  if posx == self.lastx and posy == self.lasty then
+    return
+  end
+
+  self.lastx = posx
+  self.lasty = posy
+
+  self.bus:fire("map:hover_tile", {x=posx, y=posy})
 end
 
 function MapRenderer:mousereleased(x, y, button, istouch)
