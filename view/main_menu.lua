@@ -14,7 +14,7 @@ function MainMenu:new(o)
 
   local c = o.ui:add(ui.VerticalContainer:new()):setAlignment('fill', 'fill'):setMargin(23, 23, 23, 23)
 
-  l = c:add(ui.Label:new({ text = "Welcome to this fantastic little demonstration of my map generator" })):setAlignment('fill', 'fill'):setMargin(5, 5, 5, 5)
+  l = c:add(ui.Label:new({ text = "Welcome to this fantastic little demonstration of my map generator" })):setAlignment('fill', 'fill'):setMargin(5, 5, 5, 5):setDimensions(0, 0, 0, 100)
   c:add(ui.Button:new({ w = 200, h = 31, label = "Map", onclick = function() o:openMapGeneratorView() end }))
   c:add(ui.Button:new({ w = 200, h = 31 + 11, label = "Start", onclick = function() o:openGameView() end })):setMargin(11, 0, 0, 0)
   c:add(ui.Button:new({ w = 200, h = 31 + 11, label = "Quit", onclick = function() love.event.quit() end })):setMargin(11, 0, 0, 0)
