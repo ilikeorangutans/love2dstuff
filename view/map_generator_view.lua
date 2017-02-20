@@ -120,7 +120,7 @@ end
 
 function MapGeneratorView:keypressed(key, scancode, isrepeat)
   if key == 'escape' then
-    love.event.quit()
+    self.viewstack:pop()
   end
 end
 
