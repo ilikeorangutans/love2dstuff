@@ -1,9 +1,6 @@
 local ui = require('ui/widgets')
 
-GameMapView = {
-  viewport = {},
-  mapView = {}
-}
+GameMapView = { }
 
 function GameMapView:new(o)
   o = o or {}
@@ -22,12 +19,13 @@ function GameMapView:new(o)
     mapWidth=o.map.width,
     mapHeight=o.map.height })
 
-  o.mapView = MapRenderer:new({ x=0, y=0, tileset=o.tileset, map=o.map, viewport=o.viewport, bus=o.bus })
-  o.mapView:setAlignment('fill', 'fill'):setDimensions(0, 0, 0, 0)
-
   o.menuBar = ui.HorizontalContainer:new():setAlignment('fill', 'top'):setDimensions(0, 0, 0, 33)
   o.menuBar:add(ui.Button:new({label="File", w=100, h=27}))
   o.menuBar:add(ui.Button:new({label="BAM", w=100, h=27}))
+
+  --o.mapView = MapRenderer:new({ x=0, y=0, tileset=o.tileset, map=o.map, viewport=o.viewport, bus=o.bus })
+  o.mapView = MapView:new({ tileset=o.tileset, map=o.map, viewport=o.viewport, bus=o.bus })
+  o.mapView:setAlignment('fill', 'fill'):setDimensions(0, 0, 0, 0)
 
   o.sidebar = ui.VerticalContainer:new():setAlignment('fill', 'fill'):setDimensions(0, 0, 200, 0)
 

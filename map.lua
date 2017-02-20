@@ -1,4 +1,4 @@
-Map = {}
+local Map = {}
 
 function Map:new(o)
   o = o or {}
@@ -308,3 +308,10 @@ function BetterRandomMapGenerator:generate(w, h)
 
   return map
 end
+
+local module = {}
+module.Map = Map
+module.PureRandomMapGenerator = PureRandomMapGenerator
+module.BetterRandomMapGenerator = BetterRandomMapGenerator
+module.View = MapView
+return module

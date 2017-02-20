@@ -1,4 +1,5 @@
 local ui = require('ui/widgets')
+local map = require('map')
 
 MapGeneratorView = {}
 
@@ -18,7 +19,7 @@ function MapGeneratorView:new(o)
   o.mapHeight = 70
   o.ui = ui.VerticalContainer:new()
   o.ui:setAlignment('fill', 'fill')
-  o.generator = PureRandomMapGenerator
+  o.generator = map.PureRandomMapGenerator
   o.map = o.generator:generate(o.mapWidth, o.mapHeight)
 
   o.viewport = Viewport:new({

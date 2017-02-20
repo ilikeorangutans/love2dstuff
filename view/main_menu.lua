@@ -1,5 +1,6 @@
 local ui = require('ui/widgets')
 local util = require('ui/utils')
+local map = require('map')
 
 MainMenu = {}
 
@@ -66,15 +67,15 @@ function MainMenu:openGameView()
   local engine = Engine:new({bus=bus})
   engine:init()
 
-  local map = BetterRandomMapGenerator:generate(50, 50)
+  local m = map.BetterRandomMapGenerator:generate(50, 50)
   local tileset = Tileset:new()
   tileset:load()
 
   local entityManager = engine.entityManager --EntityManager:new({ bus=bus })
 
-  local p1MapView = MapView:new({map=map,player=p1}) -- wrap player, nationality, map view, etc into one object?
+  local p1MapView = map.View:new({map=m,player=p1}) -- wrap player, nationality, map view, etc into one object?
   p1MapView:subscribe(bus)
-  local p2MapView = MapView:new({map=map,player=p2})
+  local p2MapView = map.View:new({map=m,player=p2})
   p2MapView:subscribe(bus)
 
   entityManager:create({ drawable={img = 'caravel'}, position={ x=10, y=10 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(10), visible={value=true}, vision={radius=2}, ship=Ship:new()})

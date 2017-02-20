@@ -15,7 +15,7 @@ function MapRenderer:new(o)
   assert(o.viewport, "viewport needed")
   assert(o.bus, "bus needed")
 
-  ui.Widget.init(self)
+  ui.Widget.init(o)
 
   return o
 end
@@ -64,6 +64,8 @@ function MapRenderer:layout()
 end
 
 function MapRenderer:resize(w, h)
+  print("MapRenderer:resize()", w, h)
+
   ui.Widget.resize(self, w, h)
   self.viewport:resize(self.widgetArea.w, self.widgetArea.h)
 end

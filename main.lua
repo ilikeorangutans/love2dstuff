@@ -15,7 +15,6 @@ require 'viewport'
 require 'entity'
 require 'selection'
 require 'terrain'
-require 'map'
 require 'player'
 require 'game'
 require 'ai'
@@ -32,6 +31,7 @@ require 'ship'
 require 'engine'
 require 'view/game_map_view'
 require 'view/colony_view'
+require 'view/map_view'
 
 function love.load()
   if love.system.getOS() == "Android" then
