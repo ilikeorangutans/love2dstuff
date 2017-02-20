@@ -1,6 +1,5 @@
 local ui = require('ui/widgets')
 
--- map view of the colonies
 GameMapView = {
   viewport = {},
   mapView = {}
@@ -27,6 +26,8 @@ function GameMapView:new(o)
   o.mapView:setAlignment('fill', 'fill'):setDimensions(0, 0, 0, 0)
 
   o.menuBar = ui.HorizontalContainer:new():setAlignment('fill', 'top'):setDimensions(0, 0, 0, 33)
+  o.menuBar:add(ui.Button:new({label="File", w=100, h=27}))
+  o.menuBar:add(ui.Button:new({label="BAM", w=100, h=27}))
 
   o.sidebar = ui.VerticalContainer:new():setAlignment('fill', 'fill'):setDimensions(0, 0, 200, 0)
 
@@ -45,6 +46,7 @@ end
 function GameMapView:subscribe(bus)
   bus:subscribe("selection.selected", self, GameMapView.onEntitySelected)
   bus:subscribe("selection.deselected", self, GameMapView.onEntityDeselected)
+  bus:subscribe("map:hover_tile", self, GameMapView.onHoverTile)
 end
 
 function GameMapView:resize(w, h)
@@ -211,3 +213,7 @@ function GameMapView:onEntityDeselected(e)
   self.selected = nil
 end
 
+function GameMapView:onHoverTile(e)
+  local tile = self.map:getAt(e)
+  print(tile.terrain.title)
+end

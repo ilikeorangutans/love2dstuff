@@ -21,6 +21,7 @@ function MapRenderer:new(o)
 end
 
 function MapRenderer:draw()
+  love.graphics.setScissor(self.widgetArea.x, self.widgetArea.y, self.widgetArea.w, self.widgetArea.h)
   love.graphics.setColor(255, 255, 255, 255)
   local tileW, tileH = self.tileset:tileSize()
   local v = self.viewport.visible
@@ -31,6 +32,7 @@ function MapRenderer:draw()
 
     self.tileset:draw(x, y, tile.type)
   end
+  love.graphics.setScissor()
 end
 
 function MapRenderer:mousepressed(x, y, button, istouch)

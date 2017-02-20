@@ -63,19 +63,22 @@ function MainMenu:openGameView()
   local p1 = game:addPlayer(Player:new('Jakob'))
   local p2 = game:addPlayer(Player:new('Hannah'))
 
+  local engine = Engine:new({bus=bus})
+  engine:init()
+
   local map = BetterRandomMapGenerator:generate(50, 50)
   local tileset = Tileset:new()
   tileset:load()
 
-  local entityManager = EntityManager:new({ bus=bus })
-  entityManager:create({ drawable={img = 'caravel'}, position={ x=10, y=10 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(10), visible={value=true}, vision={radius=10}, ship=Ship:new()})
+  local entityManager = engine.entityManager --EntityManager:new({ bus=bus })
 
-  local p1MapView = MapView:new({map=map,player=p1})
+  local p1MapView = MapView:new({map=map,player=p1}) -- wrap player, nationality, map view, etc into one object?
   p1MapView:subscribe(bus)
   local p2MapView = MapView:new({map=map,player=p2})
   p2MapView:subscribe(bus)
 
-  local selectionManager = SelectionManager:new({entityManager=entityManager,bus=bus,visibilityCheck=p1MapView,player=p1})
+  entityManager:create({ drawable={img = 'caravel'}, position={ x=10, y=10 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(10), visible={value=true}, vision={radius=2}, ship=Ship:new()})
+  local selectionManager = SelectionManager:new({entityManager=entityManager,bus=bus,visibilityCheck=p1MapView,player=p1}) -- ui concern?
   selectionManager:subscribe(bus)
 
   local colonySystem = ColonySystem:new({ bus=bus, entityManager=entityManager, map=map })

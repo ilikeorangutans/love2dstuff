@@ -29,6 +29,7 @@ require 'building'
 require 'colonist'
 require 'professions'
 require 'ship'
+require 'engine'
 require 'view/game_map_view'
 require 'view/colony_view'
 
