@@ -1,7 +1,7 @@
 local ui = require('ui/widgets')
 local util = require('ui/utils')
 
-MapRenderer = ui.Widget:new()
+local MapRenderer = ui.Widget:new()
 
 function MapRenderer:new(o)
   o = o or {}
@@ -64,9 +64,10 @@ function MapRenderer:layout()
 end
 
 function MapRenderer:resize(w, h)
-  print("MapRenderer:resize()", w, h)
-
   ui.Widget.resize(self, w, h)
   self.viewport:resize(self.widgetArea.w, self.widgetArea.h)
 end
 
+local module = {}
+module.MapRenderer = MapRenderer
+return module

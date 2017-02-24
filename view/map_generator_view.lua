@@ -1,5 +1,6 @@
 local ui = require('ui/widgets')
 local map = require('map')
+local maprenderer = require('view/map_renderer')
 
 MapGeneratorView = {}
 
@@ -30,7 +31,7 @@ function MapGeneratorView:new(o)
     mapWidth=o.map.width,
     mapHeight=o.map.height })
 
-  o.mapView = MapRenderer:new({ bus=bus, x=0, y=0, tileset=tileset, map=o.map, viewport=o.viewport })
+  o.mapView = maprenderer.MapRenderer:new({ bus=bus, x=0, y=0, tileset=tileset, map=o.map, viewport=o.viewport })
   o.ui:add(o.mapView)
   o.mapView:setAlignment('fill', 'fill')
 
