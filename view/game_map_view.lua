@@ -23,7 +23,7 @@ function GameMapView:new(o)
   o.menuBar:add(ui.Button:new({label="File", w=100, h=27}))
   o.menuBar:add(ui.Button:new({label="BAM", w=100, h=27}))
 
-  o.mapView = MapView:new({ tileset=o.tileset, map=o.map, viewport=o.viewport, bus=o.bus })
+  o.mapView = MapView:new({ tileset=o.tileset, map=o.map, entityManager=o.entityManager, viewport=o.viewport, bus=o.bus })
   o.mapView:setAlignment('fill', 'fill'):setDimensions(0, 0, 0, 0)
 
   o.sidebar = ui.VerticalContainer:new():setAlignment('fill', 'fill'):setDimensions(0, 0, 200, 0)

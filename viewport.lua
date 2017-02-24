@@ -86,3 +86,7 @@ function Viewport:screenToMap(x, y)
   return math.floor((x - self.screenx + self.x) / tilew), math.floor((y - self.screeny + self.y) / tileh)
 end
 
+function Viewport:isVisible(pos)
+  local v = self.visible
+  return v.startx <= pos.x and pos.x <= v.endx and v.starty <= pos.y and pos.y <= v.endy
+end
