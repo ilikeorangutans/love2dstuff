@@ -43,12 +43,12 @@ function MapGeneratorView:new(o)
   o.button:setMargin(5, 5, 0, 5)
   o.button.onclick = function()
     if o.button.label == 'pure random' then
-      o.generator = BetterRandomMapGenerator
+      o.generator = map.BetterRandomMapGenerator
       o:randomizeMap(o.mapWidth, o.mapHeight)
       o.button.label = 'better'
     else
       o.button.label = 'pure random'
-      o.generator = PureRandomMapGenerator
+      o.generator = map.PureRandomMapGenerator
       o:randomizeMap(o.mapWidth, o.mapHeight)
     end
   end
