@@ -83,7 +83,7 @@ function Map:getNeighbours(pos, radius)
   end
 end
 
-MapView = {}
+local MapView = {}
 
 function MapView:new(o)
   o = o or {}
@@ -180,7 +180,7 @@ function MapView:updateVisibility(entity)
   end
 end
 
-PureRandomMapGenerator = {}
+local PureRandomMapGenerator = {}
 function PureRandomMapGenerator:generate(w, h)
   local map = Map:new({width = w, height = h})
   local max = 20
@@ -197,7 +197,7 @@ function PureRandomMapGenerator:generate(w, h)
   return map
 end
 
-BetterRandomMapGenerator = {}
+local BetterRandomMapGenerator = {}
 function BetterRandomMapGenerator:generate(w, h)
   local map = Map:new({width = w, height = h})
 
