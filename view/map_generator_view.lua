@@ -24,6 +24,7 @@ function MapGeneratorView:new(o)
   o.map = o.generator:generate(o.mapWidth, o.mapHeight)
 
   o.viewport = Viewport:new({
+    bus=bus,
     screenx=0,
     screeny=0,
     tileW=tileset.tileW,
@@ -63,7 +64,7 @@ function MapGeneratorView:new(o)
   c:add(o.randomizeButton)
   o.hoverLabel = c:add(ui.Label:new({ text="Hover over" }):setAlignment('fill', 'fill'):setMargin(3, 3, 3, 3))
 
-  bus:subscribe("map:hover_tile", o, MapGeneratorView.onHoverTile)
+  bus:subscribe("viewport:hover", o, MapGeneratorView.onHoverTile)
 
   return o
 end
@@ -104,6 +105,7 @@ end
 
 function MapGeneratorView:mousemoved(x, y)
   self.ui:mousemoved(x, y)
+  self.viewport:mousemoved(x, y)
 
   if self.pressed[1] then
     local deltax = self.lastx - x

@@ -75,6 +75,13 @@ function Tileset:draw(x, y, id)
   love.graphics.draw(self.terrain, quad, x, y)
 end
 
+function Tileset:drawEntity(x, y, id)
+  if not self.unit[id] then
+    assert(false, ("Don't know how to draw entity  id %q"):format(id))
+  end
+  love.graphics.draw(self.units, self.unit[id], x, y, 0, 0.5, 0.5)
+end
+
 function Tileset:tileSize()
   return self.tileW, self.tileH
 end

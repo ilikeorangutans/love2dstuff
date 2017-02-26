@@ -14,7 +14,7 @@ function SelectionManager:new(o)
 end
 
 function SelectionManager:subscribe(bus)
-  bus:subscribe("viewport.clicked", self, SelectionManager.onClick)
+  bus:subscribe("viewport:click", self, SelectionManager.onClick)
   bus:subscribe("entity.componentRemoved", self, SelectionManager.onComponentRemoved)
 end
 

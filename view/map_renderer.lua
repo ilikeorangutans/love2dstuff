@@ -49,7 +49,7 @@ function MapRenderer:mousemoved(x, y)
   self.lastx = posx
   self.lasty = posy
 
-  self.bus:fire("map:hover_tile", {x=posx, y=posy})
+  --self.bus:fire("map:hover_tile", {x=posx, y=posy})
 end
 
 function MapRenderer:mousereleased(x, y, button, istouch)

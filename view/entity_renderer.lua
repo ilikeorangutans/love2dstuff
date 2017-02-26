@@ -12,6 +12,7 @@ function EntityRenderer:new(o)
   assert(o.bus, "bus needed")
   assert(o.entityManager, "entity manager needed")
   assert(o.map, "map needed")
+  assert(o.tileset, "tileset needed")
 
   ui.Widget.init(o)
 
@@ -28,14 +29,13 @@ function EntityRenderer:draw()
   local entities = self.entityManager:getComponentsByType({position=predicate}, visible(), 'selectable', 'drawable')
 
   for i, e in ipairs(entities) do
-    print("Rendering entity", i, "at", e.position.x, e.position.y)
+    local x, y = self.viewport:mapToScreen(e.position)
+
+    if e.selectable.selected then
+      print("Selected")
+    end
+    self.tileset:drawEntity(x, y, e.drawable.img)
   end
-  --local area = self.map:getArea(posAt(v.startx, v.starty), posAt(v.endx, v.endy))
-  --for pos, tile in area do
-    --local x, y = self.viewport:mapToScreen(pos)
---
-    --print("EntityRenderer:draw()", x, y)
-  --end
 
   love.graphics.setScissor()
 end

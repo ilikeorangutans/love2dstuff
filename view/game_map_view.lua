@@ -12,6 +12,7 @@ function GameMapView:new(o)
   assert(o.tileset, "tileset needed")
 
   o.viewport = Viewport:new({
+    bus=o.bus,
     screenx=0,
     screeny=0,
     tileW=o.tileset.tileW,
@@ -43,12 +44,12 @@ end
 function GameMapView:subscribe(bus)
   bus:subscribe("selection.selected", self, GameMapView.onEntitySelected)
   bus:subscribe("selection.deselected", self, GameMapView.onEntityDeselected)
-  bus:subscribe("map:hover_tile", self, GameMapView.onHoverTile)
+  bus:subscribe("viewport:hover", self, GameMapView.onHoverTile)
 end
 
 function GameMapView:resize(w, h)
-  print("GameMapView:resize()", w, h)
   self.ui:resize(w, h)
+  self.viewport:resize(self.mapView.bounds.w, self.mapView.bounds.h)
 end
 
 function GameMapView:update(dt)
@@ -70,11 +71,7 @@ function GameMapView:update(dt)
   if deltax ~= 0 or deltay ~= 0 then
     self.viewport:moveBy(deltax, deltay)
   end
-end
-
-function GameMapView:mousemoved(x, y)
-  self.ui:mousemoved(x, y)
-  return
+  self.ui:update(dt)
 end
 
 function GameMapView:keypressed(key, scancode, isrepeat)
@@ -106,11 +103,25 @@ function GameMapView:keypressed(key, scancode, isrepeat)
   end
 end
 
+function GameMapView:mousemoved(x, y)
+  self.viewport:mousemoved(x, y)
+  return self.ui:mousemoved(x, y)
+end
+
 function GameMapView:mousereleased(x, y, button, istouch)
+  self.viewport:mousereleased(x, y, button, istouch)
+  return self.ui:mousereleased(x, y, button, istouch)
+end
+
+function GameMapView:mousepressed(x, y, button, istouch)
+  return self.ui:mousepressed(x, y, button, istouch)
+end
+
+function foo2()
   local posx, posy = self.viewport:screenToMap(x, y)
   if button == 1 then
     -- TODO might run this through player control
-    --self.bus:fire("viewport.clicked", {button=button, x=posx, y=posy})
+    --self.bus:fire("viewport:click", {button=button, x=posx, y=posy})
   elseif button == 2 then
     if self.selected then
       local entity = self.selected
@@ -211,6 +222,7 @@ function GameMapView:onEntityDeselected(e)
 end
 
 function GameMapView:onHoverTile(e)
+  print("GameMapView:onHoverTile()")
   local tile = self.map:getAt(e)
   print(tile.terrain.title)
 end

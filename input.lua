@@ -20,7 +20,7 @@ function InputHandler:mousereleased(x, y, button, istouch)
   local posx, posy = viewport:screenToMap(x, y)
   if button == 1 then
     -- TODO might run this through player control
-    bus:fire("viewport.clicked", {button=button, x=posx, y=posy})
+    bus:fire("viewport:click", {button=button, x=posx, y=posy})
   elseif button == 2 then
     if self.selected then
       local entity = self.comps
