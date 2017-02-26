@@ -420,7 +420,7 @@ local TerrainDefinitions = {
   },
   tundra = {
     id = 20,
-    title = 'Grassland',
+    title = 'Tundra',
     terrain = 'land',
     produces = {
       ore = 2,
