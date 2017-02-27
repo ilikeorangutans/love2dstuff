@@ -83,15 +83,16 @@ function Map:getNeighbours(pos, radius)
   end
 end
 
-local MapView = {}
+--- A map with fog of war.
+local ExplorableMap = {}
 
-function MapView:new(o)
+function ExplorableMap:new(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
 
-  assert(o.map, "MapView requires map")
-  assert(o.player, "MapView requires player")
+  assert(o.map, "ExplorableMap requires map")
+  assert(o.player, "ExplorableMap requires player")
 
   o.explored = {}
   o.visible = {}
@@ -111,19 +112,19 @@ function MapView:new(o)
   return o
 end
 
-function MapView:subscribe(bus)
+function ExplorableMap:subscribe(bus)
   bus:subscribe('entity.created', self, self.onEntityCreated)
   bus:subscribe('entity.destroyed', self, self.onEntityDestroyed)
   bus:subscribe('position.changed', self, self.onPositionChanged)
 end
 
-function MapView:getAt(pos)
+function ExplorableMap:getAt(pos)
   local tile = self.map:getAt(pos)
   if not self:isExplored(pos) then return self.unexplored end
   return tile
 end
 
-function MapView:getArea(start, stop)
+function ExplorableMap:getArea(start, stop)
   local iterator = self.map:getArea(start, stop)
   return function()
     local pos, tile = iterator()
@@ -135,21 +136,21 @@ function MapView:getArea(start, stop)
   end
 end
 
-function MapView:isExplored(pos)
+function ExplorableMap:isExplored(pos)
   return self.explored[self.map:posToIndex(pos)]
 end
 
-function MapView:setExplored(pos)
+function ExplorableMap:setExplored(pos)
   self.explored[self.map:posToIndex(pos)] = true
 end
 
-function MapView:isVisible(pos)
+function ExplorableMap:isVisible(pos)
   -- TODO for now until we have implement the active visibility system
   -- return self.visible[self.map:posToIndex(pos)]
   return self:isExplored(pos)
 end
 
-function MapView:onEntityCreated(e)
+function ExplorableMap:onEntityCreated(e)
   if not e.components.vision then return end
   if not e.components.owner then return end
   if not e.components.position then return end
@@ -160,14 +161,14 @@ function MapView:onEntityCreated(e)
   self:updateVisibility(e.components)
 end
 
-function MapView:onPositionChanged(e)
+function ExplorableMap:onPositionChanged(e)
   if e.components.owner.id ~= self.player.id then return end
   self:updateVisibility(e.components)
 end
-function MapView:onEntityDestroyed(e)
+function ExplorableMap:onEntityDestroyed(e)
 end
 
-function MapView:updateVisibility(entity)
+function ExplorableMap:updateVisibility(entity)
   local pos = entity.position
   local radius = entity.vision.radius
   for y = pos.y-radius,pos.y+radius do
@@ -313,5 +314,5 @@ local module = {}
 module.Map = Map
 module.PureRandomMapGenerator = PureRandomMapGenerator
 module.BetterRandomMapGenerator = BetterRandomMapGenerator
-module.View = MapView
+module.ExplorableMap = ExplorableMap
 return module

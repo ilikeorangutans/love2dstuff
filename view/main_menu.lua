@@ -73,14 +73,14 @@ function MainMenu:openGameView()
 
   local entityManager = engine.entityManager --EntityManager:new({ bus=bus })
 
-  local p1MapView = map.View:new({map=m,player=p1}) -- wrap player, nationality, map view, etc into one object?
-  p1MapView:subscribe(bus)
-  local p2MapView = map.View:new({map=m,player=p2})
-  p2MapView:subscribe(bus)
+  local p1ExplorableMap = map.ExplorableMap:new({map=m,player=p1}) -- wrap player, nationality, map view, etc into one object?
+  p1ExplorableMap:subscribe(bus)
+  local p2ExplorableMap = map.ExplorableMap:new({map=m,player=p2})
+  p2ExplorableMap:subscribe(bus)
 
   entityManager:create({ drawable={img = 'caravel'}, position={ x=10, y=10 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(10), visible={value=true}, vision={radius=2}, ship=Ship:new()})
   entityManager:create({ drawable={img = 'caravel'}, position={ x=20, y=30 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(10), visible={value=true}, vision={radius=2}, ship=Ship:new()})
-  local selectionManager = SelectionManager:new({entityManager=entityManager,bus=bus,visibilityCheck=p1MapView,player=p1}) -- ui concern?
+  local selectionManager = SelectionManager:new({entityManager=entityManager,bus=bus,visibilityCheck=p1ExplorableMap,player=p1}) -- ui concern?
   selectionManager:subscribe(bus)
 
   local colonySystem = ColonySystem:new({ bus=bus, entityManager=entityManager, map=map })
@@ -98,7 +98,7 @@ function MainMenu:openGameView()
   ai.control = p2Ctrl
   bus:subscribe('game.newTurn', ai, ai.onNewTurn)
 
-  local view = GameMapView:new({ bus=bus, game=game, entityManager=entityManager, map=p1MapView, tileset=tileset, selectionManager=selectionManager })
+  local view = GameMapView:new({ bus=bus, game=game, entityManager=entityManager, map=p1ExplorableMap, tileset=tileset, selectionManager=selectionManager })
   view:subscribe(bus)
   self.viewstack:push(view)
 end

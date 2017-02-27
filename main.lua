@@ -64,12 +64,12 @@ function xxx(viewstack)
   map = Map:new()
   map:betterRandomize(50, 50)
 
-  p1MapView = MapView:new({map=map,player=p1})
-  p1MapView:subscribe(bus)
-  p2MapView = MapView:new({map=map,player=p2})
-  p2MapView:subscribe(bus)
+  p1ExplorableMap = ExplorableMap:new({map=map,player=p1})
+  p1ExplorableMap:subscribe(bus)
+  p2ExplorableMap = ExplorableMap:new({map=map,player=p2})
+  p2ExplorableMap:subscribe(bus)
 
-  mapView = p1MapView
+  mapView = p1ExplorableMap
 
   selectionManager = SelectionManager:new({entityManager=entityManager,bus=bus,visibilityCheck=mapView,player=p1})
   selectionManager:subscribe(bus)
