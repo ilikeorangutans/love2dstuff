@@ -2,17 +2,17 @@ luaunit = require('luaunit')
 require('util')
 require('player')
 require('terrain')
-require('map')
+map = require('map')
 
 TestMapView = {}
 
 function TestMapView:setUp()
-  local map = Map:new()
-  self.map = map
+  local m = map.Map:new()
+  self.map = m
   self.map:fromString(5, 5, "1111112221122211222111111")
 
   local player = Player:new('test')
-  local mapView = MapView:new({map=map, player=player})
+  local mapView = map.View:new({map=m, player=player})
   self.mapView = mapView
 end
 

@@ -8,7 +8,6 @@ function Game:new(o)
   assert(o.bus, "bus needed")
 
   o.players = {}
-  o.bus = bus
   o.turn = 0
 
   return o

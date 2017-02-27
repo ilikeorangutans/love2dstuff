@@ -6,7 +6,7 @@ require('player')
 
 function testCurrentPlayer()
   local bus = Bus:new()
-  local game = Game:new(bus)
+  local game = Game:new({bus=bus})
   local a = game:addPlayer(Player:new('a'))
   local b = game:addPlayer(Player:new('b'))
 

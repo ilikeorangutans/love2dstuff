@@ -1,20 +1,18 @@
 luaunit = require('luaunit')
 require('util')
-require('map')
+map = require('map')
 require('terrain')
 
 TestMap = {}
 
 function TestMap:setUp()
-  self.map = Map:new()
-  self.map:randomize(10, 10)
+  self.map = map.PureRandomMapGenerator:generate(10, 10)
   loadTerrainTypes()
 end
 
 function TestMap:testGetAt()
   local result = self.map:getAt({x=3,y=3})
   luaunit.assertNotNil(result)
-  luaunit.assertEquals(result.type, 2) -- TODO: this uses randomized map, might fail
   luaunit.assertError(self.map.getAt, self.map, {x=10,y=10})
 end
 

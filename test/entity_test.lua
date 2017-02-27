@@ -43,7 +43,7 @@ function TestEntityManager:testAddComponent()
   self.em:addComponent(id, 'bar', {val='bar'})
 
   local entity = self.em:get(id)
-  luaunit.assertEquals(entity, {foo={val='bar'}, bar={val='bar'}, id=1})
+  luaunit.assertEquals(entity, {foo={val='bar'}, bar={val='bar'}})
 
   local result = self.em:getComponentsByType('bar')
   luaunit.assertEquals(result, {{bar={val='bar'}}})
@@ -67,7 +67,7 @@ function TestEntityManager:testRemoveComponent()
   self.em:removeComponent(id, 'bar')
 
   local entity = self.em:get(id)
-  luaunit.assertEquals(entity, {foo={val='bar'}, id=1})
+  luaunit.assertEquals(entity, {foo={val='bar'}})
 
   local result = self.em:getComponentsByType('bar')
   luaunit.assertEquals(result, {})

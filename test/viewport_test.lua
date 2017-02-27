@@ -1,11 +1,14 @@
 luaunit = require('luaunit')
+pretty = require('pl.pretty')
+require('bus')
 require('viewport')
 
 TestViewport = {}
 
 function TestViewport:setUp()
-  self.vp = Viewport:new({w=320, h=160, tileW=32, tileH=32, mapWidth=100, mapHeight=100})
-  self.vp:resize(320, 160)
+  local bus = Bus:new()
+  self.vp = Viewport:new({ bus=bus, tileW=32, tileH=32, mapWidth=100, mapHeight=100})
+  self.vp:setBounds(0, 0, 320, 160)
 end
 
 function TestViewport:testInitialConditions()
@@ -64,15 +67,23 @@ function TestViewport:testIsVisible()
 end
 
 function TestViewport:testRelative()
-  self.vp:resize(100, 100)
-  self.vp.screenx = 13
-  self.vp.screeny = 17
+  self.vp:setBounds(13, 17, 100, 100)
 
   local x, y = self.vp:mapToScreen({x=0, y=0})
   luaunit.assertEquals({x, y}, {13, 17})
 
   local v = self.vp.visible
-  luaunit.assertEquals(v, {})
+  local expected = {
+    endx=3,
+    endy=3,
+    heightInTiles=4,
+    offsetx=0,
+    offsety=0,
+    startx=0,
+    starty=0,
+    widthInTiles=4
+  }
+  luaunit.assertEquals(v, expected)
 end
 
 function TestViewport:testMoveToEnd()
