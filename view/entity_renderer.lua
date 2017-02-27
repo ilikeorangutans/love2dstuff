@@ -32,12 +32,16 @@ function EntityRenderer:draw()
     local x, y = self.viewport:mapToScreen(e.position)
 
     if e.selectable.selected then
-      print("Selected")
+      self:drawSelectionBox(x, y)
     end
     self.tileset:drawEntity(x, y, e.drawable.img)
   end
 
   love.graphics.setScissor()
+end
+
+function EntityRenderer:drawSelectionBox(x, y)
+  love.graphics.rectangle('line', x, y, self.viewport.tileWidth, self.viewport.tileHeight)
 end
 
 local module = {}

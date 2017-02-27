@@ -24,6 +24,9 @@ function Viewport:new(o)
   o.maxx = 0
   o.maxy = 0
 
+  o.tileWidth = o.tileW
+  o.tileHeight = o.tileH
+
   o.screenArea = {
     x = o.screenx,
     y = o.screeny,
@@ -119,9 +122,8 @@ end
 
 function Viewport:mousereleased(x, y, button, istouch)
   if not util.overBox(x, y, self.screenArea) then return end
-
   local mapx, mapy = self:screenToMap(x, y)
-  self.bus:fire("viewport:click", {x=mapx, y=mapy})
+  self.bus:fire("viewport:click", {x=mapx, y=mapy, button=button})
 end
 
 function Viewport:calculateBounds()

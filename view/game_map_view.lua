@@ -222,7 +222,6 @@ function GameMapView:onEntityDeselected(e)
 end
 
 function GameMapView:onHoverTile(e)
-  print("GameMapView:onHoverTile()")
   local tile = self.map:getAt(e)
   print(tile.terrain.title)
 end
