@@ -4,7 +4,7 @@ require('viewport')
 TestViewport = {}
 
 function TestViewport:setUp()
-  self.vp = Viewport:new({screenx=0, screeny=0, w=320, h=160, tileW=32, tileH=32, mapWidth=100, mapHeight=100})
+  self.vp = Viewport:new({w=320, h=160, tileW=32, tileH=32, mapWidth=100, mapHeight=100})
   self.vp:resize(320, 160)
 end
 

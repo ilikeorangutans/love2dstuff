@@ -10,8 +10,6 @@ function Viewport:new(o)
   setmetatable(o, self)
   self.__index = self
 
-  assert(o.screenx, "screen x needed")
-  assert(o.screeny, "screen y needed")
   assert(o.tileW, "tile width needed")
   assert(o.tileH, "tile height needed")
   assert(o.mapWidth, "map width needed")
@@ -28,8 +26,8 @@ function Viewport:new(o)
   o.tileHeight = o.tileH
 
   o.screenArea = {
-    x = o.screenx,
-    y = o.screeny,
+    x = 0,
+    y = 0,
     w = 0,
     h = 0,
   }
