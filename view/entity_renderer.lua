@@ -15,6 +15,8 @@ function EntityRenderer:new(o)
   assert(o.tileset, "tileset needed")
 
   ui.Widget.init(o)
+  o.blink = 0
+  o.alpha = 128
 
   return o
 end
@@ -41,7 +43,20 @@ function EntityRenderer:draw()
 end
 
 function EntityRenderer:drawSelectionBox(x, y)
-  love.graphics.rectangle('line', x, y, self.viewport.tileWidth, self.viewport.tileHeight)
+  if self.blink > 30 then
+    if self.alpha == 128 then
+      self.alpha = 256
+    else
+      self.alpha = 128
+    end
+    self.blink = 0
+  end
+
+  love.graphics.setColor(255, 255, 255, self.alpha)
+  self.blink = self.blink + 1
+
+  love.graphics.rectangle('line', x, y, self.viewport.tileWidth, self.viewport.tileHeight, 3, 3)
+  love.graphics.setColor(255, 255, 255, 255)
 end
 
 local module = {}
