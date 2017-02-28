@@ -10,6 +10,8 @@ function SelectionManager:new(o)
   assert(o.bus, "SelectionManager requires bus")
   assert(o.entityManager, "SelectionManager requires entity manager")
   assert(o.visibilityCheck, "SelectionManager requires visiblity check")
+  assert(o.player, "SelectionManager requires player")
+
   return o
 end
 

@@ -98,6 +98,8 @@ function MainMenu:openGameView()
   ai.control = p2Ctrl
   bus:subscribe('game.newTurn', ai, ai.onNewTurn)
 
+  game:start()
+
   local view = GameMapView:new({ bus=bus, game=game, entityManager=entityManager, map=p1ExplorableMap, tileset=tileset, selectionManager=selectionManager })
   view:subscribe(bus)
   self.viewstack:push(view)
