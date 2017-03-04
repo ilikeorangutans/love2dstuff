@@ -1,5 +1,6 @@
 # In Progress
 
+[ ] colonies need to hold on to a map or something like that. but the map can change because the colony can change owner. should the colony system get the owner's map and use that?
 [ ] Action system will simulate any entity that has an action;
     [ ] action system should listen to events/methods about which one to simulate
 [ ] properly think through how the action system deals with actions that are done

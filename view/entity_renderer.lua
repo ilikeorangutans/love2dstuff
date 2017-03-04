@@ -30,13 +30,18 @@ function EntityRenderer:draw()
   end
   local entities = self.entityManager:getComponentsByType({position=predicate}, visible(), 'selectable', 'drawable')
 
-  for i, e in ipairs(entities) do
+  for id, e in pairs(entities) do
     local x, y = self.viewport:mapToScreen(e.position)
+    local fullEntity = self.entityManager:get(id)
 
     if e.selectable.selected then
       self:drawSelectionBox(x, y)
     end
     self.tileset:drawEntity(x, y, e.drawable.img)
+
+    if fullEntity.action then
+      love.graphics.print(("%d"):format(fullEntity.action:pointsLeft()), x-1, y-1)
+    end
   end
 
   love.graphics.setScissor()

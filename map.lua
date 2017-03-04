@@ -44,6 +44,7 @@ function Map:isOnMap(pos)
   return 0 <= pos.x and pos.x < self.width and 0 <= pos.y and pos.y < self.height
 end
 
+--- Returns an iterator over the area defined by start and stop.
 function Map:getArea(start, stop)
   self:getAt(start)
   self:getAt(stop)
@@ -67,6 +68,7 @@ function Map:getArea(start, stop)
   end
 end
 
+--- Returns an iterator over the neighbours in the given radius around the position, i.e. all neighbours but not the position.
 function Map:getNeighbours(pos, radius)
   radius = radius or 1
   local start = posAt(pos.x - radius, pos.y - radius)

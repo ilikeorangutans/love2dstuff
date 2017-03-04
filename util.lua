@@ -1,5 +1,3 @@
-local tablex = require 'pl.tablex'
-
 function posAt(x, y)
   return {x=x,y=y}
 end
@@ -10,7 +8,9 @@ function entityCapabilities(comps)
   for comp, v in pairs(comps) do
     if v.capabilities then
       local x = v:capabilities()
-      result = tablex.union(result, x)
+      for _, y in pairs(x) do
+        table.insert(result, y)
+      end
     end
   end
 

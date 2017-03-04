@@ -1,5 +1,3 @@
-local pretty = require 'pl.pretty'
-
 SelectionManager = {}
 
 function SelectionManager:new(o)
@@ -99,18 +97,7 @@ function SelectionManager:select(id)
   self.selectable = comps.selectable
   comps.selectable.selected = true
 
-  local x = entityCapabilities(comps)
-  caps = (", "):join(x)
-  local components = {}
-
-  print(("Selected entity: %d, capabilities: %s"):format(id, caps))
-  for comp, v in pairs(comps) do
-    table.insert(components, comp)
-  end
-
-  table.sort(components)
-  print(" ", (", "):join(components))
-
+  print(("Selected entity: %d"):format(id))
   self.bus:fire('selection.selected', {id=id})
 end
 

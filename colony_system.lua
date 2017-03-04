@@ -7,7 +7,7 @@ function ColonySystem:new(o)
   return o
 end
 
-function ColonySystem:foundColony(owner, pos, name)
+function ColonySystem:foundColony(owner, pos, map, name)
   local drawable = {img='colony'}
   local id, comps = self.entityManager:create({
     drawable=drawable,
@@ -28,7 +28,7 @@ function ColonySystem:foundColony(owner, pos, name)
         -- This method sucks because it repicks what to produce every turn
         -- Also sucks because it references outside elements via closure, can't
         -- refactor this into a separate method
-        local tile = self.map:getAt(pos)
+        local tile = map:getAt(pos)
         local maxProducts = 2
         local tileProduces = tile.terrain.produces
 

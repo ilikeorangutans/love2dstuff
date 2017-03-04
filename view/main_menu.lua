@@ -80,16 +80,19 @@ function MainMenu:openGameView()
 
   entityManager:create({ drawable={img = 'caravel'}, position={ x=10, y=10 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(10), visible={value=true}, vision={radius=2}, ship=Ship:new()})
   entityManager:create({ drawable={img = 'caravel'}, position={ x=20, y=30 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(10), visible={value=true}, vision={radius=2}, ship=Ship:new()})
+  entityManager:create({ drawable={img = 'expertfarmer'}, position={ x=3, y=1 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, colonist=Colonist:new({profession=Professions.expertfarmer})})
+
   local selectionManager = SelectionManager:new({entityManager=entityManager,bus=bus,visibilityCheck=p1ExplorableMap,player=p1}) -- ui concern?
   selectionManager:subscribe(bus)
 
-  local colonySystem = ColonySystem:new({ bus=bus, entityManager=entityManager, map=map })
+  --local colonySystem = ColonySystem:new({ bus=bus, map=p1ExplorableMap, entityManager=entityManager, map=map })
+  local colonySystem = engine.colonySystem
   bus:subscribe('game.newTurn', colonySystem, colonySystem.onNewTurn)
 
   local actionSystem = ActionSystem:new({ bus=bus, entityManager=entityManager, handlers=actionHandlers })
-  local p1Ctrl = PlayerControl:new({ entityManager=entityManager,game=game,player=p1 })
+  local p1Ctrl = PlayerControl:new({ map=p1ExplorableMap, entityManager=entityManager,game=game,player=p1 })
   p1Ctrl:subscribe(bus)
-  local p2Ctrl = PlayerControl:new({ entityManager=entityManager,game=game,player=p2 })
+  local p2Ctrl = PlayerControl:new({ map=p2ExplorableMap, entityManager=entityManager,game=game,player=p2 })
   p2Ctrl:subscribe(bus)
   bus:subscribe("game.newTurn", actionSystem, actionSystem.onNewTurn)
 
@@ -100,7 +103,7 @@ function MainMenu:openGameView()
 
   game:start()
 
-  local view = GameMapView:new({ bus=bus, game=game, entityManager=entityManager, map=p1ExplorableMap, tileset=tileset, selectionManager=selectionManager })
+  local view = GameMapView:new({ bus=bus, game=game, control=p1Ctrl, entityManager=entityManager, map=p1ExplorableMap, tileset=tileset, selectionManager=selectionManager })
   view:subscribe(bus)
   self.viewstack:push(view)
 end

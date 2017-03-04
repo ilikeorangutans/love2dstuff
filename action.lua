@@ -88,3 +88,41 @@ end
 function ActionComponent:hasPointsLeft()
   return self.points.left > 0
 end
+
+function ActionComponent:pointsLeft()
+  return self.points.left
+end
+
+FoundColonyAction = {}
+function FoundColonyAction:new(o)
+  o = o or {}
+  setmetatable(o, self)
+  self.__index = self
+
+  assert(o.map, "map needed")
+  assert(o.entityManager, "entity manager needed")
+  assert(o.id, "id needed")
+
+  o.entity = o.entityManager:get(o.id)
+
+  o.timePerPoint = 0
+  o.points = 1
+  o.pointsPerStep = 1
+
+  return o
+end
+
+function FoundColonyAction:execute(bus, entity)
+  local pos = self.entity.position
+  print("FoundColonyAction:execute()")
+  local drawable = {img='colony'}
+  local id, comps = self.entityManager:create({
+    drawable=drawable,
+    visible={value=true},
+    position=pos,
+    selectable={selectable=true},
+    owner={id=owner.id},
+    colony=Colony:new({name=name}),
+    vision={radius=1}
+  })
+end

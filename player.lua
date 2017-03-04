@@ -19,6 +19,12 @@ function PlayerControl:new(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
+
+  assert(o.map, "map required")
+  assert(o.entityManager, "entity manager required")
+  assert(o.game, "game required")
+  assert(o.player, "player required")
+
   o.active = false
   o.selectedID = nil
   return o
@@ -48,7 +54,16 @@ function PlayerControl:endTurn()
 end
 
 function PlayerControl:foundColony()
-  self:issueCommand(self.selectedID, {action='found_colony', name="Colony", owner=self.player})
+  if not self.selected then return end
+
+  print("PlayerControl:foundColony()")
+  local cmd = FoundColonyAction:new({map=self.map, entityManager=self.entityManager, id=self.selectedID})
+
+  self.selected.action.active = true
+  self.selected.action:enqueue(cmd)
+  self.selected.action:execute()
+
+  --self:issueCommand(self.selectedID, {action='found_colony', name="Colony", owner=self.player, map=self.map})
 end
 
 function PlayerControl:issueCommand(id, cmd)
