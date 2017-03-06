@@ -24,7 +24,7 @@ function GameMapView:new(o)
   o.menuBar:add(ui.Button:new({label="File", w=100, h=27}))
   o.menuBar:add(ui.Button:new({label="BAM", w=100, h=27}))
 
-  o.mapView = MapView:new({ tileset=o.tileset, map=o.map, entityManager=o.entityManager, viewport=o.viewport, bus=o.bus })
+  o.mapView = MapView:new({ tileset=o.tileset, map=o.map, entityManager=o.engine.entityManager, viewport=o.viewport, bus=o.bus })
   o.mapView:setAlignment('fill', 'fill'):setDimensions(0, 0, 0, 0)
 
   o.sidebar = ui.VerticalContainer:new():setAlignment('fill', 'fill'):setDimensions(0, 0, 200, 0)
@@ -71,6 +71,7 @@ function GameMapView:update(dt)
   if deltax ~= 0 or deltay ~= 0 then
     self.viewport:moveBy(deltax, deltay)
   end
+  self.engine:update(dt)
   self.ui:update(dt)
 end
 
@@ -213,7 +214,7 @@ end
 
 function GameMapView:onEntitySelected(e)
   self.selectedID = e.id
-  self.selected = self.entityManager:get(e.id)
+  self.selected = self.engine.entityManager:get(e.id)
 end
 
 function GameMapView:onEntityDeselected(e)

@@ -1,6 +1,7 @@
 local ui = require('ui/widgets')
 local util = require('ui/utils')
 local map = require('map')
+local ai = require('ai')
 
 MainMenu = {}
 
@@ -59,17 +60,18 @@ function MainMenu:openMapGeneratorView()
 end
 
 function MainMenu:openGameView()
-  local bus = Bus:new()
-  local game = Game:new({ bus=bus })
-  local p1 = game:addPlayer(Player:new('Jakob'))
-  local p2 = game:addPlayer(Player:new('Hannah'))
+  local tileset = Tileset:new()
+  tileset:load()
 
+  local bus = Bus:new()
   local engine = Engine:new({bus=bus})
   engine:init()
 
+  local game = Game:new({ bus=bus })
+  local p1 = game:addPlayer(Player:new('Jakob'))
+  local p2 = game:addPlayer(Player:new('Hannah'))
   local m = map.BetterRandomMapGenerator:generate(50, 50)
-  local tileset = Tileset:new()
-  tileset:load()
+
 
   local entityManager = engine.entityManager --EntityManager:new({ bus=bus })
 
@@ -85,25 +87,19 @@ function MainMenu:openGameView()
   local selectionManager = SelectionManager:new({entityManager=entityManager,bus=bus,visibilityCheck=p1ExplorableMap,player=p1}) -- ui concern?
   selectionManager:subscribe(bus)
 
-  --local colonySystem = ColonySystem:new({ bus=bus, map=p1ExplorableMap, entityManager=entityManager, map=map })
-  local colonySystem = engine.colonySystem
-  bus:subscribe('game.newTurn', colonySystem, colonySystem.onNewTurn)
-
-  local actionSystem = ActionSystem:new({ bus=bus, entityManager=entityManager, handlers=actionHandlers })
   local p1Ctrl = PlayerControl:new({ map=p1ExplorableMap, entityManager=entityManager,game=game,player=p1 })
   p1Ctrl:subscribe(bus)
   local p2Ctrl = PlayerControl:new({ map=p2ExplorableMap, entityManager=entityManager,game=game,player=p2 })
   p2Ctrl:subscribe(bus)
-  bus:subscribe("game.newTurn", actionSystem, actionSystem.onNewTurn)
 
-  local ai = AI:new()
+  local ai = ai.DoNothingAI:new()
   ai.player = p2
   ai.control = p2Ctrl
-  bus:subscribe('game.newTurn', ai, ai.onNewTurn)
+  entityManager:create({ai=ai})
 
   game:start()
 
-  local view = GameMapView:new({ bus=bus, game=game, control=p1Ctrl, entityManager=entityManager, map=p1ExplorableMap, tileset=tileset, selectionManager=selectionManager })
+  local view = GameMapView:new({ bus=bus, game=game, control=p1Ctrl, engine=engine, map=p1ExplorableMap, tileset=tileset, selectionManager=selectionManager })
   view:subscribe(bus)
   self.viewstack:push(view)
 end

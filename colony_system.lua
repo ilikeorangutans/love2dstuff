@@ -7,6 +7,10 @@ function ColonySystem:new(o)
   return o
 end
 
+function ColonySystem:subscribe(bus)
+  bus:subscribe('game.newTurn', self, ColonySystem.onNewTurn)
+end
+
 function ColonySystem:foundColony(owner, pos, map, name)
   local drawable = {img='colony'}
   local id, comps = self.entityManager:create({

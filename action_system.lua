@@ -4,6 +4,9 @@ function ActionSystem:new(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
+
+  assert(o.entityManager)
+
   return o
 end
 
@@ -20,6 +23,10 @@ function ActionSystem:update(dt)
   for id, comps in pairs(entities) do
     self:simulate(dt, id, comps)
   end
+end
+
+function ActionSystem:subscribe(bus)
+  bus:subscribe("game.newTurn", self, ActionSystem.onNewTurn)
 end
 
 function ActionSystem:simulate(dt, id, comps)
