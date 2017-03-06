@@ -28,6 +28,9 @@ function GameMapView:new(o)
   o.mapView:setAlignment('fill', 'fill'):setDimensions(0, 0, 0, 0)
 
   o.sidebar = ui.VerticalContainer:new():setAlignment('fill', 'fill'):setDimensions(0, 0, 200, 0)
+  o.turnLabel = o.sidebar:add(ui.Label:new({text="Turn"})):setAlignment('fill', 'top'):setDimensions(0, 0, 200, 21)
+  o.terrainLabel = o.sidebar:add(ui.Label:new({text="Terrain:"})):setAlignment('fill', 'top'):setDimensions(0, 0, 200, 17)
+  o.terrainDetailsLabel = o.sidebar:add(ui.Label:new({text=""})):setAlignment('fill', 'top')
 
   o.ui = ui.VerticalContainer:new()
   o.ui:setAlignment('fill', 'fill')
@@ -45,6 +48,7 @@ function GameMapView:subscribe(bus)
   bus:subscribe("selection.selected", self, GameMapView.onEntitySelected)
   bus:subscribe("selection.deselected", self, GameMapView.onEntityDeselected)
   bus:subscribe("viewport:hover", self, GameMapView.onHoverTile)
+  bus:subscribe("game.newTurn", self, GameMapView.onNewTurn)
 end
 
 function GameMapView:resize(w, h)
@@ -222,7 +226,19 @@ function GameMapView:onEntityDeselected(e)
   self.selected = nil
 end
 
+function GameMapView:onNewTurn(e)
+  self.turnLabel:setText(("Turn: %s"):format(e.player.name))
+end
+
 function GameMapView:onHoverTile(e)
   local tile = self.map:getAt(e)
-  print(tile.terrain.title)
+  self.terrainLabel:setText("Terrain: " .. tile.terrain.title)
+
+  local produces = ""
+  for t, amount in pairs(tile.terrain.produces) do
+    if produces ~= '' then produces = produces .. ', ' end
+    produces = produces .. t .. ': ' .. amount
+  end
+
+  self.terrainDetailsLabel:setText(produces)
 end

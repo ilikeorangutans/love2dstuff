@@ -221,9 +221,9 @@ function BetterRandomMapGenerator:generate(w, h)
 
     map.tiles[i] = {
       type = 1,
-      terrain = TerrainTypes['shippinglane'],
+      terrain = TerrainTypes['deepocean'],
       generator = {
-        terrain = 'shippinglane',
+        terrain = 'deepocean',
         temperature = temperature,
         height = 0
       },

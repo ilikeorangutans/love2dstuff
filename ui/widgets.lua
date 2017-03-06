@@ -354,7 +354,7 @@ function Label:draw()
   local x = self.widgetArea.x
   local y = self.widgetArea.y
   local w = self.widgetArea.w
-  love.graphics.setColor(self.color.r, self.color.g, self.color.b)
+  love.graphics.setColor(self.color.r, self.color.g, self.color.b, 255)
   love.graphics.printf(self.text, x, y, w, 'left')
 end
 

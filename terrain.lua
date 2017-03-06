@@ -9,9 +9,9 @@ local TerrainDefinitions = {
       },
     }
   },
-  shippinglane = {
+  deepocean = {
     id = 1,
-    title = 'Shipping Lane',
+    title = 'Deep Ocean',
     terrain = 'ocean',
     produces = {},
     generator = {

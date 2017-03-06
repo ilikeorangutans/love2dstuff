@@ -10,7 +10,7 @@ end
 function Tileset:load()
   tilesetCoords = {}
   tilesetCoords['unexplored'] =         {x=0,y=0}
-  tilesetCoords['shippinglane'] =       {x=1,y=2}
+  tilesetCoords['deepocean'] =       {x=1,y=2}
   tilesetCoords['ocean'] =              {x=0,y=2}
   tilesetCoords['arctic'] =             {x=1,y=0}
   tilesetCoords['borealforest'] =       {x=2,y=0}
