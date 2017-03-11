@@ -59,9 +59,11 @@ function PlayerControl:foundColony()
   print("PlayerControl:foundColony()")
   local cmd = FoundColonyAction:new({map=self.map, entityManager=self.entityManager, id=self.selectedID})
 
-  self.selected.action.active = true
-  self.selected.action:enqueue(cmd)
-  self.selected.action:execute()
+  cmd.active = true
+  print("PlayerControl:foundColony() active: ", cmd.active)
+  self.selected.action:setAction(cmd)
+
+  --self.selected.action:execute()
 
   --self:issueCommand(self.selectedID, {action='found_colony', name="Colony", owner=self.player, map=self.map})
 end

@@ -12,7 +12,7 @@ function TestMapView:setUp()
   self.map:fromString(5, 5, "1111112221122211222111111")
 
   local player = Player:new('test')
-  local mapView = map.View:new({map=m, player=player})
+  local mapView = map.ExplorableMap:new({map=m, player=player})
   self.mapView = mapView
 end
 

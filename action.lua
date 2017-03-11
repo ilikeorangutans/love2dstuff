@@ -25,6 +25,7 @@ function ActionComponent:enqueue(cmd)
 end
 
 function ActionComponent:execute()
+  print("ActionComponent:execute()")
   if self.points.left == 0 then return end
   if (not self.current) and (#self.queue) == 0 then return end
 
@@ -51,6 +52,7 @@ function ActionComponent:execute()
   self.points.needed = requiredPoints
   self.points.timePerPoint = timePerPoint
   self.points.consumesPoints = consumesPoints
+  self.active = true
 end
 
 function ActionComponent:consumePoint(entity)
@@ -110,6 +112,23 @@ function FoundColonyAction:new(o)
   o.pointsPerStep = 1
 
   return o
+end
+
+function FoundColonyAction:pointsNeeded()
+  return 0
+end
+
+function FoundColonyAction:isFinished()
+  return true
+end
+
+function FoundColonyAction:timePerStep()
+  print("FoundColonyAction:timePerStep()")
+  return 0
+end
+
+function FoundColonyAction:step()
+  print("FoundColonyAction:step()")
 end
 
 function FoundColonyAction:execute(bus, entity)

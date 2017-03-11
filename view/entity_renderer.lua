@@ -40,7 +40,7 @@ function EntityRenderer:draw()
     self.tileset:drawEntity(x, y, e.drawable.img)
 
     if fullEntity.action then
-      love.graphics.print(("%d"):format(fullEntity.action:pointsLeft()), x-1, y-1)
+      love.graphics.print(("%d"):format(fullEntity.action.pointsLeft), x-1, y-1)
     end
   end
 

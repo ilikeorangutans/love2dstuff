@@ -2,6 +2,7 @@ local ui = require('ui/widgets')
 local util = require('ui/utils')
 local map = require('map')
 local ai = require('ai')
+local action = require('xxx')
 
 MainMenu = {}
 
@@ -80,9 +81,9 @@ function MainMenu:openGameView()
   local p2ExplorableMap = map.ExplorableMap:new({map=m,player=p2})
   p2ExplorableMap:subscribe(bus)
 
-  entityManager:create({ drawable={img = 'caravel'}, position={ x=10, y=10 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(10), visible={value=true}, vision={radius=2}, ship=Ship:new()})
-  entityManager:create({ drawable={img = 'caravel'}, position={ x=20, y=30 }, selectable={selectable=true}, owner={ id=p2.id }, action=ActionComponent:new(10), visible={value=true}, vision={radius=2}, ship=Ship:new()})
-  entityManager:create({ drawable={img = 'expertfarmer'}, position={ x=3, y=1 }, selectable={selectable=true}, owner={ id=p1.id }, action=ActionComponent:new(2), visible={value=true}, vision={radius=1}, colonist=Colonist:new({profession=Professions.expertfarmer})})
+  entityManager:create({ drawable={img = 'caravel'}, position={ x=10, y=10 }, selectable={selectable=true}, owner={ id=p1.id }, action=action.Component:new({points=2}), visible={value=true}, vision={radius=2}, ship=Ship:new()})
+  entityManager:create({ drawable={img = 'caravel'}, position={ x=20, y=30 }, selectable={selectable=true}, owner={ id=p2.id }, action=action.Component:new({points=2}), visible={value=true}, vision={radius=2}, ship=Ship:new()})
+  entityManager:create({ drawable={img = 'expertfarmer'}, position={ x=3, y=1 }, selectable={selectable=true}, owner={ id=p1.id }, action=action.Component:new({points=2}), visible={value=true}, vision={radius=1}, colonist=Colonist:new({profession=Professions.expertfarmer})})
 
   local selectionManager = SelectionManager:new({entityManager=entityManager,bus=bus,visibilityCheck=p1ExplorableMap,player=p1}) -- ui concern?
   selectionManager:subscribe(bus)

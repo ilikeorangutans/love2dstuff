@@ -38,10 +38,10 @@ function ActionSystem:simulate(dt, id, comps)
   if itsTime then
     local action = comps.action.current.action
 
-    if self.handlers[action] then
+    --if self.handlers[action] then
       -- TODO: check return value? could indicate aborted action?
-      self.handlers[action](comps.action.current, id)
-    end
+      --self.handlers[action](comps.action.current, id)
+    --end
 
     comps.action.time = 0
     comps.action:consumePoint(id)

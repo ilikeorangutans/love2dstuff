@@ -1,4 +1,5 @@
 local ai = require('ai')
+local action = require('xxx')
 Engine = {}
 
 function Engine:new(o)
@@ -15,7 +16,7 @@ function Engine:init()
   self.entityManager = EntityManager:new({bus=self.bus})
   self.colonySystem = ColonySystem:new({ bus=self.bus, entityManager=self.entityManager })
   self.colonySystem:subscribe(self.bus)
-  self.actionSystem = ActionSystem:new({ bus=bus, entityManager=self.entityManager, handlers=actionHandlers })
+  self.actionSystem = action.System:new({ bus=self.bus, entityManager=self.entityManager, handlers=actionHandlers })
   self.actionSystem:subscribe(self.bus)
 
   self.aiSystem = ai.System:new({entityManager=self.entityManager})
